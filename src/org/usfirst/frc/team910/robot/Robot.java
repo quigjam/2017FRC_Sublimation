@@ -54,9 +54,9 @@ public class Robot extends IterativeRobot {
 		double rightPwr = rightJoy.getY();
 
 		motorLF.set(leftPwr);
-		motorRF.set(rightPwr);
+		motorRF.set(-rightPwr);
 		motorLR.set(leftPwr);
-		motorRR.set(rightPwr);
+		motorRR.set(-rightPwr);
 	}
 
 	/**
