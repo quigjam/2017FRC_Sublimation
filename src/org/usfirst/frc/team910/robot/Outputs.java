@@ -21,7 +21,7 @@ public class Outputs {
 	}
 
 	public void setRightDrive(double power) {
-		rightMotor1.set(power);
-		rightMotor2.set(power);
+		rightMotor1.set(-power);
+		rightMotor2.set(-power);
 	}
 }
