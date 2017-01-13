@@ -1,17 +1,13 @@
 package org.usfirst.frc.team910.robot;
 
-import com.ctre.CANTalon;
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.Joystick;
 
 public class Robot extends IterativeRobot {
 
-	Joystick leftJoy;
-	Joystick rightJoy;
-	CANTalon motorLF;
-	CANTalon motorRF;
-	CANTalon motorLR;
-	CANTalon motorRR;
+	Inputs inputs;
+	Outputs outputs;
+
+	DriveTrain drive;
 
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -19,12 +15,10 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void robotInit() {
-		leftJoy = new Joystick(0);
-		rightJoy = new Joystick(1);
-		motorLF = new CANTalon(0);
-		motorRF = new CANTalon(1);
-		motorLR = new CANTalon(2);
-		motorRR = new CANTalon(3);
+		inputs = new Inputs();
+		outputs = new Outputs();
+
+		drive = new DriveTrain(inputs, outputs);
 	}
 
 	@Override
@@ -50,13 +44,8 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
-		double leftPwr = leftJoy.getY();
-		double rightPwr = rightJoy.getY();
-
-		motorLF.set(leftPwr);
-		motorRF.set(-rightPwr);
-		motorLR.set(leftPwr);
-		motorRR.set(-rightPwr);
+		inputs.read();
+		drive.drive();
 	}
 
 	/**
