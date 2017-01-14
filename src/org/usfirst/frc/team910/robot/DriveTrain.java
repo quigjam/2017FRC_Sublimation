@@ -4,6 +4,7 @@ public class DriveTrain {
 
 	private static final double DRIVE_STRAIGHT_ENC_PWR = 0.1;
 	private static final double DYN_BRAKE_PWR = 0.1; //full power in 10 inches 
+	private static final double DRIVE_STAIGHT_NAVX_PWR = 0;
 	
 	private Inputs in;
 	private Outputs out;
@@ -65,5 +66,22 @@ public class DriveTrain {
 			tankDrive(in.rightJoyStickY + DiffDiff,in.rightJoyStickY - DiffDiff );
 		}
 		
+	}	
+
+	
+	double originangle = 0;
+	
+	private void driveStraigthNavx(boolean firstTime) {
+		double navxangle= sense.robotAngle;
+		
+		if(firstTime) {
+			originangle = navxangle;
+		} else {
+			double currentangle = navxangle;
+			double angledifference = originangle - currentangle;
+			double refineddiff = angledifference * DRIVE_STAIGHT_NAVX_PWR;
+			
+			tankDrive(in.rightJoyStickY - refineddiff,in.rightJoyStickY + refineddiff);
+		}
 	}
-}	
+}
