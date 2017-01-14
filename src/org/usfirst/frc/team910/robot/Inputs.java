@@ -18,8 +18,8 @@ public class Inputs {
 	}
 
 	public void read() {
-		leftJoyStickY = leftStick.getY();
-		rightJoyStickY = rightStick.getY();
+		leftJoyStickY = -leftStick.getY();
+		rightJoyStickY = -rightStick.getY();
 		leftTrigger = leftStick.getTrigger();
 	}
 

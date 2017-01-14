@@ -16,12 +16,12 @@ public class Outputs {
 	}
 
 	public void setLeftDrive(double power) {
-		leftMotor1.set(power);
-		leftMotor2.set(power);
+		leftMotor1.set(-power);
+		leftMotor2.set(-power);
 	}
 
 	public void setRightDrive(double power) {
-		rightMotor1.set(-power);
-		rightMotor2.set(-power);
+		rightMotor1.set(power);
+		rightMotor2.set(power);
 	}
 }
