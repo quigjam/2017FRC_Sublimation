@@ -9,7 +9,9 @@ public class Inputs {
 	
 	public double leftJoyStickY;
 	public double rightJoyStickY;
-
+	
+	public boolean leftTrigger;
+	
 	Inputs() {
 		leftStick = new Joystick(ElectroPaul.LEFT_JOYSTICK_PORT);
 		rightStick = new Joystick(ElectroPaul.RIGHT_JOYSTICK_PORT);
@@ -18,7 +20,7 @@ public class Inputs {
 	public void read() {
 		leftJoyStickY = leftStick.getY();
 		rightJoyStickY = rightStick.getY();
-
+		leftTrigger = leftStick.getTrigger();
 	}
 
 }

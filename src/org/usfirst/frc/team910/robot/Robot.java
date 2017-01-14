@@ -6,6 +6,7 @@ public class Robot extends IterativeRobot {
 
 	Inputs inputs;
 	Outputs outputs;
+	Sensors sense; 
 
 	DriveTrain drive;
 
@@ -17,8 +18,9 @@ public class Robot extends IterativeRobot {
 	public void robotInit() {
 		inputs = new Inputs();
 		outputs = new Outputs();
-
-		drive = new DriveTrain(inputs, outputs);
+		sense =  new Sensors(); 
+		
+		drive = new DriveTrain(inputs, outputs, sense);
 	}
 
 	@Override
@@ -45,6 +47,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopPeriodic() {
 		inputs.read();
+		sense.read();
 		drive.drive();
 	}
 
