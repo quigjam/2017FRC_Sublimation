@@ -2,6 +2,7 @@ package org.usfirst.frc.team910.robot;
 
 public class DriveTrain {
 
+	private static final double DRIVE_STRAIGHT_ENC_PWR = 0.1;
 	private static final double DYN_BRAKE_PWR = 0.1; //full power in 10 inches 
 	private static final double DRIVE_STAIGHT_NAVX_PWR = 0;
 	
@@ -49,8 +50,24 @@ public class DriveTrain {
 
 			tankDrive(leftEncDiff * DYN_BRAKE_PWR, rightEncDiff * DYN_BRAKE_PWR);
 		}
-
+		
 	}
+	
+	private double initialEncDiff; 
+	
+	private void driveStraightEnc(boolean firstTime) {
+		
+		if (firstTime) {
+			initialEncDiff = sense.leftEncoder - sense.rightEncoder;
+		}else{
+			double currentEncDiff = sense.leftEncoder - sense.rightEncoder;
+			double DiffDiff = (initialEncDiff - currentEncDiff) * DRIVE_STRAIGHT_ENC_PWR;
+			
+			tankDrive(in.rightJoyStickY + DiffDiff,in.rightJoyStickY - DiffDiff );
+		}
+		
+	}	
+
 	//Drive Straight With NavX
 	double originangle = 0;
 	
