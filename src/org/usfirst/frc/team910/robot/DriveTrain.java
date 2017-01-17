@@ -37,7 +37,7 @@ public class DriveTrain {
 	private double rightEncPrev;
 
 	private void dynamicBrake(boolean firstTime) {
-		double leftEncoder = sense.leftEncoder;
+		double leftEncoder = sense.leftEncoder;//Sense is short for sensors
 		double rightEncoder = sense.rightEncoder;
 
 		if (firstTime) {
@@ -51,7 +51,7 @@ public class DriveTrain {
 		}
 
 	}
-	
+	//Drive Straight With NavX
 	double originangle = 0;
 	
 	private void driveStraigthNavx(boolean firstTime) {
