@@ -9,6 +9,10 @@ public class PathPlanning {
 		public double yIntercept = 0;
 	}
 
+	
+	
+	
+	
 	double sensorsNavXangle = 0;
 	int inputsTargetGearPost = 0;
 	double inputsCameraAngle = 0;
@@ -16,8 +20,8 @@ public class PathPlanning {
 
 	Line robotLine = new Line();
 	Line goalLine = new Line();
-	Line parallelX = new Line();
-	Line parallelY = new Line();
+	Line parallelrobotLine = new Line(); //previously X
+	Line parallelgoalLine = new Line();  //previously Y
 
 	private void calculateArcPoints() {
 		// Step 1 Line from Start in current Direction
@@ -47,11 +51,20 @@ public class PathPlanning {
 		goalLine.yIntercept = yCord - (goalLine.slope * xCord);
 
 		// Step 3 Generate parallel inboard lines
-		parallelX.slope = robotLine.slope;
-		parallelY.slope = goalLine.slope;
-		parallelX.yIntercept = CIRCLE_RADIUS / Math.cos(Math.toRadians(sensorsNavXangle));
-		parallelY.yIntercept = CIRCLE_RADIUS / Math.cos(Math.toRadians(inputsCameraAngle));
+		parallelrobotLine.slope = robotLine.slope;
+		parallelgoalLine.slope = goalLine.slope;
+		parallelrobotLine.yIntercept = CIRCLE_RADIUS / Math.cos(Math.toRadians(sensorsNavXangle));
+		parallelgoalLine.yIntercept = CIRCLE_RADIUS / Math.cos(Math.toRadians(inputsCameraAngle));
 
+		//Step 4, find center of circle
+		//set the parrallelrobotline and parrallelgoalline equal to each other to find the x intercept they have in common
+		
+		//Step 5, perpandicular lines from the center of the circle to the orginal lines
+		//add the y-interecept of of the parrallel robot line to the Circle_Radius to get to the orginal robot line
+		//add the y-intercept of the parrallel goal line to the Circle_Radius to get to the orginal goal line
+		
+		//Step 6 find the coordinates of the intercetion of the perpandicular lines from the center of the circle to the orginal lines.
+		//
 	}
 
 }
