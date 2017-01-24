@@ -31,6 +31,8 @@ public class PathPlanning {
 	Point robotIntersection = new Point();
 
 	private void calculateArcPoints() {
+		double signGoal;
+		double signRobot;
 		// Step 1 Line from Start in current Direction
 		// 0,0 = Robot Origin, Origin direction is based on NavX
 		robotLine.yIntercept = 0;
@@ -41,12 +43,46 @@ public class PathPlanning {
 		switch (inputsTargetGearPost) {
 		case 1:// top
 			goalLine.slope = Math.tan(Math.toRadians(120));
+			if (sensorsNavXangle > 120 && sensorsNavXangle < 300) {
+				signGoal = 1;
+			} else {
+				signGoal = -1;
+			}
+			if ((sensorsNavXangle < 90 || sensorsNavXangle > 120)
+					&& (sensorsNavXangle < 270 || sensorsNavXangle > 300)) {
+				signRobot = 1;
+			} else {
+				signRobot = -1;
+			}
 			break;
 		case 2:// center
 			goalLine.slope = Math.tan(Math.toRadians(180));
+			if (sensorsNavXangle > 180) {
+				signGoal = 1;
+			} else {
+				signGoal = -1;
+			}
+			if (sensorsNavXangle < 90 || sensorsNavXangle > 180 && sensorsNavXangle < 270) { // &&
+																								// performs
+																								// first
+				signRobot = 1;
+			} else {
+				signRobot = -1;
+			}
 			break;
 		case 3:// bottom
 			goalLine.slope = Math.tan(Math.toRadians(240));
+			if (sensorsNavXangle < 60 || sensorsNavXangle > 240) {
+				signGoal = 1;
+			} else {
+				signGoal = -1;
+			}
+
+			if (sensorsNavXangle > 60 && sensorsNavXangle < 90 || sensorsNavXangle > 270 && sensorsNavXangle < 300) {
+				signGoal = 1;
+			} else {
+				signGoal = -1;
+			}
 			break;
 		}
 
