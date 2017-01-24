@@ -2,7 +2,7 @@ package org.usfirst.frc.team910.robot;
 
 public class PathPlanning {
 
-	private static final double CIRCLE_RADIUS = 0;
+	private static final double CIRCLE_RADIUS = 48;
 
 	private class Line {
 		public double slope = 0;
@@ -14,10 +14,10 @@ public class PathPlanning {
 		public double y;
 	}
 
-	double sensorsNavXangle = 0;
-	int inputsTargetGearPost = 0;
-	double inputsCameraAngle = 0;
-	double inputsCameraDistance = 0;
+	double sensorsNavXangle = 89;
+	int inputsTargetGearPost = 2;
+	double inputsCameraAngle = 45;
+	double inputsCameraDistance = 120;
 
 	Line robotLine = new Line();
 	Line goalLine = new Line();
@@ -31,8 +31,8 @@ public class PathPlanning {
 	Point robotIntersection = new Point();
 
 	private void calculateArcPoints() {
-		double signGoal;
-		double signRobot;
+		double signGoal = 1;
+		double signRobot = 1;
 		// Step 1 Line from Start in current Direction
 		// 0,0 = Robot Origin, Origin direction is based on NavX
 		robotLine.yIntercept = 0;
@@ -56,7 +56,7 @@ public class PathPlanning {
 			}
 			break;
 		case 2:// center
-			goalLine.slope = Math.tan(Math.toRadians(180));
+			goalLine.slope = Math.tan(Math.toRadians(179.999));
 			if (sensorsNavXangle > 180) {
 				signGoal = 1;
 			} else {
@@ -65,9 +65,9 @@ public class PathPlanning {
 			if (sensorsNavXangle < 90 || sensorsNavXangle > 180 && sensorsNavXangle < 270) { // &&
 																								// performs
 																								// first
-				signRobot = 1;
-			} else {
 				signRobot = -1;
+			} else {
+				signRobot = 1;
 			}
 			break;
 		case 3:// bottom
@@ -97,8 +97,9 @@ public class PathPlanning {
 		parallelrobotLine.slope = robotLine.slope;
 		parallelgoalLine.slope = goalLine.slope;
 
-		parallelrobotLine.yIntercept = CIRCLE_RADIUS / Math.cos(Math.toRadians(sensorsNavXangle));
-		parallelgoalLine.yIntercept = CIRCLE_RADIUS / Math.cos(Math.toRadians(inputsCameraAngle));
+		parallelrobotLine.yIntercept = Math.abs(CIRCLE_RADIUS / Math.cos(Math.toRadians(sensorsNavXangle))) * signRobot;
+		parallelgoalLine.yIntercept = goalLine.yIntercept
+				+ Math.abs(CIRCLE_RADIUS / Math.cos(Math.atan(goalLine.slope))) * signGoal;
 
 		// Step 4, find center of circle
 		// set the parallelrobotline and parallelgoalline equal to each other to
