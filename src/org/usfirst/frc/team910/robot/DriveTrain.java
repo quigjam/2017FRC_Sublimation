@@ -84,4 +84,36 @@ public class DriveTrain {
 			tankDrive(in.rightJoyStickY - refineddiff,in.rightJoyStickY + refineddiff);
 		}
 	}
+	
+	private enum GearState{
+		CALCULATE, DRIVE_STRAIGHT1, ARC, DRIVE_STREIGHT2, DELIVER_GEAR, REVERS ;
+	};
+	private GearState gearState = GearState.values()[0];
+	
+	public void autogear (boolean first){
+		if(first){
+		gearState = GearState.values()[0];	
+		}
+		
+		switch(gearState){
+		case CALCULATE:
+			
+			break;
+		case DRIVE_STRAIGHT1:
+			
+			break;
+		case ARC:
+			
+			break;
+		case DRIVE_STREIGHT2:
+			
+			break;
+		case DELIVER_GEAR:
+			
+			break;
+		case REVERS:
+			
+			break;
+		}
+	}
 }
