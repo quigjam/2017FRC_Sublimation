@@ -36,7 +36,13 @@ public class PathPlanning {
 		// Step 1 Line from Start in current Direction
 		// 0,0 = Robot Origin, Origin direction is based on NavX
 		robotLine.yIntercept = 0;
-		robotLine.slope = Math.tan(Math.toRadians(sensorsNavXangle));
+		if (sensorsNavXangle == 90) { // undefined check
+			robotLine.slope = 999999;
+		} else if (sensorsNavXangle == 270) {
+			robotLine.slope = -999999;
+		} else {
+			robotLine.slope = Math.tan(Math.toRadians(sensorsNavXangle));
+		}
 		// Step 2 Line from End Parallel to Spring Hook thing
 
 		// which gear post are we going after?
@@ -96,20 +102,27 @@ public class PathPlanning {
 		// Step 3 Generate parallel inboard lines
 		parallelrobotLine.slope = robotLine.slope;
 		parallelgoalLine.slope = goalLine.slope;
-
-		parallelrobotLine.yIntercept = Math.abs(CIRCLE_RADIUS / Math.cos(Math.toRadians(sensorsNavXangle))) * signRobot;
-		parallelgoalLine.yIntercept = goalLine.yIntercept
-				+ Math.abs(CIRCLE_RADIUS / Math.cos(Math.atan(goalLine.slope))) * signGoal;
+		double tempCos = Math.cos(Math.toRadians(sensorsNavXangle));
+		if (tempCos == 0)
+			tempCos = 0.000001; // undefined check
+		parallelrobotLine.yIntercept = Math.abs(CIRCLE_RADIUS / tempCos) * signRobot;
+		tempCos = Math.cos(Math.atan(goalLine.slope));
+		if (tempCos == 0)
+			tempCos = 0.000001; // undefined check
+		parallelgoalLine.yIntercept = goalLine.yIntercept + Math.abs(CIRCLE_RADIUS / tempCos) * signGoal;
 
 		// Step 4, find center of circle
 		// set the parallelrobotline and parallelgoalline equal to each other to
 		// find the 1 point they have in common
 		centerofCircle.x = (parallelgoalLine.yIntercept - parallelrobotLine.yIntercept)
 				/ (parallelrobotLine.slope - parallelgoalLine.slope);
+		// slopes will never be equal, no need for undefined check
 		centerofCircle.y = parallelrobotLine.slope * centerofCircle.x + parallelrobotLine.yIntercept;
 		// Step 5, perpendicular lines from the center of the circle to the
 		// original lines
 		// perpendicular slopes are the negative inverse (-1/m)
+		if (parallelrobotLine.slope == 0)
+			parallelrobotLine.slope = 0.000001;
 		perpendicularrobotLine.slope = -1 / parallelrobotLine.slope;
 		perpendiculargoalLine.slope = -1 / parallelgoalLine.slope;
 		// we know the line passes through the center of the circle and has a
