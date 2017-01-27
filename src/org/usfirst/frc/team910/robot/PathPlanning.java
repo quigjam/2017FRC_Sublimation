@@ -3,34 +3,34 @@ package org.usfirst.frc.team910.robot;
 public class PathPlanning {
 
 	private static final double CIRCLE_RADIUS = 48;
+	private static final double CIRCLE_CIRCUMFERENCE = (2 * Math.PI * CIRCLE_RADIUS);
 
-	private class Line {
+	private static class Line {
 		public double slope = 0;
 		public double yIntercept = 0;
 	}
 
-	private class Point {
+	private static class Point {
 		public double x;
 		public double y;
 	}
 
-	double sensorsNavXangle = 89;
-	int inputsTargetGearPost = 2;
-	double inputsCameraAngle = 45;
-	double inputsCameraDistance = 120;
+	private static Line robotLine = new Line();
+	private static Line goalLine = new Line();
+	private static Line parallelrobotLine = new Line(); // previously X
+	private static Line parallelgoalLine = new Line(); // previously Y
+	private static Line perpendicularrobotLine = new Line();
+	private static Line perpendiculargoalLine = new Line();
 
-	Line robotLine = new Line();
-	Line goalLine = new Line();
-	Line parallelrobotLine = new Line(); // previously X
-	Line parallelgoalLine = new Line(); // previously Y
-	Line perpendicularrobotLine = new Line();
-	Line perpendiculargoalLine = new Line();
+	private static Point centerofCircle = new Point();
+	private static Point goalIntersection = new Point();
+	private static Point robotIntersection = new Point();
 
-	Point centerofCircle = new Point();
-	Point goalIntersection = new Point();
-	Point robotIntersection = new Point();
+	public static double distance;
+	public static double arcdistance;
 
-	private void calculateArcPoints() {
+	public static void calculateArcPoints(double sensorsNavXangle, int inputsTargetGearPost, double inputsCameraAngle,
+			double inputsCameraDistance) {
 		double signGoal = 1;
 		double signRobot = 1;
 		// Step 1 Line from Start in current Direction
@@ -140,6 +140,14 @@ public class PathPlanning {
 		robotIntersection.x = (perpendicularrobotLine.yIntercept - robotLine.yIntercept)
 				/ (robotLine.slope - perpendicularrobotLine.slope);
 		robotIntersection.y = (perpendicularrobotLine.slope * robotIntersection.x) + perpendicularrobotLine.yIntercept;
-	}
 
+		distance = Math.sqrt((robotIntersection.x * robotIntersection.x) + (robotIntersection.y * robotIntersection.y));
+
+		double arcangle = (Math.atan(perpendiculargoalLine.slope) - Math.atan(perpendicularrobotLine.slope));
+
+		if (arcangle > 180)
+			arcangle = 360 - arcangle;
+
+		arcdistance = (arcangle / 360) * CIRCLE_CIRCUMFERENCE;
+	}
 }

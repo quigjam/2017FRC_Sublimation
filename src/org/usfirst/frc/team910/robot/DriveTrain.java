@@ -3,13 +3,14 @@ package org.usfirst.frc.team910.robot;
 public class DriveTrain {
 
 	private static final double DRIVE_STRAIGHT_ENC_PWR = 0.1;
-	private static final double DYN_BRAKE_PWR = 0.1; //full power in 10 inches 
+	private static final double DYN_BRAKE_PWR = 0.1; // full power in 10 inches
 	private static final double DRIVE_STAIGHT_NAVX_PWR = 0;
-	
+	private static final double WALL_ACCEL = 0;
+
 	private Inputs in;
 	private Outputs out;
 	private Sensors sense;
-	
+
 	public DriveTrain(Inputs in, Outputs out, Sensors sense) {
 		this.in = in;
 		this.out = out;
@@ -17,13 +18,13 @@ public class DriveTrain {
 	}
 
 	// this is the main function called from robot
-	boolean braking;  
-	public void drive() {	
-		if(in.leftTrigger) {
+	boolean braking;
+
+	public void drive() {
+		if (in.leftTrigger) {
 			dynamicBrake(!braking);
 			braking = true;
-		}
-		else { 
+		} else {
 			tankDrive(in.leftJoyStickY, in.rightJoyStickY);
 			braking = false;
 		}
@@ -38,7 +39,7 @@ public class DriveTrain {
 	private double rightEncPrev;
 
 	private void dynamicBrake(boolean firstTime) {
-		double leftEncoder = sense.leftEncoder;//Sense is short for sensors
+		double leftEncoder = sense.leftEncoder;// Sense is short for sensors
 		double rightEncoder = sense.rightEncoder;
 
 		if (firstTime) {
@@ -50,70 +51,107 @@ public class DriveTrain {
 
 			tankDrive(leftEncDiff * DYN_BRAKE_PWR, rightEncDiff * DYN_BRAKE_PWR);
 		}
-		
+
 	}
-	
-	private double initialEncDiff; 
-	
+
+	private double initialEncDiff;
+
 	private void driveStraightEnc(boolean firstTime) {
-		
+
 		if (firstTime) {
 			initialEncDiff = sense.leftEncoder - sense.rightEncoder;
-		}else{
+		} else {
 			double currentEncDiff = sense.leftEncoder - sense.rightEncoder;
 			double DiffDiff = (initialEncDiff - currentEncDiff) * DRIVE_STRAIGHT_ENC_PWR;
-			
-			tankDrive(in.rightJoyStickY + DiffDiff,in.rightJoyStickY - DiffDiff );
-		}
-		
-	}	
 
-	//Drive Straight With NavX
+			tankDrive(in.rightJoyStickY + DiffDiff, in.rightJoyStickY - DiffDiff);
+		}
+
+	}
+
+	// Drive Straight With NavX
 	double originangle = 0;
-	
-	private void driveStraigthNavx(boolean firstTime) {
-		double navxangle= sense.robotAngle;
-		
-		if(firstTime) {
+
+	private void driveStraightNavX(boolean firstTime) {
+		double navxangle = sense.robotAngle;
+
+		if (firstTime) {
 			originangle = navxangle;
 		} else {
 			double currentangle = navxangle;
 			double angledifference = originangle - currentangle;
 			double refineddiff = angledifference * DRIVE_STAIGHT_NAVX_PWR;
-			
-			tankDrive(in.rightJoyStickY - refineddiff,in.rightJoyStickY + refineddiff);
+
+			tankDrive(in.rightJoyStickY - refineddiff, in.rightJoyStickY + refineddiff);
 		}
 	}
-	
-	private enum GearState{
-		CALCULATE, DRIVE_STRAIGHT1, ARC, DRIVE_STREIGHT2, DELIVER_GEAR, REVERS ;
+
+	private void driveCircle() { // TODO Placeholder, write function
+
+	}
+
+	private enum GearState {
+		CAM_CHECK, CALCULATE, DRIVE_STRAIGHT1, ARC, DRIVE_STRAIGHT2, DELIVER_GEAR, REVERS;
 	};
+
 	private GearState gearState = GearState.values()[0];
-	
-	public void autogear (boolean first){
-		if(first){
-		gearState = GearState.values()[0];	
+
+	private double botStart;
+
+	public void autogear(boolean first) {
+		if (first) {
+			gearState = GearState.values()[0];
 		}
-		
-		switch(gearState){
+
+		switch (gearState) {
+		case CAM_CHECK:
+
+			if (sense.camera.gearGoalSearch()) {
+				gearState = GearState.CALCULATE;
+			}
+
+			break;
 		case CALCULATE:
-			
+			PathPlanning.calculateArcPoints(sense.robotAngle, in.targetGearPost, sense.cameraAngle,
+					sense.cameraDistance);
+
+			gearState = GearState.DRIVE_STRAIGHT1;
+
+			botStart = (sense.leftEncoder + sense.rightEncoder) / 2;
+
+			originangle = sense.robotAngle;
 			break;
 		case DRIVE_STRAIGHT1:
-			
+
+			driveStraightNavX(false);
+			if (((sense.leftEncoder + sense.rightEncoder) / 2) > (botStart + PathPlanning.distance)) {
+				gearState = GearState.ARC;
+				botStart = (sense.leftEncoder + sense.rightEncoder) / 2;
+			}
 			break;
 		case ARC:
-			
+			driveCircle();
+
+			if (((sense.leftEncoder + sense.rightEncoder) / 2) > (botStart + PathPlanning.arcdistance)) {
+				gearState = GearState.DRIVE_STRAIGHT2;
+				originangle = sense.robotAngle;
+			}
 			break;
-		case DRIVE_STREIGHT2:
-			
+		case DRIVE_STRAIGHT2:
+
+			driveStraightNavX(false);
+			if (sense.accelX > WALL_ACCEL) {
+				gearState = GearState.DELIVER_GEAR;
+			}
 			break;
 		case DELIVER_GEAR:
-			
+			tankDrive(0, 0);
+			// TODO Add delivery function
 			break;
 		case REVERS:
-			
+			// TODO Add reverse function
 			break;
 		}
 	}
+
 }

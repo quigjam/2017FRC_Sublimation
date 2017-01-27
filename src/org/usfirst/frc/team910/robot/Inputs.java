@@ -10,8 +10,9 @@ public class Inputs {
 
 	public double leftJoyStickY;
 	public double rightJoyStickY;
-
 	public boolean leftTrigger;
+	
+	public int targetGearPost; //TODO Placeholder, figure out how operator controls this
 
 	Inputs() {
 		leftStick = new Joystick(ElectroPaul.LEFT_JOYSTICK_PORT);
