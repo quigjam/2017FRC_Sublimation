@@ -4,8 +4,9 @@ public class DriveTrain {
 
 	private static final double DRIVE_STRAIGHT_ENC_PWR = 0.1;
 	private static final double DYN_BRAKE_PWR = 0.1; // full power in 10 inches
-	private static final double DRIVE_STAIGHT_NAVX_PWR = 0;
+	private static final double DRIVE_STRAIGHT_NAVX_PWR = 0;
 	private static final double WALL_ACCEL = 0;
+	private static final double AUTO_DRIVE_PWR = 0.2;
 
 	private Inputs in;
 	private Outputs out;
@@ -80,14 +81,18 @@ public class DriveTrain {
 		} else {
 			double currentangle = navxangle;
 			double angledifference = originangle - currentangle;
-			double refineddiff = angledifference * DRIVE_STAIGHT_NAVX_PWR;
+			double refineddiff = angledifference * DRIVE_STRAIGHT_NAVX_PWR;
 
 			tankDrive(in.rightJoyStickY - refineddiff, in.rightJoyStickY + refineddiff);
 		}
 	}
 
-	private void driveCircle() { // TODO Placeholder, write function
-
+	private void driveCircle(double startAngle, double distance, double radius, double velocity, double direction) {
+		double K = 360 / 2 * Math.PI * radius;
+		double targetAngle = startAngle + direction * K * distance;
+		double angleError = targetAngle - sense.robotAngle;
+		double correctionPwr = angleError * DRIVE_STRAIGHT_NAVX_PWR;
+		tankDrive(AUTO_DRIVE_PWR - correctionPwr, AUTO_DRIVE_PWR + correctionPwr);
 	}
 
 	private enum GearState {
@@ -130,7 +135,7 @@ public class DriveTrain {
 			}
 			break;
 		case ARC:
-			driveCircle();
+			driveCircle(originangle, 0, 0, 0, 0);
 
 			if (((sense.leftEncoder + sense.rightEncoder) / 2) > (botStart + PathPlanning.arcdistance)) {
 				gearState = GearState.DRIVE_STRAIGHT2;
