@@ -86,15 +86,15 @@ public class DriveTrain {
 			tankDrive(in.rightJoyStickY - refineddiff, in.rightJoyStickY + refineddiff);
 		}
 	}
-
-	private void driveCircle(double startAngle, double distance, double radius, double velocity, double direction) {
+	//Drive in a circle using NavX
+	private void driveCircle(double startAngle, double distance, double radius, double velocity, double direction) { 
 		double K = 360 / 2 * Math.PI * radius;
 		double targetAngle = startAngle + direction * K * distance;
 		double angleError = targetAngle - sense.robotAngle;
 		double correctionPwr = angleError * DRIVE_STRAIGHT_NAVX_PWR;
 		tankDrive(AUTO_DRIVE_PWR - correctionPwr, AUTO_DRIVE_PWR + correctionPwr);
-	}
-
+	} 
+	//Starts state machine for gear delivery
 	private enum GearState {
 		CAM_CHECK, CALCULATE, DRIVE_STRAIGHT1, ARC, DRIVE_STRAIGHT2, DELIVER_GEAR, REVERS;
 	};
@@ -102,20 +102,20 @@ public class DriveTrain {
 	private GearState gearState = GearState.values()[0];
 
 	private double botStart;
-
+	//begin machine
 	public void autogear(boolean first) {
 		if (first) {
 			gearState = GearState.values()[0];
 		}
-
+	//find goal
 		switch (gearState) {
 		case CAM_CHECK:
 
 			if (sense.camera.gearGoalSearch()) {
 				gearState = GearState.CALCULATE;
 			}
-
 			break;
+	//find the arc, set the angles
 		case CALCULATE:
 			PathPlanning.calculateArcPoints(sense.robotAngle, in.targetGearPost, sense.cameraAngle,
 					sense.cameraDistance);
@@ -126,6 +126,7 @@ public class DriveTrain {
 
 			originangle = sense.robotAngle;
 			break;
+	//drive up to arc
 		case DRIVE_STRAIGHT1:
 
 			driveStraightNavX(false);
@@ -134,6 +135,7 @@ public class DriveTrain {
 				botStart = (sense.leftEncoder + sense.rightEncoder) / 2;
 			}
 			break;
+	//drive in the arc
 		case ARC:
 			driveCircle(originangle, 0, 0, 0, 0);
 
@@ -142,6 +144,7 @@ public class DriveTrain {
 				originangle = sense.robotAngle;
 			}
 			break;
+	//exit arc and drive into wall
 		case DRIVE_STRAIGHT2:
 
 			driveStraightNavX(false);
@@ -149,10 +152,12 @@ public class DriveTrain {
 				gearState = GearState.DELIVER_GEAR;
 			}
 			break;
+	//deliver
 		case DELIVER_GEAR:
 			tankDrive(0, 0);
 			// TODO Add delivery function
 			break;
+	//reverse out of gear peg
 		case REVERS:
 			// TODO Add reverse function
 			break;
