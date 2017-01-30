@@ -137,7 +137,8 @@ public class DriveTrain {
 			break;
 	//drive in the arc
 		case ARC:
-			driveCircle(originangle, 0, 0, 0, 0);
+			double distance = (sense.leftEncoder + sense.rightEncoder) / 2 - botStart;  
+			driveCircle(originangle, distance, PathPlanning.CIRCLE_RADIUS, 0, 0 ); //TODO finish circle drive 
 
 			if (((sense.leftEncoder + sense.rightEncoder) / 2) > (botStart + PathPlanning.arcdistance)) {
 				gearState = GearState.DRIVE_STRAIGHT2;

@@ -2,7 +2,7 @@ package org.usfirst.frc.team910.robot;
 
 public class PathPlanning {
 
-	private static final double CIRCLE_RADIUS = 48;
+	public static final double CIRCLE_RADIUS = 48;
 	private static final double CIRCLE_CIRCUMFERENCE = (2 * Math.PI * CIRCLE_RADIUS);
 
 	private static class Line {
