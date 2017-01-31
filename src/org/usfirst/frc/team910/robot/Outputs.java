@@ -9,6 +9,7 @@ public class Outputs {
 	private CANTalon rightMotor2;
 	private CANTalon shooterMotor; 
 	private CANTalon primeMotor;
+	private CANTalon flapMotor;
 	private CANTalon climbMotor;
 	
 	Outputs() {
@@ -34,7 +35,12 @@ public class Outputs {
 	public void setPrimePower(double power) {
 		primeMotor.set(power);
 	}
+
+	public void setFlapMotor(double power) {
+		primeMotor.set(power);
+
 	public void setClimbPower(double power) {
 		climbMotor.set(power);
+
 	}
 }

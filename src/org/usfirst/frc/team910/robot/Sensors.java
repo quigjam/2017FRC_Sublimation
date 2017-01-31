@@ -12,25 +12,31 @@ public class Sensors {
 	private Encoder lEncoder;
 	private Encoder rEncoder;
 	private AHRS navx;
-	
+
 	public Camera camera;
 
 	public double leftEncoder;
 	public double rightEncoder;
+
+	public Encoder gearEncoder;
+
 	public double robotAngle;
 	public double accelX;
-	
-	public double cameraAngle; //TODO Placeholder, get from camera and make field relative
-	public double cameraDistance;//TODO Placeholder, get from camera
-	
+
+	public double cameraAngle; // TODO Placeholder, get from camera and make
+								// field relative
+	public double cameraDistance;// TODO Placeholder, get from camera
 
 	Sensors() {
 		lEncoder = new Encoder(ElectroPaul.LEFT_ENCODER_PORT_1, ElectroPaul.LEFT_ENCODER_PORT_2, false);
 		rEncoder = new Encoder(ElectroPaul.RIGHT_ENCODER_PORT_1, ElectroPaul.RIGHT_ENCODER_PORT_2, true);
 		lEncoder.setDistancePerPulse(ENCODER_RESOLUTION);
 		rEncoder.setDistancePerPulse(ENCODER_RESOLUTION);
+
 		navx = new AHRS(SPI.Port.kMXP);
 		camera = new Camera();
+
+		gearEncoder = new Encoder(1, 2, false);
 	}
 
 	public void read() {
@@ -41,8 +47,7 @@ public class Sensors {
 		SmartDashboard.putNumber("leftdistance", leftEncoder);
 		SmartDashboard.putNumber("rightdistance", rightEncoder);
 		SmartDashboard.putNumber("navxYaw", robotAngle);
-		
-		
+
 	}
 
 }
