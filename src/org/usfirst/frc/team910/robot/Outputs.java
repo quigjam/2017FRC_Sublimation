@@ -7,7 +7,8 @@ public class Outputs {
 	private CANTalon leftMotor2;
 	private CANTalon rightMotor1;
 	private CANTalon rightMotor2;
-	private CANTalon shooterMotor; // Added by noobs
+	private CANTalon shooterMotor; 
+	private CANTalon primeMotor;
 	
 	Outputs() {
 		leftMotor1 = new CANTalon(ElectroPaul.LEFT_MOTOR_PORT_1);
@@ -26,7 +27,10 @@ public class Outputs {
 		rightMotor1.set(power);
 		rightMotor2.set(power);
 	}
-	public void setShooterPower(double power) { // added by the noobs 
+	public void setShooterPower(double power) { 
 		shooterMotor.set(power); 
+	}
+	public void setPrimePower(double power) {
+		primeMotor.set(power);
 	}
 }

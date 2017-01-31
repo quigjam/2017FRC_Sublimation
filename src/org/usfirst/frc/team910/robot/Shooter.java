@@ -9,14 +9,25 @@ public class Shooter {
 		this.in = in;
 	}
 
-	private void shootNow(double shootPower) {
-		out.setShooterPower(shootPower);
+	public void shooterPrime(boolean primeButton, double primePower) {
+		if (in.primeButton) {
+			out.setPrimePower(1);
+		}
+
 	}
+
+	public void reverse() {
+		if (in.reverseButton && in.primeButton) {
+			out.setPrimePower(-1);
+		}
+	}
+
 	public void shoot() {
 		if (in.shootButton) {
-			shootNow(1);
-		}else {
-			shootNow(0);	//TODO figure out actual powers for shooting
+			out.setShooterPower(1);
+		} else {
+			out.setShooterPower(0); // TODO find shooting and prime powers
+			out.setPrimePower(0);
 		}
 	}
 }

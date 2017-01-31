@@ -12,6 +12,8 @@ public class Inputs {
 	public double rightJoyStickY;
 	public boolean leftTrigger;
 	public boolean shootButton;
+	public boolean primeButton;
+	public boolean reverseButton;
 	
 	public int targetGearPost; //TODO Placeholder, figure out how operator controls this
 
@@ -27,6 +29,8 @@ public class Inputs {
 		SmartDashboard.putNumber("leftStick", leftJoyStickY);
 		SmartDashboard.putNumber("rightStick", rightJoyStickY);
 		shootButton = rightStick.getRawButton(4);
+		primeButton = rightStick.getRawButton(3); //TODO find out preferable button
+		reverseButton = rightStick.getRawButton(2);
 	}
 
 }
