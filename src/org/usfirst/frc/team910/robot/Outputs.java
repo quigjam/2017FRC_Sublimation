@@ -10,7 +10,7 @@ public class Outputs {
 	private CANTalon shooterMotor; 
 	private CANTalon primeMotor;
 	private CANTalon flapMotor;
-	
+	private CANTalon climbMotor;
 	
 	Outputs() {
 		leftMotor1 = new CANTalon(ElectroPaul.LEFT_MOTOR_PORT_1);
@@ -35,8 +35,12 @@ public class Outputs {
 	public void setPrimePower(double power) {
 		primeMotor.set(power);
 	}
-	
+
 	public void setFlapMotor(double power) {
 		primeMotor.set(power);
+
+	public void setClimbPower(double power) {
+		climbMotor.set(power);
+
 	}
 }
