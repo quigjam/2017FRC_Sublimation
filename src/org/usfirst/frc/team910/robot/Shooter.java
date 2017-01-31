@@ -28,6 +28,6 @@ public class Shooter {
 		} else {
 			out.setShooterPower(0); // TODO find shooting and prime powers
 			out.setPrimePower(0);
-		}
+		} 
 	}
-}
+} 
