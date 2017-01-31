@@ -9,7 +9,7 @@ public class Shooter {
 		this.in = in;
 	}
 
-	public void shooterPrime(double primePower) {
+	public void shooterPrime(double primePower) { // this actually spins the hopper feeder thingy  
 		if (in.primeButton) {
 			out.setPrimePower(1);
 		}
@@ -17,14 +17,14 @@ public class Shooter {
 	}
 
 	public void reverse() {
-		if (in.reverseButton && in.primeButton) {
+		if (in.reverseButton && in.primeButton) { // hopper feeder thingy spins in reverse to unjam things 
 			out.setPrimePower(-1);
 		}
 	}
 
 	public void shoot() {
 		if (in.shootButton) {
-			out.setShooterPower(1);
+			out.setShooterPower(1); //the shooter starts to spin 
 		} else {
 			out.setShooterPower(0); // TODO find shooting and prime powers
 			out.setPrimePower(0);
