@@ -17,6 +17,7 @@ public class Inputs {
 
 	public int targetGearPost; // TODO Placeholder, figure out how operator
 								// controls this
+    public boolean climbButton;
 
 	Inputs() {
 		leftStick = new Joystick(ElectroPaul.LEFT_JOYSTICK_PORT);
@@ -33,6 +34,7 @@ public class Inputs {
 		primeButton = rightStick.getRawButton(3); // TODO find out preferable
 													// button
 		reverseButton = rightStick.getRawButton(2);
+		climbButton = rightStick.getRawButton(1);
 	}
 
 }
