@@ -14,6 +14,7 @@ public class Inputs {
 	public boolean shootButton;
 	public boolean primeButton;
 	public boolean reverseButton;
+    public boolean climbButton;
 	
 	public int targetGearPost; //TODO Placeholder, figure out how operator controls this
 
@@ -31,6 +32,7 @@ public class Inputs {
 		shootButton = rightStick.getRawButton(4);
 		primeButton = rightStick.getRawButton(3); //TODO find out preferable button
 		reverseButton = rightStick.getRawButton(2);
+		climbButton = rightStick.getRawButton(1);
 	}
 
 }

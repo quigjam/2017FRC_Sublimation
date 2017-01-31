@@ -9,7 +9,7 @@ public class Shooter {
 		this.in = in;
 	}
 
-	public void shooterPrime(boolean primeButton, double primePower) {
+	public void shooterPrime(double primePower) {
 		if (in.primeButton) {
 			out.setPrimePower(1);
 		}
