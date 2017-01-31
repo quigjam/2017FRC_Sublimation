@@ -16,6 +16,9 @@ public class ElectroPaul {
 	public final static int RIGHT_ENCODER_PORT_1 = 5;
 	public final static int RIGHT_ENCODER_PORT_2 = 6;
 
+	
+	
+	
 	//shooter
 	public static final int SHOOTER_MOTOR_PORT = 1; 
 } // #BlameElectrical
