@@ -12,8 +12,12 @@ public class Inputs {
 	public double rightJoyStickY;
 	public boolean leftTrigger;
 	public boolean shootButton;
-	
-	public int targetGearPost; //TODO Placeholder, figure out how operator controls this
+	public boolean primeButton;
+	public boolean reverseButton;
+
+	public int targetGearPost; // TODO Placeholder, figure out how operator
+								// controls this
+    public boolean climbButton;
 
 	Inputs() {
 		leftStick = new Joystick(ElectroPaul.LEFT_JOYSTICK_PORT);
@@ -27,6 +31,10 @@ public class Inputs {
 		SmartDashboard.putNumber("leftStick", leftJoyStickY);
 		SmartDashboard.putNumber("rightStick", rightJoyStickY);
 		shootButton = rightStick.getRawButton(4);
+		primeButton = rightStick.getRawButton(3); // TODO find out preferable
+													// button
+		reverseButton = rightStick.getRawButton(2);
+		climbButton = rightStick.getRawButton(1);
 	}
 
 }
