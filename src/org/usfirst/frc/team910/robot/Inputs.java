@@ -7,18 +7,36 @@ public class Inputs {
 
 	private Joystick leftStick;
 	private Joystick rightStick;
+	private Joystick gamepad; 
+	private Joystick controlBoard;
 
+	//driver functions
 	public double leftJoyStickY;
 	public double rightJoyStickY;
-	public boolean leftTrigger;
-	public boolean shootButton;
-	public boolean primeButton;
+	public double leftJoyStickX;
+	public double rightJoyStickX;
+	public boolean dynamicBrake;
+	public boolean driveStraight;
+	public boolean autoGear;
+	public boolean autoShoot;
+	public boolean autoClimb;
+	
+	
+	//operator functions
+	public boolean primeButton; 
+	public boolean fireButton;
+	public boolean fireOveride;
+	public boolean climbButton;
+	public boolean cameraEnable;
 	public boolean reverseButton;
-
-	public int targetGearPost; // TODO Placeholder, figure out how operator
-								// controls this
-    public boolean climbButton;
-
+	public int gearPanelPostition;
+	public boolean jogShooterPower;
+	public double jogShooterValue;
+	public int targetGearPost;
+	public boolean gearIntake;
+	public boolean gearOuttake;
+	
+	
 	Inputs() {
 		leftStick = new Joystick(ElectroPaul.LEFT_JOYSTICK_PORT);
 		rightStick = new Joystick(ElectroPaul.RIGHT_JOYSTICK_PORT);
@@ -27,12 +45,10 @@ public class Inputs {
 	public void read() {
 		leftJoyStickY = -leftStick.getY();
 		rightJoyStickY = -rightStick.getY();
-		leftTrigger = leftStick.getTrigger();
+		dynamicBrake = leftStick.getTrigger();
 		SmartDashboard.putNumber("leftStick", leftJoyStickY);
 		SmartDashboard.putNumber("rightStick", rightJoyStickY);
-		shootButton = rightStick.getRawButton(4);
-		primeButton = rightStick.getRawButton(3); // TODO find out preferable
-													// button
+		
 		reverseButton = rightStick.getRawButton(2);
 		climbButton = rightStick.getRawButton(1);
 	}

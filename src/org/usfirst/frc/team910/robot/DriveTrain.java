@@ -22,7 +22,7 @@ public class DriveTrain {
 	boolean braking;
 
 	public void drive() {
-		if (in.leftTrigger) {
+		if (in.dynamicBrake) {
 			dynamicBrake(!braking);
 			braking = true;
 		} else {
