@@ -7,6 +7,8 @@ public class DriveTrain {
 	private static final double DRIVE_STRAIGHT_NAVX_PWR = 0;
 	private static final double WALL_ACCEL = 0;
 	private static final double AUTO_DRIVE_PWR = 0.2;
+	private static final double SWERVE_FACTOR_ENC = 0.01;
+	private static final double SWERVE_FACTOR_ANGLE = 0.01;
 
 	private Inputs in;
 	private Outputs out;
@@ -62,10 +64,11 @@ public class DriveTrain {
 		if (firstTime) {
 			initialEncDiff = sense.leftEncoder - sense.rightEncoder;
 		} else {
+			initialEncDiff += in.leftJoyStickX * SWERVE_FACTOR_ENC;
 			double currentEncDiff = sense.leftEncoder - sense.rightEncoder;
-			double DiffDiff = (initialEncDiff - currentEncDiff) * DRIVE_STRAIGHT_ENC_PWR;
+			double diffDiff = (initialEncDiff - currentEncDiff) * DRIVE_STRAIGHT_ENC_PWR;
 
-			tankDrive(in.rightJoyStickY + DiffDiff, in.rightJoyStickY - DiffDiff);
+			tankDrive(in.rightJoyStickY + diffDiff, in.rightJoyStickY - diffDiff);
 		}
 
 	}
@@ -79,6 +82,7 @@ public class DriveTrain {
 		if (firstTime) {
 			originangle = navxangle;
 		} else {
+			originangle += in.leftJoyStickX * SWERVE_FACTOR_ANGLE;
 			double currentangle = navxangle;
 			double angledifference = originangle - currentangle;
 			double refineddiff = angledifference * DRIVE_STRAIGHT_NAVX_PWR;
@@ -86,15 +90,17 @@ public class DriveTrain {
 			tankDrive(in.rightJoyStickY - refineddiff, in.rightJoyStickY + refineddiff);
 		}
 	}
-	//Drive in a circle using NavX
-	private void driveCircle(double startAngle, double distance, double radius, double velocity, double direction) { 
+
+	// Drive in a circle using NavX
+	private void driveCircle(double startAngle, double distance, double radius, double velocity, double direction) {
 		double K = 360 / 2 * Math.PI * radius;
 		double targetAngle = startAngle + direction * K * distance;
 		double angleError = targetAngle - sense.robotAngle;
 		double correctionPwr = angleError * DRIVE_STRAIGHT_NAVX_PWR;
 		tankDrive(AUTO_DRIVE_PWR - correctionPwr, AUTO_DRIVE_PWR + correctionPwr);
-	} 
-	//Starts state machine for gear delivery
+	}
+
+	// Starts state machine for gear delivery
 	private enum GearState {
 		CAM_CHECK, CALCULATE, DRIVE_STRAIGHT1, ARC, DRIVE_STRAIGHT2, DELIVER_GEAR, REVERS;
 	};
@@ -102,12 +108,13 @@ public class DriveTrain {
 	private GearState gearState = GearState.values()[0];
 
 	private double botStart;
-	//begin machine
+
+	// begin machine
 	public void autogear(boolean first) {
 		if (first) {
 			gearState = GearState.values()[0];
 		}
-	//find goal
+		// find goal
 		switch (gearState) {
 		case CAM_CHECK:
 
@@ -115,7 +122,7 @@ public class DriveTrain {
 				gearState = GearState.CALCULATE;
 			}
 			break;
-	//find the arc, set the angles
+		// find the arc, set the angles
 		case CALCULATE:
 			PathPlanning.calculateArcPoints(sense.robotAngle, in.targetGearPost, sense.cameraAngle,
 					sense.cameraDistance);
@@ -126,7 +133,7 @@ public class DriveTrain {
 
 			originangle = sense.robotAngle;
 			break;
-	//drive up to arc
+		// drive up to arc
 		case DRIVE_STRAIGHT1:
 
 			driveStraightNavX(false);
@@ -135,17 +142,20 @@ public class DriveTrain {
 				botStart = (sense.leftEncoder + sense.rightEncoder) / 2;
 			}
 			break;
-	//drive in the arc
+		// drive in the arc
 		case ARC:
-			double distance = (sense.leftEncoder + sense.rightEncoder) / 2 - botStart;  
-			driveCircle(originangle, distance, PathPlanning.CIRCLE_RADIUS, 0, 0 ); //TODO finish circle drive 
+			double distance = (sense.leftEncoder + sense.rightEncoder) / 2 - botStart;
+			driveCircle(originangle, distance, PathPlanning.CIRCLE_RADIUS, 0, 0); // TODO
+																					// finish
+																					// circle
+																					// drive
 
 			if (((sense.leftEncoder + sense.rightEncoder) / 2) > (botStart + PathPlanning.arcdistance)) {
 				gearState = GearState.DRIVE_STRAIGHT2;
 				originangle = sense.robotAngle;
 			}
 			break;
-	//exit arc and drive into wall
+		// exit arc and drive into wall
 		case DRIVE_STRAIGHT2:
 
 			driveStraightNavX(false);
@@ -153,12 +163,12 @@ public class DriveTrain {
 				gearState = GearState.DELIVER_GEAR;
 			}
 			break;
-	//deliver
+		// deliver
 		case DELIVER_GEAR:
 			tankDrive(0, 0);
 			// TODO Add delivery function
 			break;
-	//reverse out of gear peg
+		// reverse out of gear peg
 		case REVERS:
 			// TODO Add reverse function
 			break;
