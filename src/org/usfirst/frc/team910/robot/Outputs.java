@@ -7,17 +7,14 @@ public class Outputs {
 	private CANTalon leftMotor2;
 	private CANTalon rightMotor1;
 	private CANTalon rightMotor2;
-	private CANTalon shooterMotor;
-	private CANTalon hopperFeedMotor;
-	private CANTalon flapMotor;
-	private CANTalon climbMotor;
+	
 
 	Outputs() {
 		leftMotor1 = new CANTalon(ElectroPaul.LEFT_MOTOR_PORT_1);
 		leftMotor2 = new CANTalon(ElectroPaul.LEFT_MOTOR_PORT_2);
 		rightMotor1 = new CANTalon(ElectroPaul.RIGHT_MOTOR_PORT_1);
 		rightMotor2 = new CANTalon(ElectroPaul.RIGHT_MOTOR_PORT_2);
-		shooterMotor = new CANTalon(ElectroPaul.SHOOTER_MOTOR_PORT);
+		
 	}
 
 	public void setLeftDrive(double power) {
@@ -31,19 +28,36 @@ public class Outputs {
 	}
 
 	public void setShooterPower(double power) {
-		shooterMotor.set(power);
+		
 	}
 
-	public void setHopperFeedPower(double power) {
-		hopperFeedMotor.set(power);
+	public void setFeedPower(double power) {
+		
 	}
 
-	public void setFlapMotor(double power) {
-		hopperFeedMotor.set(power);
+	public void setAgitatorPower(double power) {
+		
 	}
 
 	public void setClimbPower(double power) {
-		climbMotor.set(power);
+		
 
 	}
+	
+	public void setGearArm(double power){
+		
+		
+	}
+	
+	public void setGearRoller(double power){
+	
+	
+	}
+	
+	public void setCameraLED(double power){
+		
+		
+	}
+	
+	
 }
