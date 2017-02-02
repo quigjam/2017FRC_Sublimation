@@ -52,5 +52,4 @@ public class Inputs {
 		reverseButton = rightStick.getRawButton(2);
 		climbButton = rightStick.getRawButton(1);
 	}
-
 }
