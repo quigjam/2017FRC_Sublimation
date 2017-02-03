@@ -18,18 +18,28 @@ public class DriveTrain {
 		this.out = out;
 		this.sense = sense;
 	}
-
+																// sample text
 	// this is the main function called from robot
-	boolean braking;
 
+	private enum DriveFunction {
+		DYNAMIC_BRAKING, TANK_DRIVE, DRIVE_STRAIGHT
+	}; 	
+	private DriveFunction prevTask = DriveFunction.TANK_DRIVE;
+	
 	public void drive() {
 		if (in.dynamicBrake) {
-			dynamicBrake(!braking);
-			braking = true;
-		} else {
-			tankDrive(in.leftJoyStickY, in.rightJoyStickY);
-			braking = false;
+			dynamicBrake(prevTask!= DriveFunction.DYNAMIC_BRAKING);
+			prevTask = DriveFunction.DYNAMIC_BRAKING;
+		} 
+		else if (in.driveStraight){
+			driveStraightNavX(prevTask!= DriveFunction.DRIVE_STRAIGHT);
+				prevTask = DriveFunction.DRIVE_STRAIGHT;
 		}
+		else {
+			tankDrive(in.leftJoyStickY, in.rightJoyStickY);
+			prevTask = DriveFunction.TANK_DRIVE;
+		}
+		
 	}
 
 	public void tankDrive(double leftPower, double rightPower) {
