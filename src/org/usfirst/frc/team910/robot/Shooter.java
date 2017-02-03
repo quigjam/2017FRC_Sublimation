@@ -4,6 +4,8 @@ public class Shooter {
 	private Outputs out;
 	private Inputs in;
 
+	double jogconstant = 1;
+	double jogoffset = 1;
 	public Shooter(Outputs out, Inputs in) {
 		this.out = out;
 		this.in = in;
@@ -11,7 +13,7 @@ public class Shooter {
 
 	public void shooterPrime() {
 		if (in.primeButton) {
-			out.setShooterPower(1);
+			out.setShooterPower(1 + jogoffset);
 			out.setAgitatorPower(1);
 		} else {
 			out.setShooterPower(0);
@@ -26,5 +28,23 @@ public class Shooter {
 		} else {
 			out.setFeedPower(0); //TODO get actual powers for everything here 
 		}
+	boolean prevjogup = false;
+	boolean prefjogdown = false;
+		
 	}
+	boolean prevjogup = false;
+	boolean prevjogdown = false;
+		
+	public void jog(boolean jogup, boolean jogdown) {
+	
+		if (jogup && !prevjogup) {
+
+			jogoffset += jogconstant;
+		} else if (jogdown && !prevjogdown) {
+
+			jogoffset -= jogconstant;
+		}
+
+		prevjogup = jogup;
+		prevjogdown = jogdown;
 }
