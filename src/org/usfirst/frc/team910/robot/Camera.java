@@ -7,6 +7,11 @@ public class Camera {
 		
 	}
 
+	public boolean climbSearch() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 	public boolean fuelGoalSearch() {
 		// TODO more camera to write
 		return true;
