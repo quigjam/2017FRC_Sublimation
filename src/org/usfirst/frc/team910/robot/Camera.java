@@ -6,5 +6,10 @@ public class Camera {
 		return true;
 		
 	}
+
+	public boolean climbSearch() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 	
 }
