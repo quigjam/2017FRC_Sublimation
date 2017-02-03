@@ -6,5 +6,9 @@ public class Camera {
 		return true;
 		
 	}
-	
+
+	public boolean fuelGoalSearch() {
+		// TODO more camera to write
+		return true;
+	}
 }
