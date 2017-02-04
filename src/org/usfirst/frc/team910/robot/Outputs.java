@@ -1,6 +1,7 @@
 package org.usfirst.frc.team910.robot;
 
 import com.ctre.CANTalon;
+import com.ctre.CANTalon.TalonControlMode;
 
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Talon;
@@ -66,7 +67,7 @@ public class Outputs {
 	}
 
 	public void setShooterPower(double power) {
-
+		shooterMotor.changeControlMode(TalonControlMode.PercentVbus);
 		if (currentMonitor(ElectroPaul.SHOOTER_MOTOR)) {
 			shooterMotor.set(0);
 		} else {
@@ -74,8 +75,19 @@ public class Outputs {
 		}
 	}
 
-	public void setTransportPower(double power) {
+	public void setShooterSpeed(double speed) {
 
+		if (currentMonitor(ElectroPaul.SHOOTER_MOTOR)) {
+			shooterMotor.changeControlMode(TalonControlMode.PercentVbus);
+			shooterMotor.set(0);
+		} else {
+			shooterMotor.changeControlMode(TalonControlMode.Speed);
+			shooterMotor.set(speed);
+		}
+	}
+
+	public void setTransportPower(double power) {
+		transporterMotor.changeControlMode(TalonControlMode.PercentVbus);
 		if (currentMonitor(ElectroPaul.TRANSPORTER_MOTOR)) {
 			transporterMotor.set(0);
 		} else {
@@ -83,8 +95,24 @@ public class Outputs {
 		}
 	}
 
+	public void setTransportSpeed(double speed) {
+		if (currentMonitor(ElectroPaul.TRANSPORTER_MOTOR)) {
+			transporterMotor.changeControlMode(TalonControlMode.PercentVbus);
+			transporterMotor.set(0);
+		} else {
+			transporterMotor.changeControlMode(TalonControlMode.Speed);
+			transporterMotor.set(speed);
+		}
+	}
+
 	public void setAgitatorPower(double power) {
+		agitatorMotor.changeControlMode(TalonControlMode.PercentVbus);
 		agitatorMotor.set(power);
+	}
+
+	public void setAgitatorSpeed(double speed) {
+		agitatorMotor.changeControlMode(TalonControlMode.Speed);
+		agitatorMotor.set(speed);
 	}
 
 	public void setClimbPower(double power) {
@@ -97,10 +125,19 @@ public class Outputs {
 		}
 	}
 
-	public void setGearArm(double power) {
+	public void setGearPanelPower(double power) {
+		gearPanelMotor1.changeControlMode(TalonControlMode.PercentVbus);
+		gearPanelMotor2.changeControlMode(TalonControlMode.PercentVbus);
 		gearPanelMotor1.set(power);
 		gearPanelMotor2.set(power);
 
+	}
+
+	public void setGearPanelSpeed(double speed) {
+		gearPanelMotor1.changeControlMode(TalonControlMode.Speed);
+		gearPanelMotor2.changeControlMode(TalonControlMode.Speed);
+		gearPanelMotor1.set(speed);
+		gearPanelMotor2.set(speed);
 	}
 
 	public void setGearRoller(double power) {
