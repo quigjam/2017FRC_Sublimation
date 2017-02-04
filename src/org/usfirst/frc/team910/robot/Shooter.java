@@ -47,4 +47,4 @@ public class Shooter {
 
 		prevjogup = jogup;
 		prevjogdown = jogdown;
-}
+}}
