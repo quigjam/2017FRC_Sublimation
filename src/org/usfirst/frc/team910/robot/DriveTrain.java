@@ -28,22 +28,21 @@ public class DriveTrain {
 	private DriveFunction prevTask = DriveFunction.TANK_DRIVE;
 
 	public void drive() {
-		if (in.dynamicBrake) {
+		if (in.autoClimb || in.autoGear || in.autoShoot) {
+
+		} else if (in.dynamicBrake) {
 			dynamicBrake(prevTask != DriveFunction.DYNAMIC_BRAKING);
-			prevTask = DriveFunction.DYNAMIC_BRAKING;
 		} else if (in.driveStraight) {
 			driveStraightNavX(prevTask != DriveFunction.DRIVE_STRAIGHT);
-			prevTask = DriveFunction.DRIVE_STRAIGHT;
 		} else {
 			tankDrive(in.leftJoyStickY, in.rightJoyStickY);
-			prevTask = DriveFunction.TANK_DRIVE;
 		}
-
 	}
 
 	public void tankDrive(double leftPower, double rightPower) {
 		out.setLeftDrive(leftPower);
 		out.setRightDrive(rightPower);
+		prevTask = DriveFunction.TANK_DRIVE;
 	}
 
 	private double leftEncPrev;
@@ -52,6 +51,7 @@ public class DriveTrain {
 	private void dynamicBrake(boolean firstTime) {
 		double leftEncoder = out.leftDriveEncoder;
 		double rightEncoder = out.rightDriveEncoder;
+		prevTask = DriveFunction.DYNAMIC_BRAKING;
 
 		if (firstTime) {
 			leftEncPrev = leftEncoder;
@@ -86,6 +86,7 @@ public class DriveTrain {
 
 	public void driveStraightNavX(boolean firstTime) {
 		double navxangle = sense.robotAngle;
+		prevTask = DriveFunction.DRIVE_STRAIGHT;
 
 		if (firstTime) {
 			originangle = navxangle;
