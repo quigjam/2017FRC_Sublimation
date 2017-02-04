@@ -31,6 +31,14 @@ public class Outputs {
 	private CANTalon gearPanelMotor2;
 	private PowerDistributionPanel pdp;
 
+	public double leftDriveEncoder;
+	public double rightDriveEncoder;
+	public double shooterSpeedEncoder;
+	public double transporterSpeedEncoder;
+	public double agitatorSpeedEncoder;
+
+	public double gearPanelPositionEncoder;
+
 	Outputs() {
 		// leftMotor1 = new CANTalon(ElectroPaul.LEFT_MOTOR_PORT_1);
 		// leftMotor2 = new CANTalon(ElectroPaul.LEFT_MOTOR_PORT_2);
@@ -163,5 +171,15 @@ public class Outputs {
 			restEndTime[motor] = Timer.getMatchTime() + MIN_REST_TIME;
 		}
 		return (restEndTime[motor] > Timer.getMatchTime());
+	}
+
+	public void readEncoders() {
+		leftDriveEncoder = leftDriveCan.getPosition();
+		rightDriveEncoder = rightDriveCan.getPosition();
+		shooterSpeedEncoder = shooterMotor.getSpeed();
+		transporterSpeedEncoder = transporterMotor.getSpeed();
+		agitatorSpeedEncoder = agitatorMotor.getSpeed();
+		gearPanelPositionEncoder = gearPanelMotor1.getPosition();// Not sure which motor has the encoder
+
 	}
 }

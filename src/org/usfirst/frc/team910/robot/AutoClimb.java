@@ -35,7 +35,7 @@ public class AutoClimb {
 				break;
 
 			case CLIMB:
-				climb.climbNow(0);// TODO see if number is needed here
+				// climb.climbNow(0);// TODO see if number is needed here
 			}
 
 		}

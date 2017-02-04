@@ -18,28 +18,27 @@ public class DriveTrain {
 		this.out = out;
 		this.sense = sense;
 	}
-																// sample text
+	// sample text
 	// this is the main function called from robot
 
 	private enum DriveFunction {
 		DYNAMIC_BRAKING, TANK_DRIVE, DRIVE_STRAIGHT
-	}; 	
+	};
+
 	private DriveFunction prevTask = DriveFunction.TANK_DRIVE;
-	
+
 	public void drive() {
 		if (in.dynamicBrake) {
-			dynamicBrake(prevTask!= DriveFunction.DYNAMIC_BRAKING);
+			dynamicBrake(prevTask != DriveFunction.DYNAMIC_BRAKING);
 			prevTask = DriveFunction.DYNAMIC_BRAKING;
-		} 
-		else if (in.driveStraight){
-			driveStraightNavX(prevTask!= DriveFunction.DRIVE_STRAIGHT);
-				prevTask = DriveFunction.DRIVE_STRAIGHT;
-		}
-		else {
+		} else if (in.driveStraight) {
+			driveStraightNavX(prevTask != DriveFunction.DRIVE_STRAIGHT);
+			prevTask = DriveFunction.DRIVE_STRAIGHT;
+		} else {
 			tankDrive(in.leftJoyStickY, in.rightJoyStickY);
 			prevTask = DriveFunction.TANK_DRIVE;
 		}
-		
+
 	}
 
 	public void tankDrive(double leftPower, double rightPower) {
@@ -51,8 +50,8 @@ public class DriveTrain {
 	private double rightEncPrev;
 
 	private void dynamicBrake(boolean firstTime) {
-		double leftEncoder = sense.leftEncoder;// Sense is short for sensors
-		double rightEncoder = sense.rightEncoder;
+		double leftEncoder = out.leftDriveEncoder;
+		double rightEncoder = out.rightDriveEncoder;
 
 		if (firstTime) {
 			leftEncPrev = leftEncoder;
@@ -71,10 +70,10 @@ public class DriveTrain {
 	private void driveStraightEnc(boolean firstTime) {
 
 		if (firstTime) {
-			initialEncDiff = sense.leftEncoder - sense.rightEncoder;
+			initialEncDiff = out.leftDriveEncoder - out.rightDriveEncoder;
 		} else {
 			initialEncDiff += in.leftJoyStickX * SWERVE_FACTOR_ENC;
-			double currentEncDiff = sense.leftEncoder - sense.rightEncoder;
+			double currentEncDiff = out.leftDriveEncoder - out.rightDriveEncoder;
 			double diffDiff = (initialEncDiff - currentEncDiff) * DRIVE_STRAIGHT_ENC_PWR;
 
 			tankDrive(in.rightJoyStickY + diffDiff, in.rightJoyStickY - diffDiff);
