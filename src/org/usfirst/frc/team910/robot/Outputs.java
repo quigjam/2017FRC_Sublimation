@@ -2,9 +2,16 @@ package org.usfirst.frc.team910.robot;
 
 import com.ctre.CANTalon;
 
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.Timer;
 
 public class Outputs {
+
+	private static final double CURRENT_LIMIT = 40; // in amps
+	private static final double AMP_SECOND_LIMIT = 120;
+	private static final double MIN_REST_TIME = 5;// in seconds
+
 	// private CANTalon leftMotor1;
 	// private CANTalon leftMotor2;
 	// private CANTalon rightMotor1;
@@ -21,6 +28,7 @@ public class Outputs {
 	private CANTalon gearRollerMotor;
 	private CANTalon gearPanelMotor1;
 	private CANTalon gearPanelMotor2;
+	private PowerDistributionPanel pdp;
 
 	Outputs() {
 		// leftMotor1 = new CANTalon(ElectroPaul.LEFT_MOTOR_PORT_1);
@@ -32,14 +40,15 @@ public class Outputs {
 		leftDrive = new Talon(ElectroPaul.LEFT_DRIVE);
 		rightDrive = new Talon(ElectroPaul.RIGHT_DRIVE);
 		shooterMotor = new CANTalon(ElectroPaul.SHOOTER_MOTOR);
-		transporterMotor =  new CANTalon(ElectroPaul.TRANSPORTER_MOTOR);
+		transporterMotor = new CANTalon(ElectroPaul.TRANSPORTER_MOTOR);
 		agitatorMotor = new CANTalon(ElectroPaul.AGITATOR_MOTOR);
 		climbMotor1 = new CANTalon(ElectroPaul.CLIMB_MOTOR_1);
 		climbMotor2 = new CANTalon(ElectroPaul.CLIMB_MOTOR_2);
 		gearRollerMotor = new CANTalon(ElectroPaul.GEAR_ROLLER_MOTOR);
 		gearPanelMotor1 = new CANTalon(ElectroPaul.GEAR_PANEL_MOTOR_1);
 		gearPanelMotor2 = new CANTalon(ElectroPaul.GEAR_PANEL_MOTOR_2);
-		
+		pdp = new PowerDistributionPanel(0);
+
 	}
 
 	public void setLeftDrive(double power) {
@@ -57,11 +66,21 @@ public class Outputs {
 	}
 
 	public void setShooterPower(double power) {
-		shooterMotor.set(power);
+
+		if (currentMonitor(ElectroPaul.SHOOTER_MOTOR)) {
+			shooterMotor.set(0);
+		} else {
+			shooterMotor.set(power);
+		}
 	}
 
-	public void setFeedPower(double power) {
-		transporterMotor.set(power);
+	public void setTransportPower(double power) {
+
+		if (currentMonitor(ElectroPaul.TRANSPORTER_MOTOR)) {
+			transporterMotor.set(0);
+		} else {
+			transporterMotor.set(power);
+		}
 	}
 
 	public void setAgitatorPower(double power) {
@@ -69,8 +88,13 @@ public class Outputs {
 	}
 
 	public void setClimbPower(double power) {
-		climbMotor1.set(power);
-		climbMotor2.set(power);
+		if (currentMonitor(ElectroPaul.CLIMB_MOTOR_1) || currentMonitor(ElectroPaul.CLIMB_MOTOR_2)) {
+			climbMotor1.set(0);
+			climbMotor2.set(0);
+		} else {
+			climbMotor1.set(power);
+			climbMotor2.set(power);
+		}
 	}
 
 	public void setGearArm(double power) {
@@ -88,4 +112,19 @@ public class Outputs {
 
 	}
 
+	private double[] currentSum = new double[16]; // sum of all previous current
+	private double[] restEndTime = new double[16];
+
+	private boolean currentMonitor(int motor) {
+		double current = pdp.getCurrent(motor);
+		if (current > CURRENT_LIMIT) {
+			currentSum[motor] += current * 0.05;
+		} else {
+			currentSum[motor] = 0;
+		}
+		if (currentSum[motor] > AMP_SECOND_LIMIT) {
+			restEndTime[motor] = Timer.getMatchTime() + MIN_REST_TIME;
+		}
+		return (restEndTime[motor] > Timer.getMatchTime());
+	}
 }

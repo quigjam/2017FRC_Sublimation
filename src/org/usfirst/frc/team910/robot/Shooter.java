@@ -24,9 +24,9 @@ public class Shooter {
 
 	public void shooterFire() {
 		if (in.fireButton) {
-			out.setFeedPower(1);
+			out.setTransportPower(1);
 		} else {
-			out.setFeedPower(0); //TODO get actual powers for everything here 
+			out.setTransportPower(0); //TODO get actual powers for everything here 
 		}
 	boolean prevjogup = false;
 	boolean prefjogdown = false;
