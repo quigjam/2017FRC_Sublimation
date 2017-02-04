@@ -31,5 +31,5 @@ public class ElectroPaul {
 	
 	
 	//shooter
-	public static final int SHOOTER_MOTOR_PORT = 1; 
+	//public static final int SHOOTER_MOTOR_PORT = 1; 
 } // #BlameElectrical
