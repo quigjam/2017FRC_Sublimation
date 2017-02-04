@@ -5,6 +5,8 @@ public class ElectroPaul {
 	// Drive
 	public final static int LEFT_JOYSTICK_PORT = 0; //TODO figure out actual values for all these 
 	public final static int RIGHT_JOYSTICK_PORT = 1;
+	public final static int GAME_PAD_JOYSTICK_PORT = 2;
+	public final static int CONTROL_BOARD_JOYSTICK_PORT = 3;
 	//public final static int LEFT_MOTOR_PORT_1 = 0;
 	//public final static int LEFT_MOTOR_PORT_2 = 2;
 	//public final static int RIGHT_MOTOR_PORT_1 = 1;
