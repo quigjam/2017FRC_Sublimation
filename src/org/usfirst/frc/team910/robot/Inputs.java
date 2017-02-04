@@ -29,8 +29,8 @@ public class Inputs {
 	public boolean cameraEnable;
 	public boolean reverseButton;
 	public int gearPanelPostition;
-	public boolean jogShooterPower;// TODO Rework Jog
-	public double jogShooterValue;
+	public boolean jogShooterUp;
+	public boolean jogShooterDown;
 	public int targetGearPost;
 	public boolean gearIntake;
 	public boolean gearOuttake;
@@ -64,6 +64,8 @@ public class Inputs {
 		reverseButton = controlBoard.getRawButton(5) || gamepad.getRawButton(5);
 		gearIntake = controlBoard.getRawButton(6) || gamepad.getRawButton(6);
 		gearOuttake = controlBoard.getRawButton(7) || gamepad.getRawButton(7);
+		jogShooterUp = controlBoard.getRawButton(8) || gamepad.getRawButton(8);
+		jogShooterDown = controlBoard.getRawButton(9) || gamepad.getRawButton(9);
 
 	}
 

@@ -1,11 +1,13 @@
 package org.usfirst.frc.team910.robot;
 
 import com.ctre.CANTalon;
+import com.ctre.CANTalon.FeedbackDevice;
 import com.ctre.CANTalon.TalonControlMode;
 
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Outputs {
 
@@ -48,7 +50,12 @@ public class Outputs {
 		rightDriveCan = new CANTalon(ElectroPaul.RIGHT_DRIVE_CAN);
 		leftDrive = new Talon(ElectroPaul.LEFT_DRIVE);
 		rightDrive = new Talon(ElectroPaul.RIGHT_DRIVE);
+
 		shooterMotor = new CANTalon(ElectroPaul.SHOOTER_MOTOR);
+		shooterMotor.enableBrakeMode(false);
+		shooterMotor.configPeakOutputVoltage(12, 0);
+		shooterMotor.setFeedbackDevice(FeedbackDevice.QuadEncoder);
+
 		transporterMotor = new CANTalon(ElectroPaul.TRANSPORTER_MOTOR);
 		agitatorMotor = new CANTalon(ElectroPaul.AGITATOR_MOTOR);
 		climbMotor1 = new CANTalon(ElectroPaul.CLIMB_MOTOR_1);
@@ -180,6 +187,13 @@ public class Outputs {
 		transporterSpeedEncoder = transporterMotor.getSpeed();
 		agitatorSpeedEncoder = agitatorMotor.getSpeed();
 		gearPanelPositionEncoder = gearPanelMotor1.getPosition();// Not sure which motor has the encoder
+
+		SmartDashboard.putNumber("leftDriveEncoder", leftDriveEncoder);
+		SmartDashboard.putNumber("rightDriveEncoder", rightDriveEncoder);
+		SmartDashboard.putNumber("shooterSpeedEncoder", shooterSpeedEncoder);
+		SmartDashboard.putNumber("transporterSpeedEncoder", transporterSpeedEncoder);
+		SmartDashboard.putNumber("agitatorSpeedEncoder", agitatorSpeedEncoder);
+		SmartDashboard.putNumber("gearPanelPositionEncoder", gearPanelPositionEncoder);
 
 	}
 }
