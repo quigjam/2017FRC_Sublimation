@@ -82,17 +82,17 @@ public class Outputs {
 	}
 
 	public void setShooterPower(double power) {
-		shooterMotor.changeControlMode(TalonControlMode.PercentVbus);
-		if (currentMonitor(ElectroPaul.SHOOTER_MOTOR)) {
+		shooterMotor.changeControlMode(TalonControlMode.PercentVbus); //Lets shooter be set by power
+		if (currentMonitor(ElectroPaul.SHOOTER_MOTOR)) { //Prevent fire hazard by monitoring current
 			shooterMotor.set(0);
 		} else {
 			shooterMotor.set(power);
 		}
 	}
 
-	public void setShooterSpeed(double speed) {
+	public void setShooterSpeed(double speed) { //Lets shooter be powered by speed
 
-		if (currentMonitor(ElectroPaul.SHOOTER_MOTOR)) {
+		if (currentMonitor(ElectroPaul.SHOOTER_MOTOR)) { //Fire hazard prevention	
 			shooterMotor.changeControlMode(TalonControlMode.PercentVbus);
 			shooterMotor.set(0);
 		} else {
@@ -101,18 +101,18 @@ public class Outputs {
 		}
 	}
 
-	public void setTransportPower(double power) {
+	public void setTransportPower(double power) { //Lets transporter be set by power
 		transporterMotor.changeControlMode(TalonControlMode.PercentVbus);
-		if (currentMonitor(ElectroPaul.TRANSPORTER_MOTOR)) {
+		if (currentMonitor(ElectroPaul.TRANSPORTER_MOTOR)) { //Fire hazard prevention
 			transporterMotor.set(0);
 		} else {
 			transporterMotor.set(power);
 		}
 	}
 
-	public void setTransportSpeed(double speed) {
-		if (currentMonitor(ElectroPaul.TRANSPORTER_MOTOR)) {
-			transporterMotor.changeControlMode(TalonControlMode.PercentVbus);
+	public void setTransportSpeed(double speed) { //Lets transporter be set by power
+		if (currentMonitor(ElectroPaul.TRANSPORTER_MOTOR)) { //Fire hazard prevention
+			transporterMotor.changeControlMode(TalonControlMode.PercentVbus); 
 			transporterMotor.set(0);
 		} else {
 			transporterMotor.changeControlMode(TalonControlMode.Speed);
@@ -120,18 +120,18 @@ public class Outputs {
 		}
 	}
 
-	public void setAgitatorPower(double power) {
+	public void setAgitatorPower(double power) { //Lets agitator be set by power
 		agitatorMotor.changeControlMode(TalonControlMode.PercentVbus);
 		agitatorMotor.set(power);
 	}
 
-	public void setAgitatorSpeed(double speed) {
+	public void setAgitatorSpeed(double speed) { //Lets agitator be set by speed
 		agitatorMotor.changeControlMode(TalonControlMode.Speed);
 		agitatorMotor.set(speed);
 	}
 
-	public void setClimbPower(double power) {
-		if (currentMonitor(ElectroPaul.CLIMB_MOTOR_1) || currentMonitor(ElectroPaul.CLIMB_MOTOR_2)) {
+	public void setClimbPower(double power) { ////Lets climb be set by power
+		if (currentMonitor(ElectroPaul.CLIMB_MOTOR_1) || currentMonitor(ElectroPaul.CLIMB_MOTOR_2)) { //Fire hazard prevention
 			climbMotor1.set(0);
 			climbMotor2.set(0);
 		} else {

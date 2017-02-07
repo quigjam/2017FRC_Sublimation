@@ -12,7 +12,7 @@ public class Climber {
 	}
 
 	
-	public void reverse(double climbPower){
+	public void reverse(double climbPower){ //climb down
 		
 		if(in.reverseButton && in.climbButton){
 			
@@ -28,7 +28,7 @@ public class Climber {
 		
 	}
 	
-	public void forward(double climbPower) {
+	public void forward(double climbPower) { //climb up
 		if (in.climbButton) {
 			out.setClimbPower(climbPower);
 		} else {
