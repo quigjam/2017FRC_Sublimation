@@ -54,7 +54,7 @@ public class Outputs {
 		shooterMotor = new CANTalon(ElectroPaul.SHOOTER_MOTOR);
 		shooterMotor.enableBrakeMode(false);
 		shooterMotor.configPeakOutputVoltage(12, 0);
-		shooterMotor.setFeedbackDevice(FeedbackDevice.QuadEncoder);
+		shooterMotor.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
 
 		transporterMotor = new CANTalon(ElectroPaul.TRANSPORTER_MOTOR);
 		agitatorMotor = new CANTalon(ElectroPaul.AGITATOR_MOTOR);
@@ -175,9 +175,9 @@ public class Outputs {
 			currentSum[motor] = 0;
 		}
 		if (currentSum[motor] > AMP_SECOND_LIMIT) {
-			restEndTime[motor] = Timer.getMatchTime() + MIN_REST_TIME;
+			restEndTime[motor] = Timer.getFPGATimestamp() + MIN_REST_TIME;
 		}
-		return (restEndTime[motor] > Timer.getMatchTime());
+		return (restEndTime[motor] > Timer.getFPGATimestamp());
 	}
 
 	public void readEncoders() {
@@ -186,7 +186,11 @@ public class Outputs {
 		shooterSpeedEncoder = shooterMotor.getSpeed();
 		transporterSpeedEncoder = transporterMotor.getSpeed();
 		agitatorSpeedEncoder = agitatorMotor.getSpeed();
-		gearPanelPositionEncoder = gearPanelMotor1.getPosition();// Not sure which motor has the encoder
+		gearPanelPositionEncoder = gearPanelMotor1.getPosition();// Not sure
+																	// which
+																	// motor has
+																	// the
+																	// encoder
 
 		SmartDashboard.putNumber("leftDriveEncoder", leftDriveEncoder);
 		SmartDashboard.putNumber("rightDriveEncoder", rightDriveEncoder);
