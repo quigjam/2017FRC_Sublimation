@@ -175,9 +175,9 @@ public class Outputs {
 			currentSum[motor] = 0;
 		}
 		if (currentSum[motor] > AMP_SECOND_LIMIT) {
-			restEndTime[motor] = Timer.getMatchTime() + MIN_REST_TIME;
+			restEndTime[motor] = Timer.getFPGATimestamp() + MIN_REST_TIME;
 		}
-		return (restEndTime[motor] > Timer.getMatchTime());
+		return (restEndTime[motor] > Timer.getFPGATimestamp());
 	}
 
 	public void readEncoders() {
