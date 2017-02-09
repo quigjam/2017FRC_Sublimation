@@ -18,20 +18,16 @@ public class ElectroPaul {
 	//public final static int RIGHT_ENCODER_PORT_1 = 5;
 	//public final static int RIGHT_ENCODER_PORT_2 = 6;
 
-	public final static int LEFT_DRIVE_CAN = 1;
-	public final static int RIGHT_DRIVE_CAN = 2;
+	public final static int LEFT_DRIVE_CAN = 2;
+	public final static int RIGHT_DRIVE_CAN = 13;
 	public final static int LEFT_DRIVE = 1;
-	public final static int RIGHT_DRIVE = 2;
+	public final static int RIGHT_DRIVE = 0;
 	public final static int SHOOTER_MOTOR = 3;
-	public final static int TRANSPORTER_MOTOR = 8008135;
-	public final static int AGITATOR_MOTOR = 5;
-	public final static int CLIMB_MOTOR_1 = 5;
-	public final static int CLIMB_MOTOR_2 = 5;
-	public final static int GEAR_ROLLER_MOTOR = 3;
-	public final static int GEAR_PANEL_MOTOR_1 = 6;
-	public final static int GEAR_PANEL_MOTOR_2 = 9999999; 
-	
-	
-	//shooter
-	//public static final int SHOOTER_MOTOR_PORT = 1; 
-} // #BlameElectrical
+	public final static int TRANSPORTER_MOTOR = -1;
+	public final static int AGITATOR_MOTOR = -1;
+	public final static int CLIMB_MOTOR_1 = -1;
+	public final static int CLIMB_MOTOR_2 = -1;
+	public final static int GEAR_ROLLER_MOTOR = -1;
+	public final static int GEAR_PANEL_MOTOR_1 = -1;
+	public final static int GEAR_PANEL_MOTOR_2 = -1; 
+} 
