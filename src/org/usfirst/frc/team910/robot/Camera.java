@@ -1,10 +1,13 @@
 package org.usfirst.frc.team910.robot;
 
+import edu.wpi.first.wpilibj.Timer;
+
 public class Camera implements PixyEvent {
 
 	private static final int BLOCKS_PER_FRAME = 64; 
 	private static final int FRAMES_PER_CAMERA = 10;
 	private static final int MAX_CAMERAS = 4; 
+	private static final int NUMBER_OF_TARGETS = 3;
 	
 	public class Block {
 		int signature;
@@ -25,6 +28,7 @@ public class Camera implements PixyEvent {
 	public class Frame {
 		Block[] blocks;
 		int currentBlock;
+		double time;
 
 		public Frame() {
 			currentBlock = 0;
@@ -63,6 +67,33 @@ public class Camera implements PixyEvent {
 		}
 		highestFrame = new int[MAX_CAMERAS]; 
 	}
+	public class Target {
+		public double time;
+		public double distance;
+		public double cameraAngle;
+		public double robotAngle;
+		
+		public Target() {
+			time = 0;
+			distance = 0;
+			cameraAngle = 0;
+			robotAngle = 0;
+		}
+	}
+	
+	public class TargetArray {
+		public Target[] targets;
+		public int currentTarget;
+		
+		public TargetArray() {
+			currentTarget = 0;
+			targets = new Target[NUMBER_OF_TARGETS];
+			for(int i = 0; i < targets.length; i++){
+				targets[i] = new Target();
+				
+			}
+		}
+	}
 
 	public boolean gearGoalSearch() { // TODO Placeholder, write camera class
 		return true;
@@ -89,6 +120,7 @@ public class Camera implements PixyEvent {
 		if(frameNumber > highestFrame[cameraNumber]) {
 			cameraData[cameraNumber].frames[frameIndex].reset();
 			highestFrame[cameraNumber] = frameNumber;
+			cameraData[cameraNumber].frames[frameIndex].time = Timer.getFPGATimestamp();
 		}
 		cameraData[cameraNumber].currentFrame = frameIndex;
 		Frame currentFrame = cameraData[cameraNumber].frames[frameIndex];
