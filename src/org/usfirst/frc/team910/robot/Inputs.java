@@ -55,17 +55,17 @@ public class Inputs {
 		autoClimb = leftStick.getRawButton(5);
 
 		// operator functions
-		primeButton = controlBoard.getRawButton(1) || gamepad.getRawButton(1);
+		primeButton = controlBoard.getRawButton(1) || gamepad.getRawButton(5);
 
-		fireButton = controlBoard.getRawButton(2) || gamepad.getRawButton(2);
+		fireButton = controlBoard.getRawButton(2) || gamepad.getRawButton(6);
 		fireOverride = controlBoard.getRawButton(3) || gamepad.getRawButton(3);
 		climbButton = controlBoard.getRawButton(4);
 		cameraEnable = controlBoard.getRawButton(4) || gamepad.getRawButton(4);
 		reverseButton = controlBoard.getRawButton(5) || gamepad.getRawButton(5);
 		gearIntake = controlBoard.getRawButton(6) || gamepad.getRawButton(6);
 		gearOuttake = controlBoard.getRawButton(7) || gamepad.getRawButton(7);
-		jogShooterUp = controlBoard.getRawButton(8) || gamepad.getRawButton(8);
-		jogShooterDown = controlBoard.getRawButton(9) || gamepad.getRawButton(9);
+		jogShooterUp = controlBoard.getRawButton(8) || gamepad.getRawAxis(3) > 0.9;
+		jogShooterDown = controlBoard.getRawButton(9) || gamepad.getRawAxis(2) > 0.9;
 
 	}
 

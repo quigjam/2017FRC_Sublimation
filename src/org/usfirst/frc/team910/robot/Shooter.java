@@ -1,7 +1,9 @@
 package org.usfirst.frc.team910.robot;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 public class Shooter {
-	private static final double SHOOTER_SPEED = 4000;
+	private static final double SHOOTER_SPEED = 1700;
 	private static final double JOG_AMOUNT = 10;
 
 	private Outputs out;
@@ -28,6 +30,7 @@ public class Shooter {
 		if (in.primeButton) {
 			out.setShooterSpeed(SHOOTER_SPEED + jogoffset);
 			// out.setAgitatorPower(0.8);
+			// out.setShooterPower (0.5);
 		} else {
 			out.setShooterPower(0);
 			out.setAgitatorPower(0);
@@ -37,7 +40,7 @@ public class Shooter {
 
 	public void shooterFire() {
 		if (in.fireButton) {
-			out.setTransportPower(1);
+			out.setTransportPower(0.75);
 		} else {
 			out.setTransportPower(0); // TODO get actual powers for everything here
 		}
@@ -57,5 +60,7 @@ public class Shooter {
 
 		prevjogup = in.jogShooterUp;
 		prevjogdown = in.jogShooterDown;
+
+		SmartDashboard.putNumber("JogValue", SHOOTER_SPEED + jogoffset);
 	}
 }

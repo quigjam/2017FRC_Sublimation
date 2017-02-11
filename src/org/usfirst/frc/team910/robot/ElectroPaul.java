@@ -3,7 +3,7 @@ package org.usfirst.frc.team910.robot;
 public class ElectroPaul {
 
 	// Drive
-	public final static int LEFT_JOYSTICK_PORT = 0; //TODO figure out actual values for all these 
+	public final static int LEFT_JOYSTICK_PORT = 0;
 	public final static int RIGHT_JOYSTICK_PORT = 1;
 	public final static int GAME_PAD_JOYSTICK_PORT = 2;
 	public final static int CONTROL_BOARD_JOYSTICK_PORT = 3;
@@ -22,8 +22,8 @@ public class ElectroPaul {
 	public final static int RIGHT_DRIVE_CAN = 13;
 	public final static int LEFT_DRIVE = 1;
 	public final static int RIGHT_DRIVE = 0;
-	public final static int SHOOTER_MOTOR = 3;
-	public final static int TRANSPORTER_MOTOR = -1;
+	public final static int SHOOTER_MOTOR = 12;
+	public final static int TRANSPORTER_MOTOR = 3;
 	public final static int AGITATOR_MOTOR = -1;
 	public final static int CLIMB_MOTOR_1 = -1;
 	public final static int CLIMB_MOTOR_2 = -1;

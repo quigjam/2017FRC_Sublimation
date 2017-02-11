@@ -12,8 +12,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Outputs {
 
 	private static final double CURRENT_LIMIT = 40; // in amps
-	private static final double AMP_SECOND_LIMIT = 120;
+	private static final double AMP_SECOND_LIMIT = 70;
 	private static final double MIN_REST_TIME = 5;// in seconds
+	private static final double DRIVE_REVS_PER_INCH = 1;
 
 	// private CANTalon leftMotor1;
 	// private CANTalon leftMotor2;
@@ -47,14 +48,23 @@ public class Outputs {
 		// rightMotor1 = new CANTalon(ElectroPaul.RIGHT_MOTOR_PORT_1);
 		// rightMotor2 = new CANTalon(ElectroPaul.RIGHT_MOTOR_PORT_2);
 		leftDriveCan = new CANTalon(ElectroPaul.LEFT_DRIVE_CAN);
-		rightDriveCan = new CANTalon(ElectroPaul.RIGHT_DRIVE_CAN);
+		leftDriveCan.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
+		leftDriveCan.setEncPosition(0);
 		leftDrive = new Talon(ElectroPaul.LEFT_DRIVE);
+		rightDriveCan = new CANTalon(ElectroPaul.RIGHT_DRIVE_CAN);
+		rightDriveCan.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
+		rightDriveCan.setEncPosition(0);
+		rightDriveCan.setInverted(true);
 		rightDrive = new Talon(ElectroPaul.RIGHT_DRIVE);
+		rightDrive.setInverted(true);
 
 		shooterMotor = new CANTalon(ElectroPaul.SHOOTER_MOTOR);
 		shooterMotor.enableBrakeMode(false);
-		shooterMotor.configPeakOutputVoltage(12, 0);
+		shooterMotor.configPeakOutputVoltage(0, -12);
+		shooterMotor.setCloseLoopRampRate(7);//7V per sec
 		shooterMotor.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
+		shooterMotor.reverseOutput(true);
+		shooterMotor.reverseSensor(true);
 
 		transporterMotor = new CANTalon(ElectroPaul.TRANSPORTER_MOTOR);
 		agitatorMotor = new CANTalon(ElectroPaul.AGITATOR_MOTOR);
@@ -167,30 +177,33 @@ public class Outputs {
 	private double[] currentSum = new double[16]; // sum of all previous current
 	private double[] restEndTime = new double[16];
 
+	public double maxCurr=0;
 	private boolean currentMonitor(int motor) {
 		double current = pdp.getCurrent(motor);
+		if(current > maxCurr){
+			maxCurr=current;
+			SmartDashboard.putNumber("maxCurr", maxCurr);
+		}
 		if (current > CURRENT_LIMIT) {
-			currentSum[motor] += current * 0.05;
+			currentSum[motor] += current * 0.02;
+			SmartDashboard.putNumber("Motor"+ motor + "current", current);
 		} else {
 			currentSum[motor] = 0;
 		}
 		if (currentSum[motor] > AMP_SECOND_LIMIT) {
 			restEndTime[motor] = Timer.getFPGATimestamp() + MIN_REST_TIME;
+			SmartDashboard.putNumber("Resting motor" + motor + "until: ", restEndTime[motor]);
 		}
 		return (restEndTime[motor] > Timer.getFPGATimestamp());
 	}
 
 	public void readEncoders() {
-		leftDriveEncoder = leftDriveCan.getPosition();
-		rightDriveEncoder = rightDriveCan.getPosition();
+		leftDriveEncoder = leftDriveCan.getPosition() / DRIVE_REVS_PER_INCH;
+		rightDriveEncoder = rightDriveCan.getPosition()/DRIVE_REVS_PER_INCH;
 		shooterSpeedEncoder = shooterMotor.getSpeed();
 		transporterSpeedEncoder = transporterMotor.getSpeed();
 		agitatorSpeedEncoder = agitatorMotor.getSpeed();
-		gearPanelPositionEncoder = gearPanelMotor1.getPosition();// Not sure
-																	// which
-																	// motor has
-																	// the
-																	// encoder
+		gearPanelPositionEncoder = gearPanelMotor1.getPosition();
 
 		SmartDashboard.putNumber("leftDriveEncoder", leftDriveEncoder);
 		SmartDashboard.putNumber("rightDriveEncoder", rightDriveEncoder);

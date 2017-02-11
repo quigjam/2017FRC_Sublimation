@@ -62,7 +62,7 @@ public class Robot extends IterativeRobot {
 		in.read();
 		sense.read();
 		out.readEncoders();
-		// drive.drive();
+		drive.drive();
 		shoot.run();
 		// gear.run();
 		// climb.run();
