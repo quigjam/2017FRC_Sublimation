@@ -1,4 +1,4 @@
-package org.usfirst.frc.team910.robot;
+package org.usfirst.frc.team910.robot.IO;
 
 public class ElectroPaul {
 

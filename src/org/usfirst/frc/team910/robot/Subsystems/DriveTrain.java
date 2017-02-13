@@ -1,4 +1,8 @@
-package org.usfirst.frc.team910.robot;
+package org.usfirst.frc.team910.robot.Subsystems;
+
+import org.usfirst.frc.team910.robot.IO.Inputs;
+import org.usfirst.frc.team910.robot.IO.Outputs;
+import org.usfirst.frc.team910.robot.IO.Sensors;
 
 public class DriveTrain {
 
@@ -82,7 +86,7 @@ public class DriveTrain {
 	}
 
 	// Drive Straight With NavX
-	double originangle = 0;
+	public double originangle = 0;
 
 	public void driveStraightNavX(boolean firstTime) {
 		double navxangle = sense.robotAngle;

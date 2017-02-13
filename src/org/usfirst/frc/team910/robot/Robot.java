@@ -1,5 +1,16 @@
 package org.usfirst.frc.team910.robot;
 
+import org.usfirst.frc.team910.robot.Functions.AutoClimb;
+import org.usfirst.frc.team910.robot.Functions.AutoGear;
+import org.usfirst.frc.team910.robot.Functions.AutoShoot;
+import org.usfirst.frc.team910.robot.IO.Inputs;
+import org.usfirst.frc.team910.robot.IO.Outputs;
+import org.usfirst.frc.team910.robot.IO.Sensors;
+import org.usfirst.frc.team910.robot.Subsystems.Climber;
+import org.usfirst.frc.team910.robot.Subsystems.DriveTrain;
+import org.usfirst.frc.team910.robot.Subsystems.GearSystem;
+import org.usfirst.frc.team910.robot.Subsystems.Shooter;
+
 import edu.wpi.first.wpilibj.IterativeRobot;
 
 public class Robot extends IterativeRobot {

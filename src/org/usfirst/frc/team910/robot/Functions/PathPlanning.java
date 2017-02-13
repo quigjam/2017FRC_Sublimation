@@ -1,4 +1,4 @@
-package org.usfirst.frc.team910.robot;
+package org.usfirst.frc.team910.robot.Functions;
 
 public class PathPlanning {
 

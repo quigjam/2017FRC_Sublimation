@@ -1,4 +1,6 @@
-package org.usfirst.frc.team910.robot;
+package org.usfirst.frc.team910.robot.IO;
+
+import org.usfirst.frc.team910.robot.Vision.Camera;
 
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SPI;
@@ -18,7 +20,7 @@ public class Sensors {
 								// field relative
 	public double cameraDistance;// TODO Placeholder, get from camera
 
-	Sensors() {
+	public Sensors() {
 
 		navx = new AHRS(SPI.Port.kMXP);
 		camera = new Camera();

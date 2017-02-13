@@ -1,20 +1,20 @@
-package org.usfirst.frc.team910.robot;
+package org.usfirst.frc.team910.robot.Vision;
 
 public class TargetLocater implements Runnable {
 	
-	protected Camera.CameraData data;
+	protected CameraData data;
 	
 	
 	
 	
 	
-	public TargetLocater(Camera.CameraData camData) {
+	public TargetLocater(CameraData camData) {
 		data = camData;  
 	}
 	
 	public void run() {
 		while(true) {
-			Camera.Frame f = getMostRecentFrame();
+			Frame f = getMostRecentFrame();
 			if(f.currentBlock < 2) { 
 				try {
 					this.wait(20);
@@ -27,7 +27,7 @@ public class TargetLocater implements Runnable {
 		}
 	}
 	
-	public Camera.Frame getMostRecentFrame() { 
+	public Frame getMostRecentFrame() { 
 		return data.frames[data.currentFrame]; 
 
 	}

@@ -1,4 +1,4 @@
-package org.usfirst.frc.team910.robot;
+package org.usfirst.frc.team910.robot.Vision;
 
 public class TargetLocaterHigh extends TargetLocater implements Runnable {
 
@@ -17,13 +17,13 @@ public class TargetLocaterHigh extends TargetLocater implements Runnable {
 	private static final Limit rope_aspectratio_Limit = new TargetLocater.Limit(0, 0);
 	private static final int TOP_BOILER_X_ALIGN = 5; 
 	
-	public TargetLocaterHigh(Camera.CameraData camData) {
+	public TargetLocaterHigh(CameraData camData) {
 		super(camData);
 	}
 
 	public void run() {
 		while (true) {
-			Camera.Frame f = getMostRecentFrame();
+			Frame f = getMostRecentFrame();
 			if (f.currentBlock < 2) {
 				try {
 					this.wait(20);
@@ -54,9 +54,9 @@ public class TargetLocaterHigh extends TargetLocater implements Runnable {
 		}
 	}
 
-	private Camera.Block topBoiler = null;
+	private Block topBoiler = null;
 
-	public void checkBoiler(Camera.Block currentblock) {
+	public void checkBoiler(Block currentblock) {
 		
 		if (topBoiler == null && checkLimit(top_boiler_area_limit, currentblock.width * currentblock.height)
 				&& checkLimit(top_boiler_aspectratio_limit, currentblock.width / currentblock.height)) {
@@ -69,11 +69,11 @@ public class TargetLocaterHigh extends TargetLocater implements Runnable {
 		}
 	}
 
-	public void checkRope(Camera.Block currentblock) {
+	public void checkRope(Block currentblock) {
 
 	}
 
-	public Camera.Frame getMostRecentFrame() {
+	public Frame getMostRecentFrame() {
 		return data.frames[data.currentFrame];
 
 	}

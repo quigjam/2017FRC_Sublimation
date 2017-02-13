@@ -1,4 +1,4 @@
-package org.usfirst.frc.team910.robot;
+package org.usfirst.frc.team910.robot.IO;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -35,7 +35,7 @@ public class Inputs {
 	public boolean gearIntake;
 	public boolean gearOuttake;
 
-	Inputs() {
+	public Inputs() {
 		leftStick = new Joystick(ElectroPaul.LEFT_JOYSTICK_PORT);
 		rightStick = new Joystick(ElectroPaul.RIGHT_JOYSTICK_PORT);
 		gamepad = new Joystick(ElectroPaul.GAME_PAD_JOYSTICK_PORT);

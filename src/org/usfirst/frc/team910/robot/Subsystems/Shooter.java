@@ -1,4 +1,7 @@
-package org.usfirst.frc.team910.robot;
+package org.usfirst.frc.team910.robot.Subsystems;
+
+import org.usfirst.frc.team910.robot.IO.Inputs;
+import org.usfirst.frc.team910.robot.IO.Outputs;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 

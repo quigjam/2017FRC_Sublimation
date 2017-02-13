@@ -1,4 +1,4 @@
-package org.usfirst.frc.team910.robot;
+package org.usfirst.frc.team910.robot.IO;
 
 import com.ctre.CANTalon;
 import com.ctre.CANTalon.FeedbackDevice;
@@ -42,7 +42,7 @@ public class Outputs {
 
 	public double gearPanelPositionEncoder;
 
-	Outputs() {
+	public Outputs() {
 		// leftMotor1 = new CANTalon(ElectroPaul.LEFT_MOTOR_PORT_1);
 		// leftMotor2 = new CANTalon(ElectroPaul.LEFT_MOTOR_PORT_2);
 		// rightMotor1 = new CANTalon(ElectroPaul.RIGHT_MOTOR_PORT_1);
