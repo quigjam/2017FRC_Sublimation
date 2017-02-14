@@ -75,7 +75,7 @@ public class Inputs {
 		if (Math.abs(joyPos) < deadband) {
 			joyPos = 0;
 		}
-		return joyPos;
+		return (joyPos - deadband) / (1 - deadband);
 	}
 
 }
