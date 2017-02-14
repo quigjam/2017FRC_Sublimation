@@ -14,7 +14,7 @@ public class Outputs {
 	private static final double CURRENT_LIMIT = 40; // in amps
 	private static final double AMP_SECOND_LIMIT = 70;
 	private static final double MIN_REST_TIME = 5;// in seconds
-	private static final double DRIVE_REVS_PER_INCH = 1;
+	private static final double DRIVE_INCH_PER_REV = 4*Math.PI;
 
 	// private CANTalon leftMotor1;
 	// private CANTalon leftMotor2;
@@ -198,8 +198,8 @@ public class Outputs {
 	}
 
 	public void readEncoders() {
-		leftDriveEncoder = leftDriveCan.getPosition() / DRIVE_REVS_PER_INCH;
-		rightDriveEncoder = rightDriveCan.getPosition()/DRIVE_REVS_PER_INCH;
+		leftDriveEncoder = leftDriveCan.getPosition() * DRIVE_INCH_PER_REV;
+		rightDriveEncoder = rightDriveCan.getPosition()*DRIVE_INCH_PER_REV;
 		shooterSpeedEncoder = shooterMotor.getSpeed();
 		transporterSpeedEncoder = transporterMotor.getSpeed();
 		agitatorSpeedEncoder = agitatorMotor.getSpeed();

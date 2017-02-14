@@ -8,10 +8,10 @@ import org.usfirst.frc.team910.robot.IO.Sensors;
 public class DriveTrain {
 
 	private static final double DRIVE_STRAIGHT_ENC_PWR = 0.1;
-	private static final double DYN_BRAKE_PWR = 0.1; // full power in 10 inches
+	private static final double DYN_BRAKE_PWR = 0.5; // full power in 10 inches
 	private static final double DRIVE_STRAIGHT_NAVX_PWR = 0;
 	private static final double AUTO_DRIVE_PWR = 0.2;
-	private static final double SWERVE_FACTOR_ENC = 0.01;
+	private static final double SWERVE_FACTOR_ENC = 0.5;
 	private static final double SWERVE_FACTOR_ANGLE = 0.01;
 
 	private Inputs in;
@@ -37,17 +37,24 @@ public class DriveTrain {
 
 		} else if (in.dynamicBrake) {
 			dynamicBrake(prevTask != DriveFunction.DYNAMIC_BRAKING);
+			prevTask = DriveFunction.DYNAMIC_BRAKING;
 		} else if (in.driveStraight) {
 			driveStraightNavX(prevTask != DriveFunction.DRIVE_STRAIGHT);
+			prevTask = DriveFunction.DRIVE_STRAIGHT;
 		} else {
 			tankDrive(in.leftJoyStickY, in.rightJoyStickY);
+			prevTask = DriveFunction.TANK_DRIVE;
 		}
 	}
 
 	public void tankDrive(double leftPower, double rightPower) {
+		double pwrAdj = Math.max(Math.abs(leftPower), Math.abs(rightPower));
+		if(pwrAdj > 1) {
+			leftPower /= pwrAdj; 
+			rightPower /= pwrAdj; 
+		}
 		out.setLeftDrive(leftPower);
 		out.setRightDrive(rightPower);
-		prevTask = DriveFunction.TANK_DRIVE;
 	}
 
 	private double leftEncPrev;
@@ -56,7 +63,7 @@ public class DriveTrain {
 	private void dynamicBrake(boolean firstTime) {
 		double leftEncoder = out.leftDriveEncoder;
 		double rightEncoder = out.rightDriveEncoder;
-		prevTask = DriveFunction.DYNAMIC_BRAKING;
+		
 
 		if (firstTime) {
 			leftEncPrev = leftEncoder;
@@ -91,7 +98,6 @@ public class DriveTrain {
 
 	public void driveStraightNavX(boolean firstTime) {
 		Angle navxangle = sense.robotAngle;
-		prevTask = DriveFunction.DRIVE_STRAIGHT;
 
 		if (firstTime) {
 			originangle.set(navxangle.get());
