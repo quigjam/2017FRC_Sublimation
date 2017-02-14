@@ -1,5 +1,6 @@
 package org.usfirst.frc.team910.robot.Subsystems;
 
+import org.usfirst.frc.team910.robot.IO.Angle;
 import org.usfirst.frc.team910.robot.IO.Inputs;
 import org.usfirst.frc.team910.robot.IO.Outputs;
 import org.usfirst.frc.team910.robot.IO.Sensors;
@@ -86,29 +87,29 @@ public class DriveTrain {
 	}
 
 	// Drive Straight With NavX
-	public double originangle = 0;
+	public Angle originangle = new Angle(0);
 
 	public void driveStraightNavX(boolean firstTime) {
-		double navxangle = sense.robotAngle;
+		Angle navxangle = sense.robotAngle;
 		prevTask = DriveFunction.DRIVE_STRAIGHT;
 
 		if (firstTime) {
-			originangle = navxangle;
+			originangle.set(navxangle.get());
 		} else {
-			originangle += in.leftJoyStickX * SWERVE_FACTOR_ANGLE;
-			double currentangle = navxangle;
-			double angledifference = originangle - currentangle;
-			double refineddiff = angledifference * DRIVE_STRAIGHT_NAVX_PWR;
+			originangle.add(in.leftJoyStickX * SWERVE_FACTOR_ANGLE);
+			double angledifference = originangle.subtract(navxangle);
+			double powerDiff = angledifference * DRIVE_STRAIGHT_NAVX_PWR;
 
-			tankDrive(in.rightJoyStickY - refineddiff, in.rightJoyStickY + refineddiff);
+			tankDrive(in.rightJoyStickY - powerDiff, in.rightJoyStickY + powerDiff);
 		}
 	}
 
 	// Drive in a circle using NavX
-	public void driveCircle(double startAngle, double distance, double radius, double velocity, double direction) {
+	Angle circleTargetAngle = new Angle(0);
+	public void driveCircle(Angle startAngle, double distance, double radius, double velocity, double direction) {
 		double K = 360 / 2 * Math.PI * radius;
-		double targetAngle = startAngle + direction * K * distance;
-		double angleError = targetAngle - sense.robotAngle;
+		circleTargetAngle.set(startAngle.get() + direction * K * distance);
+		double angleError = circleTargetAngle.subtract(sense.robotAngle); 
 		double correctionPwr = angleError * DRIVE_STRAIGHT_NAVX_PWR;
 		tankDrive(AUTO_DRIVE_PWR - correctionPwr, AUTO_DRIVE_PWR + correctionPwr);
 	}
