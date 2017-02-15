@@ -4,6 +4,22 @@ import edu.wpi.first.wpilibj.Timer;
 
 public class Camera implements PixyEvent {
 
+	private static final int PIXY_CAM_ID_1 = 122557792;
+	private static final int PIXY_CAM_ID_2 = -324215471;
+	private static final int PIXY_CAM_ID_3 = -250941110;
+	private static final int PIXY_CAM_ID_4 = 10081618;
+	private static final int PIXY_CAM_ID_5 = -657885874;
+	private static final int PIXY_CAM_ID_6 = -1028254399;
+	private static final int PIXY_CAM_ID_7 = -893772473;
+	private static final int PIXY_CAM_ID_8 = 0;
+	private static final int PIXY_CAM_ID_9 = 0;
+	private static final int PIXY_CAM_ID_10 = 0;
+	
+	private static final int LEFT_PIXY = PIXY_CAM_ID_1;
+	private static final int RIGHT_PIXY = PIXY_CAM_ID_2;
+	private static final int FRONT_LOW_PIXY = PIXY_CAM_ID_3;
+	private static final int FRONT_HIGH_PIXY = PIXY_CAM_ID_4;
+	
 	public static final int BLOCKS_PER_FRAME = 64;
 	public static final int FRAMES_PER_CAMERA = 10;
 	public static final int NUMBER_OF_TARGETS = 3;
@@ -43,6 +59,22 @@ public class Camera implements PixyEvent {
 	public void eventGet(String s) {
 		String[] parts = s.split(",");
 		int cameraNumber = Integer.parseInt(parts[0]);
+		switch(cameraNumber){
+		case LEFT_PIXY: 
+			cameraNumber = 0;
+			break;
+		case RIGHT_PIXY:
+			cameraNumber = 1;
+			break;
+		case FRONT_LOW_PIXY:
+			cameraNumber = 2;
+			break;
+		case FRONT_HIGH_PIXY:
+			cameraNumber = 3;
+			break;
+		default:
+			System.out.println("Wrong pixy cam is plugged in. ID:" + cameraNumber);
+		}
 		int frameNumber = Integer.parseInt(parts[1]);
 		int frameIndex = frameNumber % FRAMES_PER_CAMERA;
 		if (frameNumber > highestFrame[cameraNumber]) {
