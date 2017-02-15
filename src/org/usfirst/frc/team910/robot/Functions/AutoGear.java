@@ -1,4 +1,10 @@
-package org.usfirst.frc.team910.robot;
+package org.usfirst.frc.team910.robot.Functions;
+
+import org.usfirst.frc.team910.robot.IO.Inputs;
+import org.usfirst.frc.team910.robot.IO.Outputs;
+import org.usfirst.frc.team910.robot.IO.Sensors;
+import org.usfirst.frc.team910.robot.Subsystems.DriveTrain;
+import org.usfirst.frc.team910.robot.Subsystems.GearSystem;
 
 public class AutoGear {
 

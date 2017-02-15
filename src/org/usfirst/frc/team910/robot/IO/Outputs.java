@@ -1,4 +1,4 @@
-package org.usfirst.frc.team910.robot;
+package org.usfirst.frc.team910.robot.IO;
 
 import com.ctre.CANTalon;
 import com.ctre.CANTalon.FeedbackDevice;
@@ -12,8 +12,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Outputs {
 
 	private static final double CURRENT_LIMIT = 40; // in amps
-	private static final double AMP_SECOND_LIMIT = 120;
+	private static final double AMP_SECOND_LIMIT = 70;
 	private static final double MIN_REST_TIME = 5;// in seconds
+	private static final double DRIVE_INCH_PER_REV = 4*Math.PI;
 
 	// private CANTalon leftMotor1;
 	// private CANTalon leftMotor2;
@@ -41,20 +42,29 @@ public class Outputs {
 
 	public double gearPanelPositionEncoder;
 
-	Outputs() {
+	public Outputs() {
 		// leftMotor1 = new CANTalon(ElectroPaul.LEFT_MOTOR_PORT_1);
 		// leftMotor2 = new CANTalon(ElectroPaul.LEFT_MOTOR_PORT_2);
 		// rightMotor1 = new CANTalon(ElectroPaul.RIGHT_MOTOR_PORT_1);
 		// rightMotor2 = new CANTalon(ElectroPaul.RIGHT_MOTOR_PORT_2);
 		leftDriveCan = new CANTalon(ElectroPaul.LEFT_DRIVE_CAN);
-		rightDriveCan = new CANTalon(ElectroPaul.RIGHT_DRIVE_CAN);
+		leftDriveCan.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
+		leftDriveCan.setEncPosition(0);
 		leftDrive = new Talon(ElectroPaul.LEFT_DRIVE);
+		rightDriveCan = new CANTalon(ElectroPaul.RIGHT_DRIVE_CAN);
+		rightDriveCan.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
+		rightDriveCan.setEncPosition(0);
+		rightDriveCan.setInverted(true);
 		rightDrive = new Talon(ElectroPaul.RIGHT_DRIVE);
+		rightDrive.setInverted(true);
 
 		shooterMotor = new CANTalon(ElectroPaul.SHOOTER_MOTOR);
 		shooterMotor.enableBrakeMode(false);
-		shooterMotor.configPeakOutputVoltage(12, 0);
+		shooterMotor.configPeakOutputVoltage(0, -12);
+		shooterMotor.setCloseLoopRampRate(7);//7V per sec
 		shooterMotor.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
+		shooterMotor.reverseOutput(true);
+		shooterMotor.reverseSensor(true);
 
 		transporterMotor = new CANTalon(ElectroPaul.TRANSPORTER_MOTOR);
 		agitatorMotor = new CANTalon(ElectroPaul.AGITATOR_MOTOR);
@@ -82,17 +92,17 @@ public class Outputs {
 	}
 
 	public void setShooterPower(double power) {
-		shooterMotor.changeControlMode(TalonControlMode.PercentVbus);
-		if (currentMonitor(ElectroPaul.SHOOTER_MOTOR)) {
+		shooterMotor.changeControlMode(TalonControlMode.PercentVbus); //Lets shooter be set by power
+		if (currentMonitor(ElectroPaul.SHOOTER_MOTOR)) { //Prevent fire hazard by monitoring current
 			shooterMotor.set(0);
 		} else {
 			shooterMotor.set(power);
 		}
 	}
 
-	public void setShooterSpeed(double speed) {
+	public void setShooterSpeed(double speed) { //Lets shooter be powered by speed
 
-		if (currentMonitor(ElectroPaul.SHOOTER_MOTOR)) {
+		if (currentMonitor(ElectroPaul.SHOOTER_MOTOR)) { //Fire hazard prevention	
 			shooterMotor.changeControlMode(TalonControlMode.PercentVbus);
 			shooterMotor.set(0);
 		} else {
@@ -101,18 +111,18 @@ public class Outputs {
 		}
 	}
 
-	public void setTransportPower(double power) {
+	public void setTransportPower(double power) { //Lets transporter be set by power
 		transporterMotor.changeControlMode(TalonControlMode.PercentVbus);
-		if (currentMonitor(ElectroPaul.TRANSPORTER_MOTOR)) {
+		if (currentMonitor(ElectroPaul.TRANSPORTER_MOTOR)) { //Fire hazard prevention
 			transporterMotor.set(0);
 		} else {
 			transporterMotor.set(power);
 		}
 	}
 
-	public void setTransportSpeed(double speed) {
-		if (currentMonitor(ElectroPaul.TRANSPORTER_MOTOR)) {
-			transporterMotor.changeControlMode(TalonControlMode.PercentVbus);
+	public void setTransportSpeed(double speed) { //Lets transporter be set by power
+		if (currentMonitor(ElectroPaul.TRANSPORTER_MOTOR)) { //Fire hazard prevention
+			transporterMotor.changeControlMode(TalonControlMode.PercentVbus); 
 			transporterMotor.set(0);
 		} else {
 			transporterMotor.changeControlMode(TalonControlMode.Speed);
@@ -120,18 +130,18 @@ public class Outputs {
 		}
 	}
 
-	public void setAgitatorPower(double power) {
+	public void setAgitatorPower(double power) { //Lets agitator be set by power
 		agitatorMotor.changeControlMode(TalonControlMode.PercentVbus);
 		agitatorMotor.set(power);
 	}
 
-	public void setAgitatorSpeed(double speed) {
+	public void setAgitatorSpeed(double speed) { //Lets agitator be set by speed
 		agitatorMotor.changeControlMode(TalonControlMode.Speed);
 		agitatorMotor.set(speed);
 	}
 
-	public void setClimbPower(double power) {
-		if (currentMonitor(ElectroPaul.CLIMB_MOTOR_1) || currentMonitor(ElectroPaul.CLIMB_MOTOR_2)) {
+	public void setClimbPower(double power) { ////Lets climb be set by power
+		if (currentMonitor(ElectroPaul.CLIMB_MOTOR_1) || currentMonitor(ElectroPaul.CLIMB_MOTOR_2)) { //Fire hazard prevention
 			climbMotor1.set(0);
 			climbMotor2.set(0);
 		} else {
@@ -167,30 +177,33 @@ public class Outputs {
 	private double[] currentSum = new double[16]; // sum of all previous current
 	private double[] restEndTime = new double[16];
 
+	public double maxCurr=0;
 	private boolean currentMonitor(int motor) {
 		double current = pdp.getCurrent(motor);
+		if(current > maxCurr){
+			maxCurr=current;
+			SmartDashboard.putNumber("maxCurr", maxCurr);
+		}
 		if (current > CURRENT_LIMIT) {
-			currentSum[motor] += current * 0.05;
+			currentSum[motor] += current * 0.02;
+			SmartDashboard.putNumber("Motor"+ motor + "current", current);
 		} else {
 			currentSum[motor] = 0;
 		}
 		if (currentSum[motor] > AMP_SECOND_LIMIT) {
-			restEndTime[motor] = Timer.getMatchTime() + MIN_REST_TIME;
+			restEndTime[motor] = Timer.getFPGATimestamp() + MIN_REST_TIME;
+			SmartDashboard.putNumber("Resting motor" + motor + "until: ", restEndTime[motor]);
 		}
-		return (restEndTime[motor] > Timer.getMatchTime());
+		return (restEndTime[motor] > Timer.getFPGATimestamp());
 	}
 
 	public void readEncoders() {
-		leftDriveEncoder = leftDriveCan.getPosition();
-		rightDriveEncoder = rightDriveCan.getPosition();
+		leftDriveEncoder = leftDriveCan.getPosition() * DRIVE_INCH_PER_REV;
+		rightDriveEncoder = rightDriveCan.getPosition()*DRIVE_INCH_PER_REV;
 		shooterSpeedEncoder = shooterMotor.getSpeed();
 		transporterSpeedEncoder = transporterMotor.getSpeed();
 		agitatorSpeedEncoder = agitatorMotor.getSpeed();
-		gearPanelPositionEncoder = gearPanelMotor1.getPosition();// Not sure
-																	// which
-																	// motor has
-																	// the
-																	// encoder
+		gearPanelPositionEncoder = gearPanelMotor1.getPosition();
 
 		SmartDashboard.putNumber("leftDriveEncoder", leftDriveEncoder);
 		SmartDashboard.putNumber("rightDriveEncoder", rightDriveEncoder);

@@ -1,4 +1,9 @@
-package org.usfirst.frc.team910.robot;
+package org.usfirst.frc.team910.robot.Functions;
+
+import org.usfirst.frc.team910.robot.IO.Inputs;
+import org.usfirst.frc.team910.robot.IO.Sensors;
+import org.usfirst.frc.team910.robot.Subsystems.Climber;
+import org.usfirst.frc.team910.robot.Subsystems.DriveTrain;
 
 public class AutoClimb {
 	private Inputs in;

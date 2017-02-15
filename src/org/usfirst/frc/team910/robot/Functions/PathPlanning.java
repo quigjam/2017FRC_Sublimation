@@ -1,4 +1,6 @@
-package org.usfirst.frc.team910.robot;
+package org.usfirst.frc.team910.robot.Functions;
+
+import org.usfirst.frc.team910.robot.IO.Angle;
 
 public class PathPlanning {
 
@@ -29,19 +31,19 @@ public class PathPlanning {
 	public static double distance;
 	public static double arcdistance;
 
-	public static void calculateArcPoints(double sensorsNavXangle, int inputsTargetGearPost, double inputsCameraAngle,
+	public static void calculateArcPoints(Angle sensorsNavXangle, int inputsTargetGearPost, Angle inputsCameraAngle,
 			double inputsCameraDistance) {
 		double signGoal = 1;
 		double signRobot = 1;
 		// Step 1 Line from Start in current Direction
 		// 0,0 = Robot Origin, Origin direction is based on NavX
 		robotLine.yIntercept = 0;
-		if (sensorsNavXangle == 90) { // undefined check
+		if (sensorsNavXangle.get() == 90) { // undefined check
 			robotLine.slope = 999999;
-		} else if (sensorsNavXangle == 270) {
+		} else if (sensorsNavXangle.get() == 270) {
 			robotLine.slope = -999999;
 		} else {
-			robotLine.slope = Math.tan(Math.toRadians(sensorsNavXangle));
+			robotLine.slope = Math.tan(Math.toRadians(sensorsNavXangle.get()));
 		}
 		// Step 2 Line from End Parallel to Spring Hook thing
 
@@ -49,13 +51,13 @@ public class PathPlanning {
 		switch (inputsTargetGearPost) {
 		case 1:// top
 			goalLine.slope = Math.tan(Math.toRadians(120));
-			if (sensorsNavXangle > 120 && sensorsNavXangle < 300) {
+			if (sensorsNavXangle.get() > 120 && sensorsNavXangle.get() < 300) {
 				signGoal = 1;
 			} else {
 				signGoal = -1;
 			}
-			if ((sensorsNavXangle < 90 || sensorsNavXangle > 120)
-					&& (sensorsNavXangle < 270 || sensorsNavXangle > 300)) {
+			if ((sensorsNavXangle.get() < 90 || sensorsNavXangle.get() > 120)
+					&& (sensorsNavXangle.get() < 270 || sensorsNavXangle.get() > 300)) {
 				signRobot = 1;
 			} else {
 				signRobot = -1;
@@ -63,12 +65,12 @@ public class PathPlanning {
 			break;
 		case 2:// center
 			goalLine.slope = Math.tan(Math.toRadians(179.999));
-			if (sensorsNavXangle > 180) {
+			if (sensorsNavXangle.get() > 180) {
 				signGoal = 1;
 			} else {
 				signGoal = -1;
 			}
-			if (sensorsNavXangle < 90 || sensorsNavXangle > 180 && sensorsNavXangle < 270) { // &&
+			if (sensorsNavXangle.get() < 90 || sensorsNavXangle.get() > 180 && sensorsNavXangle.get() < 270) { // &&
 																								// performs
 																								// first
 				signRobot = -1;
@@ -78,13 +80,13 @@ public class PathPlanning {
 			break;
 		case 3:// bottom
 			goalLine.slope = Math.tan(Math.toRadians(240));
-			if (sensorsNavXangle < 60 || sensorsNavXangle > 240) {
+			if (sensorsNavXangle.get() < 60 || sensorsNavXangle.get() > 240) {
 				signGoal = 1;
 			} else {
 				signGoal = -1;
 			}
 
-			if (sensorsNavXangle > 60 && sensorsNavXangle < 90 || sensorsNavXangle > 270 && sensorsNavXangle < 300) {
+			if (sensorsNavXangle.get() > 60 && sensorsNavXangle.get() < 90 || sensorsNavXangle.get() > 270 && sensorsNavXangle.get() < 300) {
 				signGoal = 1;
 			} else {
 				signGoal = -1;
@@ -93,16 +95,16 @@ public class PathPlanning {
 		}
 
 		// find x cord based on camera angle using sine
-		double xCord = inputsCameraDistance * Math.sin(Math.toRadians(inputsCameraAngle));
+		double xCord = inputsCameraDistance * Math.sin(Math.toRadians(inputsCameraAngle.get()));
 		// find y cord based on camera angle using cosine
-		double yCord = inputsCameraDistance * Math.cos(Math.toRadians(inputsCameraAngle));
+		double yCord = inputsCameraDistance * Math.cos(Math.toRadians(inputsCameraAngle.get()));
 		// find y intercept
 		goalLine.yIntercept = yCord - (goalLine.slope * xCord);
 
 		// Step 3 Generate parallel inboard lines
 		parallelrobotLine.slope = robotLine.slope;
 		parallelgoalLine.slope = goalLine.slope;
-		double tempCos = Math.cos(Math.toRadians(sensorsNavXangle));
+		double tempCos = Math.cos(Math.toRadians(sensorsNavXangle.get()));
 		if (tempCos == 0)
 			tempCos = 0.000001; // undefined check
 		parallelrobotLine.yIntercept = Math.abs(CIRCLE_RADIUS / tempCos) * signRobot;

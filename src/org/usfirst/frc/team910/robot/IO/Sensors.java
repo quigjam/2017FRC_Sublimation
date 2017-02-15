@@ -1,4 +1,6 @@
-package org.usfirst.frc.team910.robot;
+package org.usfirst.frc.team910.robot.IO;
+
+import org.usfirst.frc.team910.robot.Vision.Camera;
 
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SPI;
@@ -11,24 +13,25 @@ public class Sensors {
 
 	public Camera camera;
 
-	public double robotAngle;
+	public Angle robotAngle;
 	public double accelX;
 
-	public double cameraAngle; // TODO Placeholder, get from camera and make
+	public Angle cameraAngle; // TODO Placeholder, get from camera and make
 								// field relative
 	public double cameraDistance;// TODO Placeholder, get from camera
 
-	Sensors() {
+	public Sensors() {
 
 		navx = new AHRS(SPI.Port.kMXP);
 		camera = new Camera();
-
+		robotAngle = new Angle(0);
+		cameraAngle = new Angle(0);
 	}
 
 	public void read() {
-		robotAngle = navx.getYaw();
+		robotAngle.set(navx.getYaw());
 		accelX = navx.getRawAccelX();
-		SmartDashboard.putNumber("navxYaw", robotAngle);
+		SmartDashboard.putNumber("navxYaw", robotAngle.get());
 
 	}
 

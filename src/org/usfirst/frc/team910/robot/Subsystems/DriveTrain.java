@@ -1,12 +1,17 @@
-package org.usfirst.frc.team910.robot;
+package org.usfirst.frc.team910.robot.Subsystems;
+
+import org.usfirst.frc.team910.robot.IO.Angle;
+import org.usfirst.frc.team910.robot.IO.Inputs;
+import org.usfirst.frc.team910.robot.IO.Outputs;
+import org.usfirst.frc.team910.robot.IO.Sensors;
 
 public class DriveTrain {
 
 	private static final double DRIVE_STRAIGHT_ENC_PWR = 0.1;
-	private static final double DYN_BRAKE_PWR = 0.1; // full power in 10 inches
+	private static final double DYN_BRAKE_PWR = 0.5; // full power in 10 inches
 	private static final double DRIVE_STRAIGHT_NAVX_PWR = 0;
 	private static final double AUTO_DRIVE_PWR = 0.2;
-	private static final double SWERVE_FACTOR_ENC = 0.01;
+	private static final double SWERVE_FACTOR_ENC = 0.5;
 	private static final double SWERVE_FACTOR_ANGLE = 0.01;
 
 	private Inputs in;
@@ -32,17 +37,24 @@ public class DriveTrain {
 
 		} else if (in.dynamicBrake) {
 			dynamicBrake(prevTask != DriveFunction.DYNAMIC_BRAKING);
+			prevTask = DriveFunction.DYNAMIC_BRAKING;
 		} else if (in.driveStraight) {
 			driveStraightNavX(prevTask != DriveFunction.DRIVE_STRAIGHT);
+			prevTask = DriveFunction.DRIVE_STRAIGHT;
 		} else {
 			tankDrive(in.leftJoyStickY, in.rightJoyStickY);
+			prevTask = DriveFunction.TANK_DRIVE;
 		}
 	}
 
 	public void tankDrive(double leftPower, double rightPower) {
+		double pwrAdj = Math.max(Math.abs(leftPower), Math.abs(rightPower));
+		if(pwrAdj > 1) {
+			leftPower /= pwrAdj; 
+			rightPower /= pwrAdj; 
+		}
 		out.setLeftDrive(leftPower);
 		out.setRightDrive(rightPower);
-		prevTask = DriveFunction.TANK_DRIVE;
 	}
 
 	private double leftEncPrev;
@@ -51,7 +63,7 @@ public class DriveTrain {
 	private void dynamicBrake(boolean firstTime) {
 		double leftEncoder = out.leftDriveEncoder;
 		double rightEncoder = out.rightDriveEncoder;
-		prevTask = DriveFunction.DYNAMIC_BRAKING;
+		
 
 		if (firstTime) {
 			leftEncPrev = leftEncoder;
@@ -82,29 +94,28 @@ public class DriveTrain {
 	}
 
 	// Drive Straight With NavX
-	double originangle = 0;
+	public Angle originangle = new Angle(0);
 
 	public void driveStraightNavX(boolean firstTime) {
-		double navxangle = sense.robotAngle;
-		prevTask = DriveFunction.DRIVE_STRAIGHT;
+		Angle navxangle = sense.robotAngle;
 
 		if (firstTime) {
-			originangle = navxangle;
+			originangle.set(navxangle.get());
 		} else {
-			originangle += in.leftJoyStickX * SWERVE_FACTOR_ANGLE;
-			double currentangle = navxangle;
-			double angledifference = originangle - currentangle;
-			double refineddiff = angledifference * DRIVE_STRAIGHT_NAVX_PWR;
+			originangle.add(in.leftJoyStickX * SWERVE_FACTOR_ANGLE);
+			double angledifference = originangle.subtract(navxangle);
+			double powerDiff = angledifference * DRIVE_STRAIGHT_NAVX_PWR;
 
-			tankDrive(in.rightJoyStickY - refineddiff, in.rightJoyStickY + refineddiff);
+			tankDrive(in.rightJoyStickY - powerDiff, in.rightJoyStickY + powerDiff);
 		}
 	}
 
 	// Drive in a circle using NavX
-	public void driveCircle(double startAngle, double distance, double radius, double velocity, double direction) {
+	Angle circleTargetAngle = new Angle(0);
+	public void driveCircle(Angle startAngle, double distance, double radius, double velocity, double direction) {
 		double K = 360 / 2 * Math.PI * radius;
-		double targetAngle = startAngle + direction * K * distance;
-		double angleError = targetAngle - sense.robotAngle;
+		circleTargetAngle.set(startAngle.get() + direction * K * distance);
+		double angleError = circleTargetAngle.subtract(sense.robotAngle); 
 		double correctionPwr = angleError * DRIVE_STRAIGHT_NAVX_PWR;
 		tankDrive(AUTO_DRIVE_PWR - correctionPwr, AUTO_DRIVE_PWR + correctionPwr);
 	}

@@ -1,9 +1,11 @@
-package org.usfirst.frc.team910.robot;
+package org.usfirst.frc.team910.robot.IO;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Inputs {
+
+	private static final double DEADBAND = 0.1;
 
 	private Joystick leftStick;
 	private Joystick rightStick;
@@ -35,7 +37,7 @@ public class Inputs {
 	public boolean gearIntake;
 	public boolean gearOuttake;
 
-	Inputs() {
+	public Inputs() {
 		leftStick = new Joystick(ElectroPaul.LEFT_JOYSTICK_PORT);
 		rightStick = new Joystick(ElectroPaul.RIGHT_JOYSTICK_PORT);
 		gamepad = new Joystick(ElectroPaul.GAME_PAD_JOYSTICK_PORT);
@@ -44,10 +46,10 @@ public class Inputs {
 
 	public void read() {
 		// driver functions
-		leftJoyStickY = -leftStick.getY();
-		rightJoyStickY = -rightStick.getY();
-		leftJoyStickX = leftStick.getX();
-		rightJoyStickX = rightStick.getX();
+		leftJoyStickY = deadband(DEADBAND, -leftStick.getY());
+		rightJoyStickY = deadband(DEADBAND, -rightStick.getY());
+		leftJoyStickX = deadband(DEADBAND, leftStick.getX());
+		rightJoyStickX = deadband(DEADBAND, rightStick.getX());
 		dynamicBrake = leftStick.getTrigger();
 		driveStraight = rightStick.getTrigger();
 		autoGear = rightStick.getRawButton(4);
@@ -55,18 +57,25 @@ public class Inputs {
 		autoClimb = leftStick.getRawButton(5);
 
 		// operator functions
-		primeButton = controlBoard.getRawButton(1) || gamepad.getRawButton(1);
+		primeButton = controlBoard.getRawButton(1) || gamepad.getRawButton(5);
 
-		fireButton = controlBoard.getRawButton(2) || gamepad.getRawButton(2);
+		fireButton = controlBoard.getRawButton(2) || gamepad.getRawButton(6);
 		fireOverride = controlBoard.getRawButton(3) || gamepad.getRawButton(3);
 		climbButton = controlBoard.getRawButton(4);
 		cameraEnable = controlBoard.getRawButton(4) || gamepad.getRawButton(4);
 		reverseButton = controlBoard.getRawButton(5) || gamepad.getRawButton(5);
 		gearIntake = controlBoard.getRawButton(6) || gamepad.getRawButton(6);
 		gearOuttake = controlBoard.getRawButton(7) || gamepad.getRawButton(7);
-		jogShooterUp = controlBoard.getRawButton(8) || gamepad.getRawButton(8);
-		jogShooterDown = controlBoard.getRawButton(9) || gamepad.getRawButton(9);
+		jogShooterUp = controlBoard.getRawButton(8) || gamepad.getRawAxis(3) > 0.9;
+		jogShooterDown = controlBoard.getRawButton(9) || gamepad.getRawAxis(2) > 0.9;
 
+	}
+
+	public double deadband(double deadband, double joyPos) {
+		if (Math.abs(joyPos) < deadband) {
+			joyPos = 0;
+		}
+		return (joyPos - deadband) / (1 - deadband);
 	}
 
 }
