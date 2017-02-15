@@ -51,12 +51,12 @@ public class AutoGear {
 
 				botStart = (out.leftDriveEncoder + out.rightDriveEncoder) / 2;
 
-				drive.originangle = sense.robotAngle;
+				drive.originAngle = sense.robotAngle;
 				break;
 			// drive up to arc
 			case DRIVE_STRAIGHT1:
 
-				drive.driveStraightNavX(false);
+				//drive.driveStraightNavX(false);
 				if (((out.leftDriveEncoder + out.rightDriveEncoder) / 2) > (botStart + PathPlanning.distance)) {
 					gearState = GearState.ARC;
 					botStart = (out.leftDriveEncoder + out.rightDriveEncoder) / 2;
@@ -65,18 +65,18 @@ public class AutoGear {
 			// drive in the arc
 			case ARC:
 				double distance = (out.leftDriveEncoder + out.rightDriveEncoder) / 2 - botStart;
-				drive.driveCircle(drive.originangle, distance, PathPlanning.CIRCLE_RADIUS, 0, 0);
+				drive.driveCircle(drive.originAngle, distance, PathPlanning.CIRCLE_RADIUS, 0, 0);
 				// TODO finish circle drive
 
 				if (((out.leftDriveEncoder + out.rightDriveEncoder) / 2) > (botStart + PathPlanning.arcdistance)) {
 					gearState = GearState.DRIVE_STRAIGHT2;
-					drive.originangle = sense.robotAngle;
+					drive.originAngle = sense.robotAngle;
 				}
 				break;
 			// exit arc and drive into wall
 			case DRIVE_STRAIGHT2:
 
-				drive.driveStraightNavX(false);
+				//drive.driveStraightNavX(false);
 				if (sense.accelX > WALL_ACCEL) {
 					gearState = GearState.DELIVER_GEAR;
 				}

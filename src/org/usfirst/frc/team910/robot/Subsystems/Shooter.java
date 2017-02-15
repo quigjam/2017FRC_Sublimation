@@ -40,6 +40,10 @@ public class Shooter {
 		}
 
 	}
+	
+	public boolean upToSpeed(double currentSpd){
+		return currentSpd > SHOOTER_SPEED + jogoffset;
+	}
 
 	public void shooterFire() {
 		if (in.fireButton) {

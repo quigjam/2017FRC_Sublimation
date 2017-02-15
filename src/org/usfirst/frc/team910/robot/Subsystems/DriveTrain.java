@@ -13,7 +13,9 @@ public class DriveTrain {
 	private static final double AUTO_DRIVE_PWR = 0.2;
 	private static final double SWERVE_FACTOR_ENC = 0.5;
 	private static final double SWERVE_FACTOR_ANGLE = 0.01;
-
+	private static final double ROTATE_MAX_PWR = 0.2;
+	private static final double ROTATE_PWR_FACTOR = 0.005;
+	
 	private Inputs in;
 	private Outputs out;
 	private Sensors sense;
@@ -39,7 +41,7 @@ public class DriveTrain {
 			dynamicBrake(prevTask != DriveFunction.DYNAMIC_BRAKING);
 			prevTask = DriveFunction.DYNAMIC_BRAKING;
 		} else if (in.driveStraight) {
-			driveStraightNavX(prevTask != DriveFunction.DRIVE_STRAIGHT);
+			driveStraightNavX(prevTask != DriveFunction.DRIVE_STRAIGHT, in.rightJoyStickY, in.leftJoyStickX);
 			prevTask = DriveFunction.DRIVE_STRAIGHT;
 		} else {
 			tankDrive(in.leftJoyStickY, in.rightJoyStickY);
@@ -94,19 +96,19 @@ public class DriveTrain {
 	}
 
 	// Drive Straight With NavX
-	public Angle originangle = new Angle(0);
+	public Angle originAngle = new Angle(0);
 
-	public void driveStraightNavX(boolean firstTime) {
+	public void driveStraightNavX(boolean firstTime, double power, double swerve) {
 		Angle navxangle = sense.robotAngle;
 
 		if (firstTime) {
-			originangle.set(navxangle.get());
+			originAngle.set(navxangle.get());
 		} else {
-			originangle.add(in.leftJoyStickX * SWERVE_FACTOR_ANGLE);
-			double angledifference = originangle.subtract(navxangle);
+			originAngle.add(swerve * SWERVE_FACTOR_ANGLE);
+			double angledifference = originAngle.subtract(navxangle);
 			double powerDiff = angledifference * DRIVE_STRAIGHT_NAVX_PWR;
 
-			tankDrive(in.rightJoyStickY - powerDiff, in.rightJoyStickY + powerDiff);
+			 tankDrive(power - powerDiff, power + powerDiff);
 		}
 	}
 
@@ -118,5 +120,12 @@ public class DriveTrain {
 		double angleError = circleTargetAngle.subtract(sense.robotAngle); 
 		double correctionPwr = angleError * DRIVE_STRAIGHT_NAVX_PWR;
 		tankDrive(AUTO_DRIVE_PWR - correctionPwr, AUTO_DRIVE_PWR + correctionPwr);
+	}
+	public void rotate(Angle target){
+		double adjAngle = target.subtract(sense.robotAngle);
+		double power = ROTATE_PWR_FACTOR * adjAngle;
+		power = Math.max(Math.min(power,ROTATE_MAX_PWR), -ROTATE_MAX_PWR);
+		tankDrive(-power, power);
+			
 	}
 }
