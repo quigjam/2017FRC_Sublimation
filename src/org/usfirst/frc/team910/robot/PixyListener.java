@@ -4,8 +4,9 @@ import java.net.*;
 import java.io.*;
 
 public class PixyListener implements Runnable {
-	PixyEvent event;
-	int port;
+	
+	PixyEvent event; // Call the listener with this reference
+	int port;        // Network port number to which to send data
 
 	/**
 	 * Create a PixyListener
@@ -18,35 +19,32 @@ public class PixyListener implements Runnable {
 	 *            events from a Pixy
 	 */
 	public PixyListener(PixyEvent event, int port) {
-		this.event = event;
-		this.port = port;
+		this.event = event;    // Save event interface provided 
+		this.port = port;      // Save port provided
 	}
 
 	public void run() {
+		// Be a socket server 
 		ServerSocket serverSocket = null;
 		String inputLine;
 		Socket clientSocket = null;
 
 		try {
-			serverSocket = new ServerSocket(port);
+			serverSocket = new ServerSocket(port); // Create socket on specified port
 
 			System.out.println("Waiting for connection.....");
 
-			clientSocket = serverSocket.accept();
+			clientSocket = serverSocket.accept(); 
 			System.out.println("Connection successful");
 			System.out.println("Waiting for input.....");
 
+			// Retrieve string from socket 
 			BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
-			/*
-			 * while (true) { while ((inputLine = in.readLine()) != "~") { if
-			 * (inputLine != null) { event.eventGet(inputLine); } } }
-			 */
-
 			while (true) {
-				inputLine = in.readLine();
+				inputLine = in.readLine();    // Get message
 				if (inputLine != null)
-					event.eventGet(inputLine);
+					event.eventGet(inputLine); // Send message
 			}
 		} catch (IOException e) {
 			System.out.println("PixyListener exception of some sort: exit");
@@ -54,9 +52,4 @@ public class PixyListener implements Runnable {
 		}
 
 	}
-	/*
-	 * public static void main(String[] args) throws IOException { PixyEvent e =
-	 * new EventTest(); PixyListener test = new PixyListener(e, 10007); Thread t
-	 * = new Thread(null, test, "PixyListener"); t.start(); }
-	 */
 }
