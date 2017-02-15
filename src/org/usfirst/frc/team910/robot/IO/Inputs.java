@@ -21,7 +21,8 @@ public class Inputs {
 	public boolean driveStraight;
 	public boolean autoGear;
 	public boolean autoShoot;
-	public boolean autoClimb;// 5 left
+	public boolean autoClimb;
+	public boolean autoHopper;//4 left Work in progress
 
 	// operator functions
 	public boolean primeButton;

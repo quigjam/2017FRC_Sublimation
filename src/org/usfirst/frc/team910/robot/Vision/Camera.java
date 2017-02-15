@@ -53,6 +53,10 @@ public class Camera implements PixyEvent {
 		return true;
 	}
 
+	public boolean hopperSearch(){//TODO Placeholder, write camera stuff
+		return true;
+	}
+	
 	private int[] highestFrame;
 
 	// String order: cam#, frame#, sig, x, y, width, height
