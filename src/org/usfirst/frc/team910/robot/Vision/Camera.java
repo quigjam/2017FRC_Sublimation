@@ -26,6 +26,13 @@ public class Camera implements PixyEvent {
 	private static final int MAX_CAMERAS = 4;
 
 	public CameraData[] cameraData;
+	
+	public TargetArray boiler;
+	public TargetArray rope;
+	public TargetArray hopper;
+	public TargetArray gearGoalLeft;
+	public TargetArray gearGoalMid;
+	public TargetArray gearGoalRight;
 
 	public Camera() {
 		PixyListener pl = new PixyListener(this, 10075);
@@ -36,6 +43,13 @@ public class Camera implements PixyEvent {
 			cameraData[i] = new CameraData();
 		}
 		highestFrame = new int[MAX_CAMERAS];
+	
+		boiler = new TargetArray();
+		rope = new TargetArray();
+		hopper = new TargetArray();
+		gearGoalLeft = new TargetArray();
+		gearGoalMid = new TargetArray();
+		gearGoalRight = new TargetArray();
 	}
 
 	public boolean gearGoalSearch() { // TODO Placeholder, write camera class
