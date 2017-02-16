@@ -1,8 +1,8 @@
 package org.usfirst.frc.team910.robot.Vision;
 
 public class TargetArray {
-	public Target[] targets;
-	public int currentTarget;
+	private Target[] targets;
+	private int currentTarget;
 
 	public TargetArray() {
 		currentTarget = 0;
@@ -12,6 +12,24 @@ public class TargetArray {
 
 		}
 	}
+
+	public Target getCurrentTarget() {
+		return targets[currentTarget];
+	}
+
+	public Target getNextTarget() {
+		int index = currentTarget + 1;
+		if (index > targets.length) {
+			index = 0;
+		}
+		return targets[index];
+	}
+
+	public void setNextTargetAsCurrent() {
+		currentTarget++;
+		if (currentTarget > targets.length) {
+			currentTarget = 0;
+		}
+	}
+
 }
-
-

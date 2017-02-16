@@ -9,8 +9,13 @@ public class TargetLocaterLow extends TargetLocater implements Runnable {
 	private static final int SIG_FUEL_2 = 5;
 	private static final int SIG_FUEL_3 = 6;
 
-	public TargetLocaterLow(CameraData camData) {
+	public TargetArray gearGoal;
+	public TargetArray hopper;
+	
+	public TargetLocaterLow(CameraData camData, TargetArray gearGoal, TargetArray hopper) {
 		super(camData);
+		this.gearGoal = gearGoal;
+		this.hopper = hopper;
 	}
 
 	public void run() {
