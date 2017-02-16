@@ -38,5 +38,6 @@ public class Climber {
 			out.setClimbPower(0);
 		}
 
+		
 	}
 }

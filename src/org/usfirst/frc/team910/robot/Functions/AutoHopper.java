@@ -38,7 +38,7 @@ public class AutoHopper {
 				break;
 
 			case DRIVE:
-				drive.originangle.set(sense.cameraAngle.get());
+				drive.originAngle.set(sense.cameraAngle.get());
 //				drive.driveStraightNavX(false,POWER,0);
 //				if (sense.accelX > SOMENUMBER){
 					hopperState = HopperState.DONE;
