@@ -1,6 +1,7 @@
 package org.usfirst.frc.team910.robot.Vision;
 
 import org.usfirst.frc.team910.robot.IO.Sensors;
+import org.usfirst.frc.team910.robot.IO.Util;
 
 import edu.wpi.first.wpilibj.Timer;
 
@@ -26,11 +27,13 @@ public class TargetLocaterHigh extends TargetLocater implements Runnable {
 	private TargetArray rope;
 	private Sensors sense;
 
-	public TargetLocaterHigh(CameraData camData, TargetArray boiler, TargetArray rope, Sensors sense) {
-		super(camData);
+	public TargetLocaterHigh(CameraData camData, TargetArray boiler, TargetArray rope, Sensors sense,
+			double physcamangle) {
+		super(camData, physcamangle);
 		this.boiler = boiler;
 		this.rope = rope;
 		this.sense = sense;
+
 	}
 
 	public void run() {
@@ -80,8 +83,8 @@ public class TargetLocaterHigh extends TargetLocater implements Runnable {
 				&& topBoiler.xcord - TOP_BOILER_X_ALIGN < currentblock.xcord
 				&& topBoiler.xcord + TOP_BOILER_X_ALIGN > currentblock.xcord) {
 			Target thisBoiler = boiler.getNextTarget();
-			thisBoiler.cameraAngle = 0;
-			thisBoiler.distance = 0; // TODO math
+			thisBoiler.cameraAngle = (currentblock.xcord - (X_RES / 2)) * X_DEG_PER_PIXEL + physcamangle;
+			thisBoiler.distance = Util.interpolate(BOILER_DIST_AXIS, BOILER_DIST_TABLE, currentblock.width);
 			thisBoiler.robotAngle = sense.robotAngle.get();
 			thisBoiler.time = Timer.getFPGATimestamp();
 			thisBoiler.totalAngle.set(thisBoiler.cameraAngle + thisBoiler.robotAngle);
@@ -95,8 +98,8 @@ public class TargetLocaterHigh extends TargetLocater implements Runnable {
 		if (checkLimit(rope_aspectratio_limit, currentblock.width / currentblock.height)
 				&& checkLimit(rope_area_limit, currentblock.width * currentblock.height)) {
 			Target thisRope = rope.getNextTarget();
-			thisRope.cameraAngle = 0;
-			thisRope.distance = 0;
+			thisRope.cameraAngle = (currentblock.xcord - (X_RES / 2)) * X_DEG_PER_PIXEL + physcamangle;
+			thisRope.distance = Util.interpolate(ROPE_DIST_AXIS, ROPE_DIST_TABLE, currentblock.width);
 			thisRope.robotAngle = sense.robotAngle.get();
 			thisRope.time = Timer.getFPGATimestamp();
 			thisRope.totalAngle.set(thisRope.cameraAngle + thisRope.robotAngle);
