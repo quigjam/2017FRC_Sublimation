@@ -84,6 +84,7 @@ public class TargetLocaterHigh extends TargetLocater implements Runnable {
 			thisBoiler.distance = 0; // TODO math
 			thisBoiler.robotAngle = sense.robotAngle.get();
 			thisBoiler.time = Timer.getFPGATimestamp();
+			thisBoiler.totalAngle.set(thisBoiler.cameraAngle + thisBoiler.robotAngle);
 			boiler.setNextTargetAsCurrent();
 
 		}
@@ -93,11 +94,12 @@ public class TargetLocaterHigh extends TargetLocater implements Runnable {
 
 		if (checkLimit(rope_aspectratio_limit, currentblock.width / currentblock.height)
 				&& checkLimit(rope_area_limit, currentblock.width * currentblock.height)) {
-			Target thisrope = rope.getNextTarget();
-			thisrope.cameraAngle = 0;
-			thisrope.distance = 0;
-			thisrope.robotAngle = sense.robotAngle.get();
-			thisrope.time = Timer.getFPGATimestamp();
+			Target thisRope = rope.getNextTarget();
+			thisRope.cameraAngle = 0;
+			thisRope.distance = 0;
+			thisRope.robotAngle = sense.robotAngle.get();
+			thisRope.time = Timer.getFPGATimestamp();
+			thisRope.totalAngle.set(thisRope.cameraAngle + thisRope.robotAngle);
 			rope.setNextTargetAsCurrent();
 		}
 	}
