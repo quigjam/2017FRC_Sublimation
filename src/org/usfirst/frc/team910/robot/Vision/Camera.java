@@ -4,6 +4,9 @@ import edu.wpi.first.wpilibj.Timer;
 
 public class Camera implements PixyEvent {
 
+	private static final int PIXY_MESSAGE_EVENT_ALIVE = 1;
+	private static final int PIXY_MESSAGE_EVENT_OBJECT_DETECTED = 2;
+	
 	private static final int PIXY_CAM_ID_1 = 122557792;
 	private static final int PIXY_CAM_ID_2 = -324215471;
 	private static final int PIXY_CAM_ID_3 = -250941110;
@@ -73,44 +76,56 @@ public class Camera implements PixyEvent {
 	
 	private int[] highestFrame;
 
-	// String order: cam#, frame#, sig, x, y, width, height
+	// String order before 2/16/2017: cam#, frame#, sig, x, y, width, height
+	// String order starting 2/16/2017: eventtype, frame#, cam#, sig, x, y, width, height
 	public void eventGet(String s) {
 		String[] parts = s.split(",");
-		int cameraNumber = Integer.parseInt(parts[0]);
-		switch(cameraNumber){
-		case LEFT_PIXY: 
-			cameraNumber = 0;
-			break;
-		case RIGHT_PIXY:
-			cameraNumber = 1;
-			break;
-		case FRONT_LOW_PIXY:
-			cameraNumber = 2;
-			break;
-		case FRONT_HIGH_PIXY:
-			cameraNumber = 3;
-			break;
-		default:
-			System.out.println("Wrong pixy cam is plugged in. ID:" + cameraNumber);
-		}
-		int frameNumber = Integer.parseInt(parts[1]);
-		int frameIndex = frameNumber % FRAMES_PER_CAMERA;
-		if (frameNumber > highestFrame[cameraNumber]) {
-			cameraData[cameraNumber].frames[frameIndex].reset();
-			highestFrame[cameraNumber] = frameNumber;
-			cameraData[cameraNumber].frames[frameIndex].time = Timer.getFPGATimestamp();
-		}
-		cameraData[cameraNumber].currentFrame = frameIndex;
-		Frame currentFrame = cameraData[cameraNumber].frames[frameIndex];
-		if (currentFrame.currentBlock < BLOCKS_PER_FRAME) {
-			Block currentBlock = currentFrame.blocks[currentFrame.currentBlock];
-			currentBlock.signature = Integer.parseInt(parts[2]);
-			currentBlock.xcord = Integer.parseInt(parts[3]);
-			currentBlock.ycord = Integer.parseInt(parts[4]);
-			currentBlock.width = Integer.parseInt(parts[5]);
-			currentBlock.height = Integer.parseInt(parts[6]);
-			currentFrame.currentBlock++;
+		int eventtype = Integer.parseInt(parts[0]);
+		switch(eventtype){ // Check the message type 
+		case PIXY_MESSAGE_EVENT_ALIVE: 
+			System.out.println("Alive message recived:" + s);
+			return; // End of PIXY_MESSAGE_EVENT_ALIVE
+		case PIXY_MESSAGE_EVENT_OBJECT_DETECTED:
+			int cameraNumber = Integer.parseInt(parts[2]);
+			switch(cameraNumber){
+			case LEFT_PIXY: 
+				cameraNumber = 0;
+				break;
+			case RIGHT_PIXY:
+				cameraNumber = 1;
+				break;
+			case FRONT_LOW_PIXY:
+				cameraNumber = 2;
+				break;
+			case FRONT_HIGH_PIXY:
+				cameraNumber = 3;
+				break;
+			default:
+				System.out.println("Wrong pixy cam is plugged in. ID:" + cameraNumber);
+				return;
+			}
+			int frameNumber = Integer.parseInt(parts[1]);
+			int frameIndex = frameNumber % FRAMES_PER_CAMERA;
+			if (frameNumber > highestFrame[cameraNumber]) {
+				cameraData[cameraNumber].frames[frameIndex].reset();
+				highestFrame[cameraNumber] = frameNumber;
+				cameraData[cameraNumber].frames[frameIndex].time = Timer.getFPGATimestamp();
+			}
+			cameraData[cameraNumber].currentFrame = frameIndex;
+			Frame currentFrame = cameraData[cameraNumber].frames[frameIndex];
+			if (currentFrame.currentBlock < BLOCKS_PER_FRAME) {
+				Block currentBlock = currentFrame.blocks[currentFrame.currentBlock];
+				currentBlock.signature = Integer.parseInt(parts[3]);
+				currentBlock.xcord = Integer.parseInt(parts[4]);
+				currentBlock.ycord = Integer.parseInt(parts[5]);
+				currentBlock.width = Integer.parseInt(parts[6]);
+				currentBlock.height = Integer.parseInt(parts[7]);
+				currentFrame.currentBlock++;
+			}
+		    break; // End of PIXY_MESSAGE_EVENT_OBJECT_DETECTED
+	    default:
+		    System.out.println("invalid message form raspberry pi" + s);
+		    return; // End of invalid event type / message
 		}
 	}
-
-}
+}	
