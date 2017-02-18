@@ -20,6 +20,8 @@ public class Sensors {
 								// field relative
 	public double cameraDistance;// TODO Placeholder, get from camera
 
+	public double ultrasonicDistance;//Placeholder
+	
 	public Sensors() {
 
 		navx = new AHRS(SPI.Port.kMXP);
