@@ -27,7 +27,9 @@ public class Camera implements PixyEvent {
 	public static final int FRAMES_PER_CAMERA = 10;
 	public static final int NUMBER_OF_TARGETS = 3;
 	private static final int MAX_CAMERAS = 4;
-
+	
+	public static final int PI_NETWORK_PORT_NUMBER = 10075 ;
+   
 	public CameraData[] cameraData;
 	
 	public TargetArray boiler;
@@ -38,7 +40,7 @@ public class Camera implements PixyEvent {
 	public TargetArray gearGoalRight;
 
 	public Camera() {
-		PixyListener pl = new PixyListener(this, 10075);
+		PixyListener pl = new PixyListener(this, PI_NETWORK_PORT_NUMBER );
 		Thread t = new Thread(null, pl, "PixyListener");
 		t.start();
 		cameraData = new CameraData[MAX_CAMERAS];
