@@ -11,9 +11,9 @@ public class TargetLocaterLow extends TargetLocater implements Runnable {
 
 	public TargetArray gearGoal;
 	public TargetArray hopper;
-	
-	public TargetLocaterLow(CameraData camData, TargetArray gearGoal, TargetArray hopper) {
-		super(camData);
+
+	public TargetLocaterLow(CameraData camData, TargetArray gearGoal, TargetArray hopper, double physcamangle) {
+		super(camData, physcamangle);
 		this.gearGoal = gearGoal;
 		this.hopper = hopper;
 	}
