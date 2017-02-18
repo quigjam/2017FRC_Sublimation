@@ -76,8 +76,8 @@ public class Camera implements PixyEvent {
 	
 	private int[] highestFrame;
 
-	// String order before 2/16/2017: cam#, frame#, sig, x, y, width, height
-	// String order starting 2/16/2017: eventtype, frame#, cam#, sig, x, y, width, height
+	// Message format in this string:
+	// message type, camera number, frame number, number of blocks, signature, x, y, width, height
 	public void eventGet(String s) {
 		String[] parts = s.split(",");
 		int eventtype = Integer.parseInt(parts[0]);
@@ -86,7 +86,7 @@ public class Camera implements PixyEvent {
 			System.out.println("Alive message recived:" + s);
 			return; // End of PIXY_MESSAGE_EVENT_ALIVE
 		case PIXY_MESSAGE_EVENT_OBJECT_DETECTED:
-			int cameraNumber = Integer.parseInt(parts[2]);
+			int cameraNumber = Integer.parseInt(parts[1]);
 			switch(cameraNumber){
 			case LEFT_PIXY: 
 				cameraNumber = 0;
@@ -104,7 +104,7 @@ public class Camera implements PixyEvent {
 				System.out.println("Wrong pixy cam is plugged in. ID:" + cameraNumber);
 				return;
 			}
-			int frameNumber = Integer.parseInt(parts[1]);
+			int frameNumber = Integer.parseInt(parts[2]);
 			int frameIndex = frameNumber % FRAMES_PER_CAMERA;
 			if (frameNumber > highestFrame[cameraNumber]) {
 				cameraData[cameraNumber].frames[frameIndex].reset();
@@ -115,11 +115,11 @@ public class Camera implements PixyEvent {
 			Frame currentFrame = cameraData[cameraNumber].frames[frameIndex];
 			if (currentFrame.currentBlock < BLOCKS_PER_FRAME) {
 				Block currentBlock = currentFrame.blocks[currentFrame.currentBlock];
-				currentBlock.signature = Integer.parseInt(parts[3]);
-				currentBlock.xcord = Integer.parseInt(parts[4]);
-				currentBlock.ycord = Integer.parseInt(parts[5]);
-				currentBlock.width = Integer.parseInt(parts[6]);
-				currentBlock.height = Integer.parseInt(parts[7]);
+				currentBlock.signature = Integer.parseInt(parts[4]);
+				currentBlock.xcord = Integer.parseInt(parts[5]);
+				currentBlock.ycord = Integer.parseInt(parts[6]);
+				currentBlock.width = Integer.parseInt(parts[7]);
+				currentBlock.height = Integer.parseInt(parts[8]);
 				currentFrame.currentBlock++;
 			}
 		    break; // End of PIXY_MESSAGE_EVENT_OBJECT_DETECTED
