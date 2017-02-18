@@ -14,6 +14,12 @@ public class TargetLocater implements Runnable {
 	protected static final double[] ROPE_DIST_AXIS = { 1, 1 };
 	protected static final double[] ROPE_DIST_TABLE = { 1, 1 };
 
+	protected static final double[] GEAR_DIST_AXIS = { 1, 1 };
+	protected static final double[] GEAR_DIST_TABLE = { 1, 1 };
+	
+	protected static final double[] HOPPER_DIST_AXIS = { 1, 1 };
+	protected static final double[] HOPPER_DIST_TABLE = { 1, 1 };
+
 	protected double physcamangle;
 
 	protected CameraData data;
