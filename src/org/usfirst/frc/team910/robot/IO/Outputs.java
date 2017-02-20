@@ -5,6 +5,7 @@ import com.ctre.CANTalon.FeedbackDevice;
 import com.ctre.CANTalon.TalonControlMode;
 
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -16,10 +17,10 @@ public class Outputs {
 	private static final double MIN_REST_TIME = 5;// in seconds
 	private static final double DRIVE_INCH_PER_REV = 4*Math.PI;
 
-	// private CANTalon leftMotor1;
-	// private CANTalon leftMotor2;
-	// private CANTalon rightMotor1;
-	// private CANTalon rightMotor2;
+	 private Talon leftMotor1;
+	 private Talon leftMotor2;
+	 private Talon rightMotor1;
+	 private Talon rightMotor2;
 	private CANTalon leftDriveCan;
 	private CANTalon rightDriveCan;
 	private Talon leftDrive;
@@ -33,6 +34,7 @@ public class Outputs {
 	private CANTalon gearPanelMotor1;
 	private CANTalon gearPanelMotor2;
 	private PowerDistributionPanel pdp;
+	private Solenoid ringOfFire;
 
 	public double leftDriveEncoder;
 	public double rightDriveEncoder;
@@ -43,11 +45,11 @@ public class Outputs {
 	public double gearPanelPositionEncoder;
 
 	public Outputs() {
-		// leftMotor1 = new CANTalon(ElectroPaul.LEFT_MOTOR_PORT_1);
-		// leftMotor2 = new CANTalon(ElectroPaul.LEFT_MOTOR_PORT_2);
-		// rightMotor1 = new CANTalon(ElectroPaul.RIGHT_MOTOR_PORT_1);
-		// rightMotor2 = new CANTalon(ElectroPaul.RIGHT_MOTOR_PORT_2);
-		leftDriveCan = new CANTalon(ElectroPaul.LEFT_DRIVE_CAN);
+		 leftMotor1 = new Talon(2);
+		 leftMotor2 = new Talon(3);
+		rightMotor1 = new Talon(0);
+		rightMotor2 = new Talon(1);
+		/*leftDriveCan = new CANTalon(ElectroPaul.LEFT_DRIVE_CAN);
 		leftDriveCan.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
 		leftDriveCan.setEncPosition(0);
 		leftDrive = new Talon(ElectroPaul.LEFT_DRIVE);
@@ -74,21 +76,24 @@ public class Outputs {
 		gearPanelMotor1 = new CANTalon(ElectroPaul.GEAR_PANEL_MOTOR_1);
 		gearPanelMotor2 = new CANTalon(ElectroPaul.GEAR_PANEL_MOTOR_2);
 		pdp = new PowerDistributionPanel(0);
+		
+*/		ringOfFire = new Solenoid(0);
+		ringOfFire.set(true);
 
 	}
 
 	public void setLeftDrive(double power) {
-		// leftMotor1.set(-power);
-		// leftMotor2.set(-power);
-		leftDriveCan.set(power);
-		leftDrive.set(power);
+		 leftMotor1.set(-power);
+		 leftMotor2.set(-power);
+		//leftDriveCan.set(power);
+		//leftDrive.set(power);
 	}
 
 	public void setRightDrive(double power) {
-		// rightMotor1.set(power);
-		// rightMotor2.set(power);
-		rightDriveCan.set(power);
-		rightDrive.set(power);
+		 rightMotor1.set(power);
+		 rightMotor2.set(power);
+		//rightDriveCan.set(power);
+		//rightDrive.set(power);
 	}
 
 	public void setShooterPower(double power) {
@@ -198,7 +203,7 @@ public class Outputs {
 	}
 
 	public void readEncoders() {
-		leftDriveEncoder = leftDriveCan.getPosition() * DRIVE_INCH_PER_REV;
+		/*leftDriveEncoder = leftDriveCan.getPosition() * DRIVE_INCH_PER_REV;
 		rightDriveEncoder = rightDriveCan.getPosition()*DRIVE_INCH_PER_REV;
 		shooterSpeedEncoder = shooterMotor.getSpeed();
 		transporterSpeedEncoder = transporterMotor.getSpeed();
@@ -211,6 +216,6 @@ public class Outputs {
 		SmartDashboard.putNumber("transporterSpeedEncoder", transporterSpeedEncoder);
 		SmartDashboard.putNumber("agitatorSpeedEncoder", agitatorSpeedEncoder);
 		SmartDashboard.putNumber("gearPanelPositionEncoder", gearPanelPositionEncoder);
-
+*/
 	}
 }

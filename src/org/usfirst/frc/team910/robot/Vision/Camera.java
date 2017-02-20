@@ -81,6 +81,9 @@ public class Camera implements PixyEvent {
 	// Message format in this string:
 	// message type, camera number, frame number, number of blocks, signature, x, y, width, height
 	public void eventGet(String s) {
+		
+		System.out.println(s);
+		
 		String[] parts = s.split(",");
 		int eventtype = Integer.parseInt(parts[0]);
 		switch(eventtype){ // Check the message type 

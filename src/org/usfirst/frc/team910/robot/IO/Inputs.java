@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Inputs {
 
-	private static final double DEADBAND = 0.1;
+	private static final double DEADBAND = 0.3;
 
 	private Joystick leftStick;
 	private Joystick rightStick;
@@ -47,8 +47,9 @@ public class Inputs {
 
 	public void read() {
 		// driver functions
-		leftJoyStickY = deadband(DEADBAND, -leftStick.getY());
-		rightJoyStickY = deadband(DEADBAND, -rightStick.getY());
+		leftJoyStickY=0;
+		//leftJoyStickY = deadband(DEADBAND, -leftStick.getY());
+		/*rightJoyStickY = deadband(DEADBAND, -rightStick.getY());
 		leftJoyStickX = deadband(DEADBAND, leftStick.getX());
 		rightJoyStickX = deadband(DEADBAND, rightStick.getX());
 		dynamicBrake = leftStick.getTrigger();
@@ -69,7 +70,7 @@ public class Inputs {
 		gearOuttake = controlBoard.getRawButton(7) || gamepad.getRawButton(7);
 		jogShooterUp = controlBoard.getRawButton(8) || gamepad.getRawAxis(3) > 0.9;
 		jogShooterDown = controlBoard.getRawButton(9) || gamepad.getRawAxis(2) > 0.9;
-
+*/
 	}
 
 	public double deadband(double deadband, double joyPos) {

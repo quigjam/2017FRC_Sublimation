@@ -12,6 +12,7 @@ import org.usfirst.frc.team910.robot.Subsystems.GearSystem;
 import org.usfirst.frc.team910.robot.Subsystems.Shooter;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Solenoid;
 
 public class Robot extends IterativeRobot {
 
@@ -38,13 +39,13 @@ public class Robot extends IterativeRobot {
 		sense = new Sensors();
 
 		drive = new DriveTrain(in, out, sense);
-		shoot = new Shooter(out, in);
-		gear = new GearSystem();
-		climb = new Climber(out, in);
+		//shoot = new Shooter(out, in);
+		//gear = new GearSystem();
+		//climb = new Climber(out, in);
 
-		autoClimb = new AutoClimb(in, sense, drive, climb);
-		autoGear = new AutoGear(in, sense, drive, gear);
-		autoShoot = new AutoShoot(out, in, shoot);
+		//autoClimb = new AutoClimb(in, sense, drive, climb);
+		//autoGear = new AutoGear(in, sense, drive, gear);
+		//autoShoot = new AutoShoot(out, in, shoot);
 	}
 
 	@Override
@@ -74,7 +75,7 @@ public class Robot extends IterativeRobot {
 		sense.read();
 		out.readEncoders();
 		drive.drive();
-		shoot.run();
+		//shoot.run();
 		// gear.run();
 		// climb.run();
 	}

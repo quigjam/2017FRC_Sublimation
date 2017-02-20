@@ -21,6 +21,7 @@ public class PixyListener implements Runnable {
 	public PixyListener(PixyEvent event, int port) {
 		this.event = event;    // Save event interface provided 
 		this.port = port;      // Save port provided
+		System.out.println("constructed PixyListener");
 	}
 
 	public void run() {
@@ -37,7 +38,7 @@ public class PixyListener implements Runnable {
 			clientSocket = serverSocket.accept(); 
 			System.out.println("Connection successful");
 			System.out.println("Waiting for input.....");
-
+			
 			// Retrieve string from socket 
 			BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
