@@ -121,7 +121,7 @@ public class DriveTrain {
 		double correctionPwr = angleError * DRIVE_STRAIGHT_NAVX_PWR;
 		tankDrive(AUTO_DRIVE_PWR - correctionPwr, AUTO_DRIVE_PWR + correctionPwr);
 	}
-	public void rotate(Angle target){
+	public void rotate(Angle target){ //allows robot to rotate to a desired angle
 		double adjAngle = target.subtract(sense.robotAngle);
 		double power = ROTATE_PWR_FACTOR * adjAngle;
 		power = Math.max(Math.min(power,ROTATE_MAX_PWR), -ROTATE_MAX_PWR);

@@ -31,8 +31,8 @@ public class Sensors {
 	}
 
 	public void read() {
-		robotAngle.set(navx.getYaw());
-		accelX = navx.getRawAccelX();
+		robotAngle.set(navx.getYaw()); //Yaw of NavX is the robot angle
+		accelX = navx.getRawAccelX(); //Accleration of robot
 		SmartDashboard.putNumber("navxYaw", robotAngle.get());
 
 	}

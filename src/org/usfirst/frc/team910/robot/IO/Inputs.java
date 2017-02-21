@@ -38,7 +38,7 @@ public class Inputs {
 	public boolean gearIntake;
 	public boolean gearOuttake;
 
-	public Inputs() {
+	public Inputs() { //creates joysticks that are plugged into the port specified in ElectroPaul
 		leftStick = new Joystick(ElectroPaul.LEFT_JOYSTICK_PORT);
 		rightStick = new Joystick(ElectroPaul.RIGHT_JOYSTICK_PORT);
 		gamepad = new Joystick(ElectroPaul.GAME_PAD_JOYSTICK_PORT);
@@ -47,7 +47,7 @@ public class Inputs {
 
 	public void read() {
 		// driver functions
-		leftJoyStickY = deadband(DEADBAND, -leftStick.getY());
+		leftJoyStickY = deadband(DEADBAND, -leftStick.getY()); //joystick with deadband taken into account
 		rightJoyStickY = deadband(DEADBAND, -rightStick.getY());
 		leftJoyStickX = deadband(DEADBAND, leftStick.getX());
 		rightJoyStickX = deadband(DEADBAND, rightStick.getX());
@@ -58,9 +58,10 @@ public class Inputs {
 		autoClimb = leftStick.getRawButton(5);
 
 		// operator functions
-		primeButton = controlBoard.getRawButton(1) || gamepad.getRawButton(5);
+		//button name = button number on controlBoard || button number on XBOX gamepad
+		primeButton = controlBoard.getRawButton(5) || gamepad.getRawButton(5);
 
-		fireButton = controlBoard.getRawButton(2) || gamepad.getRawButton(6);
+		fireButton = controlBoard.getRawButton(4) || gamepad.getRawButton(6);
 		fireOverride = controlBoard.getRawButton(3) || gamepad.getRawButton(3);
 		climbButton = controlBoard.getRawButton(4);
 		cameraEnable = controlBoard.getRawButton(4) || gamepad.getRawButton(4);
@@ -72,11 +73,11 @@ public class Inputs {
 
 	}
 
-	public double deadband(double deadband, double joyPos) {
+	public double deadband(double deadband, double joyPos) { //Creates a deadzone that prevents overly sensitive inputs
 		if (Math.abs(joyPos) < deadband) {
-			joyPos = 0;
+			return(0);
+		}else{
+			return (joyPos - deadband) / (1 - deadband);
 		}
-		return (joyPos - deadband) / (1 - deadband);
 	}
-
 }

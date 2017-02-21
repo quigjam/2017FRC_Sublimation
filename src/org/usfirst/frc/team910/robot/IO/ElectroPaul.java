@@ -1,6 +1,6 @@
 package org.usfirst.frc.team910.robot.IO;
 
-public class ElectroPaul {
+public class ElectroPaul {//Shows what ports controls and motors are plugged into
 
 	// Drive
 	public final static int LEFT_JOYSTICK_PORT = 0;
