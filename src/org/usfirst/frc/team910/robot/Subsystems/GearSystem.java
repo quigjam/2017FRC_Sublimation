@@ -27,7 +27,7 @@ public class GearSystem {
 		this.sense = sense;
 	}
 	
-	public void gearposition(int gearPanelPosition, double rightwindowmotor, double leftwindowmotor,int ultrasonicDistance){
+	public void gearposition(int gearPanelPosition, double rightwindowmotor, double leftwindowmotor,int ultrasonicDistance){ //Shows where a gear is on the panel
 		
 		switch(gearPanelPosition){
 		

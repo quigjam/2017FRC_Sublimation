@@ -107,6 +107,7 @@ public class Outputs {
 			shooterMotor.set(0);
 		} else {
 			shooterMotor.changeControlMode(TalonControlMode.Speed);
+			//shooterMotor.changeControlMode(TalonControlMode.PercentVbus);
 			shooterMotor.set(speed);
 		}
 	}

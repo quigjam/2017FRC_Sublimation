@@ -1,6 +1,6 @@
 package org.usfirst.frc.team910.robot.IO;
 
-public class Angle {
+public class Angle { //math to create angles throughout NavX-related and Auto functions
 	private double angle;
 	
 	public Angle(double angle) {

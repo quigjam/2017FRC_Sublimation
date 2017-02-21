@@ -39,7 +39,7 @@ public class Robot extends IterativeRobot {
 
 		drive = new DriveTrain(in, out, sense);
 		shoot = new Shooter(out, in);
-		gear = new GearSystem();
+		gear = new GearSystem(in, out, sense);
 		climb = new Climber(out, in);
 
 		autoClimb = new AutoClimb(in, sense, drive, climb);

@@ -29,7 +29,7 @@ public class Shooter {
 		}
 	}
 
-	public void shooterPrime() {
+	public void shooterPrime() { //Moves the big roller
 		if (in.primeButton) {
 			out.setShooterSpeed(SHOOTER_SPEED + jogoffset);
 			// out.setAgitatorPower(0.8);
@@ -41,11 +41,11 @@ public class Shooter {
 
 	}
 	
-	public boolean upToSpeed(double currentSpd){
+	public boolean upToSpeed(double currentSpd){ //shows if the shooter is at optimal speed
 		return currentSpd > SHOOTER_SPEED + jogoffset;
 	}
 
-	public void shooterFire() {
+	public void shooterFire() { //Moves the smaller roller, transports balls from hopper
 		if (in.fireButton) {
 			out.setTransportPower(0.75);
 		} else {
@@ -56,7 +56,7 @@ public class Shooter {
 	boolean prevjogup = false;
 	boolean prevjogdown = false;
 
-	public void jog() {
+	public void jog() { //allows slight adjustment of positions
 
 		if (in.jogShooterUp && !prevjogup) {
 			jogoffset += JOG_AMOUNT;
