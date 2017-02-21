@@ -21,36 +21,36 @@ public class Shooter {
 
 	public void run() {
 		jog();
-		if (in.autoClimb || in.autoGear || in.autoShoot || in.autoHopper) {
+		if (in.autoClimb || in.autoGear || in.autoShoot || in.autoHopper) { //if we hit any of these do nothing
 
-		} else {
+		} else {											//if we do anything else
 
-			shooterPrime(in.primeButton);
+			shooterPrime(in.primeButton);    //call prime with the prime button
 
-			shooterFire(in.fireButton);
+			shooterFire(in.fireButton);		//and shooter with the fire button
 
 		}
 	}
 
-	public void shooterPrime(boolean on) { // Moves the big roller
-		if (on) {
-			out.setShooterSpeed(SHOOTER_SPEED + jogoffset);
-			 out.setAgitatorPower(0.8);
+	public void shooterPrime(boolean primeButton) { // Moves the big roller
+		if (primeButton) {							//if we hit the prime button				
+			out.setShooterSpeed(SHOOTER_SPEED + jogoffset);  //ready the shooter to fire (with our constant shooter speed + how much we have jogged)
+			 out.setAgitatorPower(0.8);						//start spinning the agitator to get the fuel moving
 			// out.setShooterPower (0.5);
-		} else {
+		} else {										//if anything else happens make sure the shooter motor doesn't move
 			out.setShooterPower(0);
 		}
 	}
 
-	public boolean upToSpeed(double currentSpd) { // shows if the shooter is at optimal speed
-		return currentSpd > SHOOTER_SPEED + jogoffset;
+	public boolean upToSpeed(double currentSpd) { // lets us know when we get the shooter motor up to the speed we set it to
+		return currentSpd > SHOOTER_SPEED + jogoffset;				
 	}
 
-	public void shooterFire(boolean on) { // Moves the smaller roller, transports balls from hopper
-		if (on) {
-			out.setTransportPower(0.75);
-		} else {
-			out.setTransportPower(0);
+	public void shooterFire(boolean fireButton) { // Moves the smaller roller, transports balls from hopper
+		if (fireButton) {						//when we hit that fire button
+			out.setTransportPower(0.75);		//start up the transporter motor and start moving balls into the shooter motor
+		} else {								//if anything else happens make sure the transport motor doesn't move
+			out.setTransportPower(0);			
 		}
 	}
 
@@ -59,16 +59,16 @@ public class Shooter {
 
 	public void jog() { // allows slight adjustment of positions
 
-		if (in.jogShooterUp && !prevjogup) {
-			jogoffset += JOG_AMOUNT;
-		} else if (in.jogShooterDown && !prevjogdown) {
+		if (in.jogShooterUp && !prevjogup) {					//if we hit the jog up button and didn't just hit jog up a moment ago
+			jogoffset += JOG_AMOUNT;							//add the jog constant to the jog offset of the motor
+		} else if (in.jogShooterDown && !prevjogdown) {       //if we hit jog down and didn't just hit jog down a moment ago
 
-			jogoffset -= JOG_AMOUNT;
+			jogoffset -= JOG_AMOUNT;							//subtract the jog constant to the jog offset of the motor
 		}
 
-		prevjogup = in.jogShooterUp;
-		prevjogdown = in.jogShooterDown;
+		prevjogup = in.jogShooterUp;						//make sure we don't add 	      more than once for button push
+		prevjogdown = in.jogShooterDown;										//or subtract
 
-		SmartDashboard.putNumber("JogValue", SHOOTER_SPEED + jogoffset);
+		SmartDashboard.putNumber("JogValue", SHOOTER_SPEED + jogoffset);        // put out the jog-adjusted value to the dashboardgit 
 	}
 }
