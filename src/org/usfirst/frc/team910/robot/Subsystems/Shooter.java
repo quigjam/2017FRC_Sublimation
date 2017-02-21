@@ -35,7 +35,7 @@ public class Shooter {
 	public void shooterPrime(boolean on) { // Moves the big roller
 		if (on) {
 			out.setShooterSpeed(SHOOTER_SPEED + jogoffset);
-			// out.setAgitatorPower(0.8);
+			 out.setAgitatorPower(0.8);
 			// out.setShooterPower (0.5);
 		} else {
 			out.setShooterPower(0);

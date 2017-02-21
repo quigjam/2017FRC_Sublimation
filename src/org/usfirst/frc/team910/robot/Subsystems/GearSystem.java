@@ -65,8 +65,18 @@ public class GearSystem {
 			else if(in.gearOuttake) { 
 				gearRoller(-ROLLER_POWER);
 			}
+			
+			//TODO: Replace with position code
+			if(in.fireOverride && in.gearPanelPosition == 1){
+				out.setGearPanelPower(0.20);
+			} else if (in.fireOverride && in.gearPanelPosition == 3){
+				out.setGearPanelPower(-0.20);
+			} else {
+				out.setGearPanelPower(0);
+			}
 		}
 	}	
+	
 	public void gearRoller(double power) { 
 		out.setGearRoller(power);
 		

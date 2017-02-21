@@ -20,10 +20,8 @@ public class Climber {
 
 		} else if (in.reverseButton && in.climbButton) {
 			climb(-CLIMB_POWER);
-
 		} else if (in.climbButton) {
 			climb(CLIMB_POWER);
-
 		} else {
 			climb(0);
 

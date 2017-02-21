@@ -24,10 +24,10 @@ public class ElectroPaul {//Shows what ports controls and motors are plugged int
 	public final static int RIGHT_DRIVE = 0;
 	public final static int SHOOTER_MOTOR = 12;
 	public final static int TRANSPORTER_MOTOR = 3;
-	public final static int AGITATOR_MOTOR = -1;
-	public final static int CLIMB_MOTOR_1 = -1;
-	public final static int CLIMB_MOTOR_2 = -1;
-	public final static int GEAR_ROLLER_MOTOR = -1;
-	public final static int GEAR_PANEL_MOTOR_1 = -1;
-	public final static int GEAR_PANEL_MOTOR_2 = -1; 
+	public final static int AGITATOR_MOTOR = 5;
+	public final static int CLIMB_MOTOR_1 = 6;
+	public final static int CLIMB_MOTOR_2 = 7;
+	public final static int GEAR_ROLLER_MOTOR = 9;
+	public final static int GEAR_PANEL_MOTOR_1 = 4;
+	public final static int GEAR_PANEL_MOTOR_2 = 11; 
 } 
