@@ -29,15 +29,15 @@ public class AutoShoot {
 		this.shoot = shoot;
 	}
 
-	private enum ShootState {
-		CAM_CHECK, DRIVE, ALIGN, PRIME, FIRE;
+	private enum ShootState {								
+		CAM_CHECK, DRIVE, ALIGN, PRIME, FIRE;					//construct all the states we need
 	};
 
-	private ShootState shootState = ShootState.values()[0];
-	private Target currentTarget; 
+	private ShootState shootState = ShootState.values()[0];		//put them in an array
+	private Target currentTarget; 							
 	
 	public void run() {
-		if (in.autoShoot){
+		if (in.autoShoot){										//when we hi
 			currentTarget = sense.camera.boiler.getCurrentTarget(); 
 			switch (shootState) {
 			case CAM_CHECK:
