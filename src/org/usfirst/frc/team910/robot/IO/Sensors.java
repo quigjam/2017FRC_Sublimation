@@ -16,10 +16,6 @@ public class Sensors {
 	public Angle robotAngle;
 	public double accelX;
 
-	public Angle cameraAngle; // TODO Placeholder, get from camera and make
-								// field relative
-	public double cameraDistance;// TODO Placeholder, get from camera
-
 	public double ultrasonicDistance;//Placeholder
 	
 	public Sensors() {
@@ -27,7 +23,6 @@ public class Sensors {
 		navx = new AHRS(SPI.Port.kMXP);
 		camera = new Camera();
 		robotAngle = new Angle(0);
-		cameraAngle = new Angle(0);
 	}
 
 	public void read() {

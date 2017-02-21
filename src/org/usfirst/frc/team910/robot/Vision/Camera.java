@@ -56,25 +56,6 @@ public class Camera implements PixyEvent {
 		gearGoalMid = new TargetArray();
 		gearGoalRight = new TargetArray();
 	}
-
-	public boolean gearGoalSearch() { // TODO Placeholder, write camera class
-		return true;
-
-	}
-
-	public boolean climbSearch() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	public boolean fuelGoalSearch() {
-		// TODO more camera to write
-		return true;
-	}
-
-	public boolean hopperSearch(){//TODO Placeholder, write camera stuff
-		return true;
-	}
 	
 	private int[] highestFrame;
 

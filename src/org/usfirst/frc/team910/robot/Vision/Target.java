@@ -5,9 +5,9 @@ import org.usfirst.frc.team910.robot.IO.Angle;
 public class Target {
 	public double time;
 	public double distance;
-	public double cameraAngle;
-	public double robotAngle;
-	public Angle totalAngle; 
+	public double cameraAngle; // robot relative
+	public double robotAngle; // field relative
+	public Angle totalAngle; // field relative
 
 	public Target() {
 		time = 0;
@@ -17,4 +17,3 @@ public class Target {
 		totalAngle = new Angle(0);
 	}
 }
-
