@@ -22,32 +22,32 @@ public class AutoHopper {
 	}
 	
 	private enum HopperState{
-		CAM_ALIGN, DRIVE, DONE; 
+		CAM_ALIGN, DRIVE, DONE; 							//construct states for 
 	};
 	
-	private HopperState hopperState = HopperState.values()[0];
+	private HopperState hopperState = HopperState.values()[0]; //put them in an array
 	
-	public void run(){
-		if (in.autoHopper){
-			//find hopper by looking at bunch of balls
-			switch(hopperState){
-			case CAM_ALIGN:
-				if(sense.camera.hopperSearch()){
-					hopperState = HopperState.DRIVE;
+	public void run(){											
+		if (in.autoHopper){											//if we hit the auto hopper button
+
+			switch(hopperState){		
+			case CAM_ALIGN:											
+				if(sense.camera.hopperSearch()){					//find a hopper
+					hopperState = HopperState.DRIVE;				//go to next state
 				}
 				break;
 
 			case DRIVE:
-				drive.originAngle.set(sense.cameraAngle.get());
-//				drive.driveStraightNavX(false,POWER,0);
-//				if (sense.accelX > SOMENUMBER){
-					hopperState = HopperState.DONE;
+				drive.originAngle.set(sense.cameraAngle.get());		//set the origin angel to where the target is
+//				drive.driveStraightNavX(false,POWER,0);				//drive at it
+//				if (sense.accelX > SOMENUMBER){						//when we hit the wall
+					hopperState = HopperState.DONE;					//go to the next state
 //				}
 				break;
 
 			case DONE:
 //				if(){
-					drive.tankDrive(0, 0);
+					drive.tankDrive(0, 0);							//stop
 //				}
 			}
 		}

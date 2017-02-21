@@ -45,32 +45,32 @@ public class AutoClimb {
 			switch (climbState) {                                   
 			case CAM_CHECK:
 
-				if (Timer.getFPGATimestamp() - currentTarget.time < LAG_TIME) {
-					climbState = ClimbState.DRIVE;
+				if (Timer.getFPGATimestamp() - currentTarget.time < LAG_TIME) { //if we see it within an acceptable period time
+					climbState = ClimbState.DRIVE;									//move to the next state
 
 				}
 				break;
 
 			case DRIVE:
-				drive.originAngle.set(sense.robotAngle.get() + sense.cameraAngle.get());
-				drive.driveStraightNavX(false, DRIVE_POWER, 0);
-				if ((currentTarget.distance) < ALLOWABLE_DISTANCE_ERROR) {
-					climbState = ClimbState.DRIVE2;
-					endTime = Timer.getFPGATimestamp() + DRIVE_TIME;  
+				drive.originAngle.set(sense.robotAngle.get() + sense.cameraAngle.get()); //set target angle to where the target is plus where we are
+				drive.driveStraightNavX(false, DRIVE_POWER, 0);							//drive straight to the target
+				if ((currentTarget.distance) < ALLOWABLE_DISTANCE_ERROR) {				//if our distance from the target falls within an allowable error
+					climbState = ClimbState.DRIVE2;										//advance to the next state
+					endTime = Timer.getFPGATimestamp() + DRIVE_TIME;  					//set our end time to the current value of our time + our drive time
 				}
 				break;
 			case DRIVE2:
-				drive.originAngle.set(sense.robotAngle.get() + sense.cameraAngle.get());
-				drive.driveStraightNavX(false, DRIVE_POWER, 0);
-				climb.forward(CLIMB_POWER);
-				if(Timer.getFPGATimestamp() > endTime) { 
-				climbState = climbState.CLIMB;
+				drive.originAngle.set(sense.robotAngle.get() + sense.cameraAngle.get());//set target angle to where the target is plus where we are
+				drive.driveStraightNavX(false, DRIVE_POWER, 0);							//drive straight toward target
+				climb.forward(CLIMB_POWER);												//start climbing
+				if(Timer.getFPGATimestamp() > endTime) { 								// when the time gets greater than our end time
+				climbState = climbState.CLIMB;											//go to CLIMB state
 				}
 				break;
 
 			case CLIMB:
 
-				climb.forward(CLIMB_POWER);
+				climb.forward(CLIMB_POWER);												//climb
 			}
 
 		}

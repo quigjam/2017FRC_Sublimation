@@ -9,7 +9,7 @@ public class AutonMain {
 		
 	}
 	public void run(){
-		steps[currentStep].run();
+		steps[currentStep].run();          //institutes a state machine as an array of autons, works similarly to a "switch" 
 		if(steps[currentStep].isDone()){
 			currentStep ++;
 			steps[currentStep].setup();
