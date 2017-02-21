@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.Timer;
 
 public class AutoClimb {
 
-	private static final double DRIVE_POWER = 0.2;
+	private static final double DRIVE_POWER = 0.2;               
 	private static final double ALLOWABLE_ANGLE_ERROR = .5;
 	private static final double LAG_TIME = 0.1;
 	private static final double ALLOWABLE_DISTANCE_ERROR = 1;
@@ -32,17 +32,17 @@ public class AutoClimb {
 	}
 
 	private enum ClimbState {
-		CAM_CHECK, DRIVE, DRIVE2, CLIMB
+		CAM_CHECK, DRIVE, DRIVE2, CLIMB               //constructs different cases for the case machine
 	};
 
-	private ClimbState climbState = ClimbState.values()[0];
+	private ClimbState climbState = ClimbState.values()[0];     //starts case machine for climbing
 	private Target currentTarget;
 	private double endTime = 0;  
 
 	public void run() {
-		if (in.autoClimb) {
-			currentTarget = sense.camera.rope.getCurrentTarget();
-			switch (climbState) {
+		if (in.autoClimb) {                                       //if we push the auto climb button
+			currentTarget = sense.camera.rope.getCurrentTarget();   //set the rope as our current target
+			switch (climbState) {                                   
 			case CAM_CHECK:
 
 				if (Timer.getFPGATimestamp() - currentTarget.time < LAG_TIME) {
