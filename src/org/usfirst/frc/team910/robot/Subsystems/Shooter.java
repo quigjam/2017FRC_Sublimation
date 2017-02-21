@@ -21,42 +21,43 @@ public class Shooter {
 
 	public void run() {
 		jog();
-		if (in.autoShoot) {
+		if (in.autoClimb || in.autoGear || in.autoShoot || in.autoHopper) {
 
 		} else {
-			shooterPrime();
-			shooterFire();
+
+			shooterPrime(in.primeButton);
+
+			shooterFire(in.fireButton);
+
 		}
 	}
 
-	public void shooterPrime() { //Moves the big roller
-		if (in.primeButton) {
+	public void shooterPrime(boolean on) { // Moves the big roller
+		if (on) {
 			out.setShooterSpeed(SHOOTER_SPEED + jogoffset);
-			// out.setAgitatorPower(0.8);
+			 out.setAgitatorPower(0.8);
 			// out.setShooterPower (0.5);
 		} else {
 			out.setShooterPower(0);
-			out.setAgitatorPower(0);
 		}
-
 	}
-	
-	public boolean upToSpeed(double currentSpd){ //shows if the shooter is at optimal speed
+
+	public boolean upToSpeed(double currentSpd) { // shows if the shooter is at optimal speed
 		return currentSpd > SHOOTER_SPEED + jogoffset;
 	}
 
-	public void shooterFire() { //Moves the smaller roller, transports balls from hopper
-		if (in.fireButton) {
+	public void shooterFire(boolean on) { // Moves the smaller roller, transports balls from hopper
+		if (on) {
 			out.setTransportPower(0.75);
 		} else {
-			out.setTransportPower(0); // TODO get actual powers for everything here
+			out.setTransportPower(0);
 		}
 	}
 
 	boolean prevjogup = false;
 	boolean prevjogdown = false;
 
-	public void jog() { //allows slight adjustment of positions
+	public void jog() { // allows slight adjustment of positions
 
 		if (in.jogShooterUp && !prevjogup) {
 			jogoffset += JOG_AMOUNT;

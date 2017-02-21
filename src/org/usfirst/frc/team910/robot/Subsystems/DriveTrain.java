@@ -34,9 +34,9 @@ public class DriveTrain {
 
 	private DriveFunction prevTask = DriveFunction.TANK_DRIVE;
 
-	public void drive() {
-		if (in.autoClimb || in.autoGear || in.autoShoot) {
-
+	public void run() {
+		if (in.autoClimb || in.autoGear || in.autoShoot || in.autoHopper) {
+			
 		} else if (in.dynamicBrake) {
 			dynamicBrake(prevTask != DriveFunction.DYNAMIC_BRAKING);
 			prevTask = DriveFunction.DYNAMIC_BRAKING;

@@ -19,7 +19,8 @@ public class GearSystem {
 	public static final double HOPPER_POSITION= 0;
 	public static final double NATURAL_GEAR_POSITION = 0;
 	public static final double EXTENDED_GEAR_POSITION = 0;
-
+	public static final double ROLLER_POWER = 0.75; 
+	
 	public GearSystem(Inputs in,Outputs out, Sensors sense) {
 		
 		this.in = in;
@@ -50,9 +51,34 @@ public class GearSystem {
 			}
 			break;
 		}
-
+ 
 
 	}
 
+	public void run() { 
+		if (in.autoClimb || in.autoGear || in.autoShoot || in.autoHopper)  { 	
+		}
+		else { 
+			if(in.gearIntake) { 
+				gearRoller(ROLLER_POWER);
+			}
+			else if(in.gearOuttake) { 
+				gearRoller(-ROLLER_POWER);
+			}
+			
+			//TODO: Replace with position code
+			if(in.fireOverride && in.gearPanelPosition == 1){
+				out.setGearPanelPower(0.20);
+			} else if (in.fireOverride && in.gearPanelPosition == 3){
+				out.setGearPanelPower(-0.20);
+			} else {
+				out.setGearPanelPower(0);
+			}
+		}
+	}	
 	
+	public void gearRoller(double power) { 
+		out.setGearRoller(power);
+		
+	}
 }
