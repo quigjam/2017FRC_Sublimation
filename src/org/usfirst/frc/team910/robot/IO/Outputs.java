@@ -47,8 +47,7 @@ public class Outputs {
 		// leftMotor2 = new CANTalon(ElectroPaul.LEFT_MOTOR_PORT_2);
 		// rightMotor1 = new CANTalon(ElectroPaul.RIGHT_MOTOR_PORT_1);
 		// rightMotor2 = new CANTalon(ElectroPaul.RIGHT_MOTOR_PORT_2);
-		leftDriveCan = new CANTalon(ElectroPaul.LEFT_DRIVE_CAN);
-		leftDriveCan.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
+		leftDriveCan = new CANTalon(ElectroPaul.LEFT_DRIVE_CAN);		leftDriveCan.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
 		leftDriveCan.setEncPosition(0);
 		leftDrive = new Talon(ElectroPaul.LEFT_DRIVE);
 		rightDriveCan = new CANTalon(ElectroPaul.RIGHT_DRIVE_CAN);
@@ -65,14 +64,25 @@ public class Outputs {
 		shooterMotor.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
 		shooterMotor.reverseOutput(true);
 		shooterMotor.reverseSensor(true);
+		shooterMotor.enableBrakeMode(false);
 
 		transporterMotor = new CANTalon(ElectroPaul.TRANSPORTER_MOTOR);
+		transporterMotor.enableBrakeMode(true);
 		agitatorMotor = new CANTalon(ElectroPaul.AGITATOR_MOTOR);
+		agitatorMotor.enableBrakeMode(false);
 		climbMotor1 = new CANTalon(ElectroPaul.CLIMB_MOTOR_1);
 		climbMotor2 = new CANTalon(ElectroPaul.CLIMB_MOTOR_2);
+		climbMotor1.enableBrakeMode(true);
+		climbMotor2.enableBrakeMode(true);
 		gearRollerMotor = new CANTalon(ElectroPaul.GEAR_ROLLER_MOTOR);
+		gearRollerMotor.reverseOutput(true);
+		gearRollerMotor.setInverted(true);
 		gearPanelMotor1 = new CANTalon(ElectroPaul.GEAR_PANEL_MOTOR_1);
+		//gearPanelMotor1.setInverted(true);  //FLIP ALL THE THINGS
+		//gearPanelMotor1.reverseOutput(true);
+		//gearPanelMotor1.reverseSensor(true);
 		gearPanelMotor2 = new CANTalon(ElectroPaul.GEAR_PANEL_MOTOR_2);
+		
 		pdp = new PowerDistributionPanel(0);
 
 	}
@@ -159,11 +169,11 @@ public class Outputs {
 
 	}
 
-	public void setGearPanelSpeed(double speed) {
-		gearPanelMotor1.changeControlMode(TalonControlMode.Speed);
-		gearPanelMotor2.changeControlMode(TalonControlMode.Speed);
-		gearPanelMotor1.set(speed);
-		gearPanelMotor2.set(speed);
+	public void setGearPanelSpeed(double position) {
+		gearPanelMotor1.changeControlMode(TalonControlMode.Position);
+		gearPanelMotor2.changeControlMode(TalonControlMode.Position);
+		gearPanelMotor1.set(position);
+		gearPanelMotor2.set(position);
 	}
 
 	public void setGearRoller(double power) {

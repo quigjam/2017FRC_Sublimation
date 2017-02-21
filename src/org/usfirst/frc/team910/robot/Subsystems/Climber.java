@@ -14,6 +14,19 @@ public class Climber {
 		this.in = in;
 	}
 
+	//also delete the below function for reasons
+	public void run(){
+		if(in.climbButton){
+			if(in.reverseButton){
+				out.setClimbPower(-0.2);
+			} else {
+				out.setClimbPower(0.2);
+			}
+		} else {
+			out.setClimbPower(0);
+		}
+	}
+	//seriously delete it
 	
 	public void reverse(double climbPower){ //climb down
 		

@@ -27,6 +27,27 @@ public class GearSystem {
 		this.sense = sense;
 	}
 	
+	//delete all below... for realz this time
+	public void run(){
+		if(in.gearIntake){
+			out.setGearRoller(0.5);
+		} else if(in.gearOuttake){
+			out.setGearRoller(-0.5);
+		} else {
+			out.setGearRoller(0);
+		}
+		
+		if(in.fireOverride && in.gearPanelPosition == 1){
+			out.setGearPanelPower(0.20);
+		} else if (in.fireOverride && in.gearPanelPosition == 3){
+			out.setGearPanelPower(-0.20);
+		} else {
+			out.setGearPanelPower(0);
+		}
+	
+	}
+	//delete all above later 
+	
 	public void gearposition(int gearPanelPosition, double rightwindowmotor, double leftwindowmotor,int ultrasonicDistance){ //Shows where a gear is on the panel
 		
 		switch(gearPanelPosition){
