@@ -5,10 +5,16 @@ import org.usfirst.frc.team910.robot.IO.Outputs;
 import org.usfirst.frc.team910.robot.IO.Sensors;
 import org.usfirst.frc.team910.robot.Subsystems.DriveTrain;
 import org.usfirst.frc.team910.robot.Subsystems.GearSystem;
+import org.usfirst.frc.team910.robot.Vision.Target;
+
+import edu.wpi.first.wpilibj.Timer;
 
 public class AutoGear {
 
 	private static final double WALL_ACCEL = 0;
+	private static final double LAG_TIME = 0.1;
+	private static final double MIN_ARC_ANGLE = 30;
+	private static final double DRIVE_POWER = 0.2;
 
 	private Inputs in;
 	private Outputs out;
@@ -24,74 +30,114 @@ public class AutoGear {
 	}
 
 	private enum GearState {
-		CAM_CHECK, CALCULATE, DRIVE_STRAIGHT1, ARC, DRIVE_STRAIGHT2, DELIVER_GEAR, REVERS; //constructing all the states for auto gear
+		CAM_CHECK, CALCULATE, DRIVE_STRAIGHT1, ARC, DRIVE_STRAIGHT2, DELIVER_GEAR, REVERSE, DONE; // constructing all the states for auto gear
 	};
 
-	private GearState gearState = GearState.values()[0];      //put all the states in an array
+	private GearState gearState = GearState.values()[0]; // put all the states in an array
 
 	private double botStart;
+	private double lastDistance = 0;
 
 	public void run() {
-		if (in.autoGear) {				   					//when we hit the auto gear button start up
+		if (in.autoGear) { // when we hit the auto gear button start up
+			Target currentTarget = getBestTarget();
 
-		
 			switch (gearState) {
 			case CAM_CHECK:
 
-				if (sense.camera.gearGoalSearch()) {         // find goal
-					gearState = GearState.CALCULATE;		//go to next state									
+				if (Timer.getFPGATimestamp() - currentTarget.time < LAG_TIME) { // check to see if we see the target within an allowable time
+					gearState = GearState.CALCULATE; // go to next state
 				}
 				break;
-		
+
 			case CALCULATE:
-				PathPlanning.calculateArcPoints(sense.robotAngle, in.targetGearPost, sense.cameraAngle, //calculate the arc points 
-						sense.cameraDistance);
+				PathPlanning.calculateArcPoints(sense.robotAngle, in.targetGearPost, currentTarget.totalAngle, // calculate the arc points
+						currentTarget.distance);
 
-				gearState = GearState.DRIVE_STRAIGHT1;								//advance to next state
+				gearState = GearState.DRIVE_STRAIGHT1; // advance to next state
 
-				botStart = (out.leftDriveEncoder + out.rightDriveEncoder) / 2;		//set bot start to the average of the encoders
+				botStart = (out.leftDriveEncoder + out.rightDriveEncoder) / 2; // set bot start to the average of the encoders
 
-				drive.originAngle = sense.robotAngle;								//set robot angle to our orgin angle
+				drive.originAngle = sense.robotAngle; // set robot angle to our origin angle
 				break;
-		
+
 			case DRIVE_STRAIGHT1:
 
-				//drive.driveStraightNavX(false);
-				if (((out.leftDriveEncoder + out.rightDriveEncoder) / 2) > (botStart + PathPlanning.distance)) { //if the average of the encoders is greater than the starting average plus the distance traveled in the pathplanning
-					gearState = GearState.ARC;										//go to the next state
-					botStart = (out.leftDriveEncoder + out.rightDriveEncoder) / 2;	//take a new average for the bot start
+				// drive.driveStraightNavX(false);
+				if (((out.leftDriveEncoder + out.rightDriveEncoder) / 2) > (botStart + PathPlanning.distance)) { // if the average of the encoders is greater
+																													// than the starting average plus the
+																													// distance traveled in the pathplanning
+					gearState = GearState.ARC; // go to the next state
+					botStart = (out.leftDriveEncoder + out.rightDriveEncoder) / 2; // take a new average for the bot start
+					lastDistance = botStart;
 				}
 				break;
-		
-			case ARC:
-				double distance = (out.leftDriveEncoder + out.rightDriveEncoder) / 2 - botStart; //set out distance to difference of our current average and our past average
-				drive.driveCircle(drive.originAngle, distance, PathPlanning.CIRCLE_RADIUS, 0, 0); //start driving on the arc
-				// TODO finish circle drive
 
-				if (((out.leftDriveEncoder + out.rightDriveEncoder) / 2) > (botStart + PathPlanning.arcdistance)) { //if our encoder average becomes greater than out old average + how far we've gone on the arc
-					gearState = GearState.DRIVE_STRAIGHT2;            //go to next state
-					drive.originAngle = sense.robotAngle;			//set the orgin angle as our curret robot position
+			case ARC:
+				double distance = (out.leftDriveEncoder + out.rightDriveEncoder) / 2 - botStart; // set out distance to difference of our current average and
+																									// our past average
+				drive.driveCircle(drive.originAngle, distance, PathPlanning.CIRCLE_RADIUS, (distance - lastDistance),
+						PathPlanning.direction); // start driving on the arc
+
+				if (((out.leftDriveEncoder + out.rightDriveEncoder) / 2) > (botStart + PathPlanning.arcdistance)) { // if our encoder average becomes greater
+																													// than out old average + how far we've gone
+																													// on the arc
+					gearState = GearState.DRIVE_STRAIGHT2; // go to next state
+					drive.originAngle = sense.robotAngle; // set the origin angle as our current robot position
 				}
 				break;
 			case DRIVE_STRAIGHT2:
-
-				//drive.driveStraightNavX(false);
-				if (sense.accelX > WALL_ACCEL) {					//when we hit the wall and acceleration breaks	
-					gearState = GearState.DELIVER_GEAR;				//go to next step
+				if (Math.abs(currentTarget.cameraAngle) > MIN_ARC_ANGLE) {
+					gearState = GearState.DONE;
+				}
+				drive.driveStraightNavX(false, DRIVE_POWER, 0);
+				if (sense.accelX > WALL_ACCEL) { // when we hit the wall and acceleration breaks
+					gearState = GearState.DELIVER_GEAR; // go to next step
 				}
 				break;
-	
+
 			case DELIVER_GEAR:
-				drive.tankDrive(0, 0);								//stop
-				// TODO Add delivery function						//drop gear
+				drive.tankDrive(0, 0); // stop
+				// TODO Add delivery function //drop gear
 				break;
 			// reverse out of gear peg
-			case REVERS:								
-				// TODO Add reverse function						//get out of there
+			case REVERSE:
+				// TODO Add reverse function //get out of there
+				break;
+			case DONE:
+				drive.tankDrive(0, 0);
 				break;
 			}
 		} else {
-			gearState = GearState.values()[0]; 						// reset			
+			gearState = GearState.values()[0]; // reset
 		}
 	}
+
+	public Target getBestTarget() {
+		Target gearGoalLeft = sense.camera.gearGoalLeft.getCurrentTarget();
+		Target gearGoalMid = sense.camera.gearGoalMid.getCurrentTarget();
+		Target gearGoalRight = sense.camera.gearGoalRight.getCurrentTarget();
+
+		if (Timer.getFPGATimestamp() - gearGoalMid.time < LAG_TIME) {
+			return gearGoalMid;
+		} else {
+			boolean goodLeft = Math.abs(gearGoalLeft.cameraAngle) < 90;
+			boolean goodRight = Math.abs(gearGoalRight.cameraAngle) < 90;
+			if (goodLeft && goodRight) {
+				if (gearGoalLeft.distance < gearGoalRight.distance) {
+					return gearGoalLeft;
+				} else {
+					return gearGoalRight;
+				}
+			} else if (goodLeft) {
+				return gearGoalLeft;
+			} else if (goodRight) {
+				return gearGoalRight;
+			} else {
+				return gearGoalMid;
+			}
+		}
+
+	}
+
 }
