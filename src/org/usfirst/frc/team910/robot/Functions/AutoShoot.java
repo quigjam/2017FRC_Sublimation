@@ -37,46 +37,47 @@ public class AutoShoot {
 	private Target currentTarget;
 
 	public void run() {
-		if (in.autoShoot){										//when we hit the auto shoot button
-			currentTarget = sense.camera.boiler.getCurrentTarget(); 	//set our current target to the boiler
-			switch (shootState) {													
+		if (in.autoShoot) { // when we hit the auto shoot button
+			currentTarget = sense.camera.boiler.getCurrentTarget(); // set our current target to the boiler
+			switch (shootState) {
 			case CAM_CHECK:
-				
-				if (Timer.getFPGATimestamp() - currentTarget.time < LAG_TIME) {			//check to see if we see the target within an allowable time
-					shootState = ShootState.DRIVE;									//go to next state
+
+				if (Timer.getFPGATimestamp() - currentTarget.time < LAG_TIME) { // check to see if we see the target within an allowable time
+					shootState = ShootState.DRIVE; // go to next state
 				}
 
 				break;
 			case DRIVE:
-				drive.originAngle.set(sense.camera.boiler.getCurrentTarget().totalAngle.get());	//set our origin angel toward the target
-				drive.driveStraightNavX(false, DRIVE_POWER, 0);								//drive toward it
-				if (Math.abs(currentTarget.distance - SHOOT_DISTANCE) < ALLOWABLE_DISTANCE_ERROR) { //when we get close enough to the target // when camera class is done we will get the distance of the camera to be < 0.05
-					shootState = ShootState.ALIGN;								//go to next state					
+				drive.originAngle.set(currentTarget.totalAngle.get()); // set our origin angel toward the target
+				drive.driveStraightNavX(false, DRIVE_POWER, 0); // drive toward it
+				if (Math.abs(currentTarget.distance - SHOOT_DISTANCE) < ALLOWABLE_DISTANCE_ERROR) { // when we get close enough to the target // when camera
+																									// class is done we will get the distance of the camera to
+																									// be < 0.05
+					shootState = ShootState.ALIGN; // go to next state
 				}
 				break;
 			case ALIGN:
-				drive.rotate(currentTarget.totalAngle);     //face the target
+				drive.rotate(currentTarget.totalAngle); // face the target
 				shoot.shooterPrime(true);
-				if (Math.abs(currentTarget.cameraAngle) < ALLOWABLE_ANGLE_ERROR) { //when we are lined up
-					shootState = ShootState.PRIME;			//go to the next step
+				if (Math.abs(currentTarget.cameraAngle) < ALLOWABLE_ANGLE_ERROR) { // when we are lined up
+					shootState = ShootState.PRIME; // go to the next step
 				}
 				break;
 
 			case PRIME:
-				shoot.shooterPrime(true);						//prime
-				if (shoot.upToSpeed(out.shooterSpeedEncoder)) {	//when we get up to speed
-					shootState = ShootState.FIRE;				//go to next state
+				shoot.shooterPrime(true); // prime
+				if (shoot.upToSpeed(out.shooterSpeedEncoder)) { // when we get up to speed
+					shootState = ShootState.FIRE; // go to next state
 
 				}
 				break;
 			case FIRE:
 				shoot.shooterPrime(true);
-				shoot.shooterFire(true); //fire
+				shoot.shooterFire(true); // fire
 			}
 
-		}
-		else { 
-			shootState = ShootState.values()[0]; 	//reset state machine
+		} else {
+			shootState = ShootState.values()[0]; // reset state machine
 		}
 	}
 }
