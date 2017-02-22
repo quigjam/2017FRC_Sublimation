@@ -114,26 +114,26 @@ public class AutoGear {
 	}
 
 	public Target getBestTarget() {
-		Target gearGoalLeft = sense.camera.gearGoalLeft.getCurrentTarget();
-		Target gearGoalMid = sense.camera.gearGoalMid.getCurrentTarget();
-		Target gearGoalRight = sense.camera.gearGoalRight.getCurrentTarget();
+		Target gearGoalLeft = sense.camera.gearGoalLeft.getCurrentTarget(); //target seen by left camera
+		Target gearGoalMid = sense.camera.gearGoalMid.getCurrentTarget(); //target seen by front camera
+		Target gearGoalRight = sense.camera.gearGoalRight.getCurrentTarget(); //target seen by right camera
 
-		if (Timer.getFPGATimestamp() - gearGoalMid.time < LAG_TIME) {
+		if (Timer.getFPGATimestamp() - gearGoalMid.time < LAG_TIME) { //if the most recent target is the middle
 			return gearGoalMid;
 		} else {
-			boolean goodLeft = Math.abs(gearGoalLeft.cameraAngle) < 90;
-			boolean goodRight = Math.abs(gearGoalRight.cameraAngle) < 90;
-			if (goodLeft && goodRight) {
-				if (gearGoalLeft.distance < gearGoalRight.distance) {
+			boolean goodLeft = Math.abs(gearGoalLeft.cameraAngle) < 90; //left is within optimal angle
+			boolean goodRight = Math.abs(gearGoalRight.cameraAngle) < 90; //right is within optimal angle
+			if (goodLeft && goodRight) { //if both are good
+				if (gearGoalLeft.distance < gearGoalRight.distance) { //if left is closer
 					return gearGoalLeft;
-				} else {
+				} else { //right is closer
 					return gearGoalRight;
 				}
-			} else if (goodLeft) {
+			} else if (goodLeft) { //if left is good
 				return gearGoalLeft;
-			} else if (goodRight) {
+			} else if (goodRight) { //if right is good
 				return gearGoalRight;
-			} else {
+			} else { //if mid was not most recent, but the other two are bad
 				return gearGoalMid;
 			}
 		}
