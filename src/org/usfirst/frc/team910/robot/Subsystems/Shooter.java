@@ -43,8 +43,8 @@ public class Shooter {
 		}
 	}
 
-	public boolean upToSpeed(double currentSpd) { // lets us know when we get the shooter motor up to the speed we set it to
-		return currentSpd > SHOOTER_SPEED + jogoffset - ALLOWABLE_SHOOTER_ERROR;
+	public boolean upToSpeed() { // lets us know when we get the shooter motor up to the speed we set it to
+		return out.shooterSpeedEncoder > SHOOTER_SPEED + jogoffset - ALLOWABLE_SHOOTER_ERROR;
 	}
 
 	public void shooterFire(boolean fireButton) { // Moves the smaller roller, transports balls from hopper

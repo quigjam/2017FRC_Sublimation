@@ -46,7 +46,7 @@ public class Robot extends IterativeRobot {
 
 		autoClimb = new AutoClimb(in, sense, drive, climb);
 		autoGear = new AutoGear(in, sense, drive, gear);
-		autoShoot = new AutoShoot(out, in, shoot);
+		autoShoot = new AutoShoot(in, shoot);
 	}
 
 	@Override

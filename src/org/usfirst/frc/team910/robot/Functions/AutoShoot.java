@@ -17,14 +17,13 @@ public class AutoShoot {
 	private static final double SHOOT_DISTANCE = 40;
 	private static final double ALLOWABLE_DISTANCE_ERROR = 3;
 
-	private Outputs out;
 	private Inputs in;
 	private Shooter shoot;
 	private Sensors sense;
 	private DriveTrain drive;
 
-	public AutoShoot(Outputs out, Inputs in, Shooter shoot) {
-		this.out = out;
+	public AutoShoot( Inputs in, Shooter shoot) {
+
 		this.in = in;
 		this.shoot = shoot;
 	}
@@ -66,7 +65,7 @@ public class AutoShoot {
 
 			case PRIME:
 				shoot.shooterPrime(true); // prime
-				if (shoot.upToSpeed(out.shooterSpeedEncoder)) { // when we get up to speed
+				if (shoot.upToSpeed()) { // when we get up to speed
 					shootState = ShootState.FIRE; // go to next state
 
 				}
