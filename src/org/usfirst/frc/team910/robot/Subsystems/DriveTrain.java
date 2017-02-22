@@ -15,7 +15,8 @@ public class DriveTrain {
 	private static final double SWERVE_FACTOR_ANGLE = 0.01;
 	private static final double ROTATE_MAX_PWR = 0.2;
 	private static final double ROTATE_PWR_FACTOR = 0.005;
-	
+	private static final double CIRCLE_DRIVE_KV = 0; // Feed-Forward term for circleDrive
+
 	private Inputs in;
 	private Outputs out;
 	private Sensors sense;
@@ -36,7 +37,7 @@ public class DriveTrain {
 
 	public void run() {
 		if (in.autoClimb || in.autoGear || in.autoShoot || in.autoHopper) {
-			
+
 		} else if (in.dynamicBrake) {
 			dynamicBrake(prevTask != DriveFunction.DYNAMIC_BRAKING);
 			prevTask = DriveFunction.DYNAMIC_BRAKING;
@@ -51,9 +52,9 @@ public class DriveTrain {
 
 	public void tankDrive(double leftPower, double rightPower) {
 		double pwrAdj = Math.max(Math.abs(leftPower), Math.abs(rightPower));
-		if(pwrAdj > 1) {
-			leftPower /= pwrAdj; 
-			rightPower /= pwrAdj; 
+		if (pwrAdj > 1) {
+			leftPower /= pwrAdj;
+			rightPower /= pwrAdj;
 		}
 		out.setLeftDrive(leftPower);
 		out.setRightDrive(rightPower);
@@ -65,7 +66,6 @@ public class DriveTrain {
 	private void dynamicBrake(boolean firstTime) {
 		double leftEncoder = out.leftDriveEncoder;
 		double rightEncoder = out.rightDriveEncoder;
-		
 
 		if (firstTime) {
 			leftEncPrev = leftEncoder;
@@ -108,24 +108,26 @@ public class DriveTrain {
 			double angledifference = originAngle.subtract(navxangle);
 			double powerDiff = angledifference * DRIVE_STRAIGHT_NAVX_PWR;
 
-			 tankDrive(power - powerDiff, power + powerDiff);
+			tankDrive(power - powerDiff, power + powerDiff);
 		}
 	}
 
 	// Drive in a circle using NavX
 	Angle circleTargetAngle = new Angle(0);
+
 	public void driveCircle(Angle startAngle, double distance, double radius, double velocity, double direction) {
-		double K = 360 / 2 * Math.PI * radius;
-		circleTargetAngle.set(startAngle.get() + direction * K * distance);
-		double angleError = circleTargetAngle.subtract(sense.robotAngle); 
+		double K = 360 / (2 * Math.PI * radius);
+		circleTargetAngle.set(startAngle.get() + direction * K * distance + CIRCLE_DRIVE_KV * K * velocity);
+		double angleError = circleTargetAngle.subtract(sense.robotAngle);
 		double correctionPwr = angleError * DRIVE_STRAIGHT_NAVX_PWR;
 		tankDrive(AUTO_DRIVE_PWR - correctionPwr, AUTO_DRIVE_PWR + correctionPwr);
 	}
-	public void rotate(Angle target){ //allows robot to rotate to a desired angle
+
+	public void rotate(Angle target) { // allows robot to rotate to a desired angle
 		double adjAngle = target.subtract(sense.robotAngle);
 		double power = ROTATE_PWR_FACTOR * adjAngle;
-		power = Math.max(Math.min(power,ROTATE_MAX_PWR), -ROTATE_MAX_PWR);
+		power = Math.max(Math.min(power, ROTATE_MAX_PWR), -ROTATE_MAX_PWR);
 		tankDrive(-power, power);
-			
+
 	}
 }
