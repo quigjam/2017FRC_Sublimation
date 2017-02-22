@@ -68,6 +68,10 @@ public class Outputs {
 
 		transporterMotor = new CANTalon(ElectroPaul.TRANSPORTER_MOTOR);
 		transporterMotor.enableBrakeMode(true);
+		transporterMotor.setInverted(true);
+		transporterMotor.reverseOutput(true);
+		transporterMotor.reverseSensor(true);
+		
 		agitatorMotor = new CANTalon(ElectroPaul.AGITATOR_MOTOR);
 		agitatorMotor.enableBrakeMode(false);
 		climbMotor1 = new CANTalon(ElectroPaul.CLIMB_MOTOR_1);
@@ -78,10 +82,12 @@ public class Outputs {
 		gearRollerMotor.reverseOutput(true);
 		gearRollerMotor.setInverted(true);
 		gearPanelMotor1 = new CANTalon(ElectroPaul.GEAR_PANEL_MOTOR_1);
+		gearPanelMotor1.enableBrakeMode(false);
 		//gearPanelMotor1.setInverted(true);  //FLIP ALL THE THINGS
 		//gearPanelMotor1.reverseOutput(true);
 		//gearPanelMotor1.reverseSensor(true);
 		gearPanelMotor2 = new CANTalon(ElectroPaul.GEAR_PANEL_MOTOR_2);
+		gearPanelMotor2.enableBrakeMode(false);
 		
 		pdp = new PowerDistributionPanel(0);
 

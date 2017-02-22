@@ -36,10 +36,11 @@ public class Shooter {
 	public void shooterPrime(boolean primeButton) { // Moves the big roller
 		if (primeButton) { // if we hit the prime button
 			out.setShooterSpeed(SHOOTER_SPEED + jogoffset); // ready the shooter to fire (with our constant shooter speed + how much we have jogged)
-			out.setAgitatorPower(0.8); // start spinning the agitator to get the fuel moving
+			out.setAgitatorPower(1); // start spinning the agitator to get the fuel moving
 			// out.setShooterPower (0.5);
 		} else { // if anything else happens make sure the shooter motor doesn't move
 			out.setShooterPower(0);
+			out.setAgitatorPower(0);
 		}
 	}
 
