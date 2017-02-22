@@ -28,7 +28,7 @@ public class GearSystem {
 		this.sense = sense;
 	}
 	
-	public void gearposition(int gearPanelPosition, double rightwindowmotor, double leftwindowmotor,int ultrasonicDistance){ //Shows where a gear is on the panel
+	public void gearposition(int gearPanelPosition){ //Shows where a gear is on the panel
 		
 		switch(gearPanelPosition){
 		
@@ -37,18 +37,18 @@ public class GearSystem {
 	
 			break;
 		case 1: //hopperposition
-			if(ultrasonicDistance >= 0){
+			//if(ultrasonicDistance >= 0){
 				out.setGearPanelPower(HOPPER_POSITION);
-			}
+			//}
 			break;
 		
 		case 2: //gearposition
-			if(ultrasonicDistance <= 0){
+			//if(ultrasonicDistance <= 0){
 				out.setGearPanelPower(NATURAL_GEAR_POSITION);
-			}
-			if(ultrasonicDistance >= 0){
+			//}
+			//if(ultrasonicDistance >= 0){
 				out.setGearPanelPower(EXTENDED_GEAR_POSITION);
-			}
+			//}
 			break;
 		}
  

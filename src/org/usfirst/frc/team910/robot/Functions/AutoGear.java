@@ -15,6 +15,8 @@ public class AutoGear {
 	private static final double LAG_TIME = 0.1;
 	private static final double MIN_ARC_ANGLE = 30;
 	private static final double DRIVE_POWER = 0.2;
+	private static final double DELIVER_TIME = 3; 
+	private static final double REVERSE_TIME = 2; 
 
 	private Inputs in;
 	private Outputs out;
@@ -37,7 +39,8 @@ public class AutoGear {
 
 	private double botStart;
 	private double lastDistance = 0;
-
+	private double endTime = 0;
+	
 	public void run() {
 		if (in.autoGear) { // when we hit the auto gear button start up
 			Target currentTarget = getBestTarget();
@@ -90,19 +93,28 @@ public class AutoGear {
 				if (Math.abs(currentTarget.cameraAngle) > MIN_ARC_ANGLE) {
 					gearState = GearState.DONE;
 				}
+				gear.gearposition(2);// extend panel to place gear 
 				drive.driveStraightNavX(false, DRIVE_POWER, 0);
 				if (sense.accelX > WALL_ACCEL) { // when we hit the wall and acceleration breaks
 					gearState = GearState.DELIVER_GEAR; // go to next step
+					endTime = Timer.getFPGATimestamp() + DELIVER_TIME; 
 				}
 				break;
 
 			case DELIVER_GEAR:
-				drive.tankDrive(0, 0); // stop
-				// TODO Add delivery function //drop gear
+				gear.gearRoller(-1);
+				if(endTime < Timer.getFPGATimestamp()) { 
+					gearState = GearState.REVERSE; 
+					endTime = Timer.getFPGATimestamp() + REVERSE_TIME; 
+				}
 				break;
 			// reverse out of gear peg
 			case REVERSE:
-				// TODO Add reverse function //get out of there
+				gear.gearRoller(0);
+				drive.driveStraightNavX(false, -DRIVE_POWER, 0);
+				if(endTime < Timer.getFPGATimestamp()) {
+					gearState = GearState.DONE; 
+				}
 				break;
 			case DONE:
 				drive.tankDrive(0, 0);
