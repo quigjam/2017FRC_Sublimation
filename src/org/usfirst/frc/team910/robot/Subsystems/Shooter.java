@@ -36,15 +36,16 @@ public class Shooter {
 	public void shooterPrime(boolean primeButton) { // Moves the big roller
 		if (primeButton) { // if we hit the prime button
 			out.setShooterSpeed(SHOOTER_SPEED + jogoffset); // ready the shooter to fire (with our constant shooter speed + how much we have jogged)
-			out.setAgitatorPower(0.8); // start spinning the agitator to get the fuel moving
+			out.setAgitatorPower(1); // start spinning the agitator to get the fuel moving
 			// out.setShooterPower (0.5);
 		} else { // if anything else happens make sure the shooter motor doesn't move
 			out.setShooterPower(0);
+			out.setAgitatorPower(0);
 		}
 	}
 
-	public boolean upToSpeed(double currentSpd) { // lets us know when we get the shooter motor up to the speed we set it to
-		return currentSpd > SHOOTER_SPEED + jogoffset - ALLOWABLE_SHOOTER_ERROR;
+	public boolean upToSpeed() { // lets us know when we get the shooter motor up to the speed we set it to
+		return out.shooterSpeedEncoder > SHOOTER_SPEED + jogoffset - ALLOWABLE_SHOOTER_ERROR;
 	}
 
 	public void shooterFire(boolean fireButton) { // Moves the smaller roller, transports balls from hopper

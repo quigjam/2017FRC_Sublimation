@@ -19,7 +19,6 @@ public class AutoGear {
 	private static final double REVERSE_TIME = 2; 
 
 	private Inputs in;
-	private Outputs out;
 	private Sensors sense;
 	private DriveTrain drive;
 	private GearSystem gear;
@@ -59,7 +58,7 @@ public class AutoGear {
 
 				gearState = GearState.DRIVE_STRAIGHT1; // advance to next state
 
-				botStart = (out.leftDriveEncoder + out.rightDriveEncoder) / 2; // set bot start to the average of the encoders
+				botStart = (drive.leftDriveEncoder + drive.rightDriveEncoder) / 2; // set bot start to the average of the encoders
 
 				drive.originAngle = sense.robotAngle; // set robot angle to our origin angle
 				break;
@@ -67,22 +66,22 @@ public class AutoGear {
 			case DRIVE_STRAIGHT1:
 
 				// drive.driveStraightNavX(false);
-				if (((out.leftDriveEncoder + out.rightDriveEncoder) / 2) > (botStart + PathPlanning.distance)) { // if the average of the encoders is greater
+				if (((drive.leftDriveEncoder + drive.rightDriveEncoder) / 2) > (botStart + PathPlanning.distance)) { // if the average of the encoders is greater
 																													// than the starting average plus the
 																													// distance traveled in the pathplanning
 					gearState = GearState.ARC; // go to the next state
-					botStart = (out.leftDriveEncoder + out.rightDriveEncoder) / 2; // take a new average for the bot start
+					botStart = (drive.leftDriveEncoder + drive.rightDriveEncoder) / 2; // take a new average for the bot start
 					lastDistance = botStart;
 				}
 				break;
 
 			case ARC:
-				double distance = (out.leftDriveEncoder + out.rightDriveEncoder) / 2 - botStart; // set out distance to difference of our current average and
+				double distance = (drive.leftDriveEncoder + drive.rightDriveEncoder) / 2 - botStart; // set out distance to difference of our current average and
 																									// our past average
 				drive.driveCircle(drive.originAngle, distance, PathPlanning.CIRCLE_RADIUS, (distance - lastDistance),
 						PathPlanning.direction); // start driving on the arc
 
-				if (((out.leftDriveEncoder + out.rightDriveEncoder) / 2) > (botStart + PathPlanning.arcdistance)) { // if our encoder average becomes greater
+				if (((drive.leftDriveEncoder + drive.rightDriveEncoder) / 2) > (botStart + PathPlanning.arcdistance)) { // if our encoder average becomes greater
 																													// than out old average + how far we've gone
 																													// on the arc
 					gearState = GearState.DRIVE_STRAIGHT2; // go to next state

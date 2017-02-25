@@ -3,6 +3,7 @@ package org.usfirst.frc.team910.robot;
 import org.usfirst.frc.team910.robot.Functions.AutoClimb;
 import org.usfirst.frc.team910.robot.Functions.AutoGear;
 import org.usfirst.frc.team910.robot.Functions.AutoShoot;
+import org.usfirst.frc.team910.robot.IO.ElectroPaul;
 import org.usfirst.frc.team910.robot.IO.Inputs;
 import org.usfirst.frc.team910.robot.IO.Outputs;
 import org.usfirst.frc.team910.robot.IO.Sensors;
@@ -33,6 +34,7 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void robotInit() {
+		ElectroPaul ep = new ElectroPaul();
 		in = new Inputs();
 		out = new Outputs();
 		sense = new Sensors();
@@ -44,7 +46,7 @@ public class Robot extends IterativeRobot {
 
 		autoClimb = new AutoClimb(in, sense, drive, climb);
 		autoGear = new AutoGear(in, sense, drive, gear);
-		autoShoot = new AutoShoot(out, in, shoot);
+		autoShoot = new AutoShoot(in, shoot);
 	}
 
 	@Override

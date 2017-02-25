@@ -20,6 +20,9 @@ public class DriveTrain {
 	private Inputs in;
 	private Outputs out;
 	private Sensors sense;
+	
+	public double leftDriveEncoder;
+	public double rightDriveEncoder;
 
 	public DriveTrain(Inputs in, Outputs out, Sensors sense) {
 		this.in = in;
@@ -36,6 +39,10 @@ public class DriveTrain {
 	private DriveFunction prevTask = DriveFunction.TANK_DRIVE;
 
 	public void run() {
+		leftDriveEncoder = out.leftDriveEncoder;
+		rightDriveEncoder = out.rightDriveEncoder;
+		
+		
 		if (in.autoClimb || in.autoGear || in.autoShoot || in.autoHopper) {
 
 		} else if (in.dynamicBrake) {

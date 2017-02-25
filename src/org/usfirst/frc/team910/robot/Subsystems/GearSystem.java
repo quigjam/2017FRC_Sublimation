@@ -64,6 +64,8 @@ public class GearSystem {
 			}
 			else if(in.gearOuttake) { 
 				gearRoller(-ROLLER_POWER);
+			} else {
+				gearRoller(0);
 			}
 			
 			//TODO: Replace with position code
