@@ -8,7 +8,8 @@ public class Climber {
 	private Outputs out;
 	private Inputs in;
 
-	private static final double CLIMB_POWER = 0.75;
+	private static final double CLIMB_POWER = 1;
+	private static final double REVERSE_CLIMB_POWER = .50;
 
 	public Climber(Outputs out, Inputs in) {
 		this.out = out;
