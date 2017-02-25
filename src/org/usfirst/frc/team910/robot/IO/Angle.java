@@ -13,7 +13,7 @@ public class Angle { //math to create angles throughout NavX-related and Auto fu
 	}
 	
 	public void set(double newAngle) {
-		angle = mod(angle);
+		angle = mod(newAngle);
 	}
 	
 	public void add(double value) {

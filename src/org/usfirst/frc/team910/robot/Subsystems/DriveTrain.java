@@ -4,14 +4,18 @@ import org.usfirst.frc.team910.robot.IO.Angle;
 import org.usfirst.frc.team910.robot.IO.Inputs;
 import org.usfirst.frc.team910.robot.IO.Outputs;
 import org.usfirst.frc.team910.robot.IO.Sensors;
+import org.usfirst.frc.team910.robot.IO.Util;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class DriveTrain {
 
 	private static final double DRIVE_STRAIGHT_ENC_PWR = 0.1;
 	private static final double DYN_BRAKE_PWR = 0.5; // full power in 10 inches
-	private static final double DRIVE_STRAIGHT_NAVX_PWR = 0;
-	private static final double AUTO_DRIVE_PWR = 0.2;
-	private static final double SWERVE_FACTOR_ENC = 0.5;
+	private static final double DRIVE_STRAIGHT_NAVX_PWR = 0.05;
+	private static final double DRIVE_CIRCLE_PWR = 0.05;
+	private static final double[] SWERVE_FACTOR_ENC = {2, 2, 0.5, 0.5};// in/0.1sec
+	private static final double[] SWERVE_DRIVE_SPEED_AXIS = {11, 12, 100, 101};// in/sec
 	private static final double SWERVE_FACTOR_ANGLE = 0.01;
 	private static final double ROTATE_MAX_PWR = 0.2;
 	private static final double ROTATE_PWR_FACTOR = 0.005;
@@ -20,7 +24,7 @@ public class DriveTrain {
 	private Inputs in;
 	private Outputs out;
 	private Sensors sense;
-	
+
 	public double leftDriveEncoder;
 	public double rightDriveEncoder;
 
@@ -33,24 +37,26 @@ public class DriveTrain {
 	// this is the main function called from robot
 
 	private enum DriveFunction {
-		DYNAMIC_BRAKING, TANK_DRIVE, DRIVE_STRAIGHT
+		DYNAMIC_BRAKING, TANK_DRIVE, DRIVE_STRAIGHT, AUTO_STRAIGHT
 	};
 
 	private DriveFunction prevTask = DriveFunction.TANK_DRIVE;
 
-	public void run() {
+	public void run(boolean auton) {
 		leftDriveEncoder = out.leftDriveEncoder;
 		rightDriveEncoder = out.rightDriveEncoder;
-		
-		
-		if (in.autoClimb || in.autoGear || in.autoShoot || in.autoHopper) {
+
+		if (in.autoClimb || in.autoGear || in.autoShoot || in.autoHopper || auton) {
 
 		} else if (in.dynamicBrake) {
 			dynamicBrake(prevTask != DriveFunction.DYNAMIC_BRAKING);
 			prevTask = DriveFunction.DYNAMIC_BRAKING;
 		} else if (in.driveStraight) {
-			driveStraightNavX(prevTask != DriveFunction.DRIVE_STRAIGHT, in.rightJoyStickY, in.leftJoyStickX);
+			driveStraightEnc(prevTask != DriveFunction.DRIVE_STRAIGHT, in.rightJoyStickY, in.leftJoyStickX);
 			prevTask = DriveFunction.DRIVE_STRAIGHT;
+		} else if (in.autoStraight) {
+			autoStraight(prevTask != DriveFunction.AUTO_STRAIGHT, in.leftJoyStickY, in.rightJoyStickY);
+			prevTask = DriveFunction.AUTO_STRAIGHT;
 		} else {
 			tankDrive(in.leftJoyStickY, in.rightJoyStickY);
 			prevTask = DriveFunction.TANK_DRIVE;
@@ -87,13 +93,19 @@ public class DriveTrain {
 	}
 
 	private double initialEncDiff;
-
-	private void driveStraightEnc(boolean firstTime) {
+	private double prevEncVal = 0;
+	
+	// TODO: use new inputs in driveStraightEnc
+	private void driveStraightEnc(boolean firstTime, double power, double swerve) {
 
 		if (firstTime) {
 			initialEncDiff = out.leftDriveEncoder - out.rightDriveEncoder;
+			prevEncVal = (Math.abs(out.leftDriveEncoder) + Math.abs(out.rightDriveEncoder)) / 2;
 		} else {
-			initialEncDiff += in.leftJoyStickX * SWERVE_FACTOR_ENC;
+			double encAvg = (Math.abs(out.leftDriveEncoder) + Math.abs(out.rightDriveEncoder)) / 2;
+			double speed = (encAvg - prevEncVal) / sense.deltaTime;
+			double prevEncVal = encAvg;
+			initialEncDiff += in.leftJoyStickX * Util.interpolate(SWERVE_DRIVE_SPEED_AXIS,SWERVE_FACTOR_ENC,speed);
 			double currentEncDiff = out.leftDriveEncoder - out.rightDriveEncoder;
 			double diffDiff = (initialEncDiff - currentEncDiff) * DRIVE_STRAIGHT_ENC_PWR;
 
@@ -117,17 +129,19 @@ public class DriveTrain {
 
 			tankDrive(power - powerDiff, power + powerDiff);
 		}
+		SmartDashboard.putNumber("DriveStraightOriginAngle", originAngle.get());
 	}
 
 	// Drive in a circle using NavX
 	Angle circleTargetAngle = new Angle(0);
 
-	public void driveCircle(Angle startAngle, double distance, double radius, double velocity, double direction) {
+	public void driveCircle(double power, Angle startAngle, double distance, double radius, double velocity,
+			double direction) {
 		double K = 360 / (2 * Math.PI * radius);
-		circleTargetAngle.set(startAngle.get() + direction * K * distance + CIRCLE_DRIVE_KV * K * velocity);
+		circleTargetAngle.set(startAngle.get() + direction * K * distance + CIRCLE_DRIVE_KV * K * velocity * direction);
 		double angleError = circleTargetAngle.subtract(sense.robotAngle);
-		double correctionPwr = angleError * DRIVE_STRAIGHT_NAVX_PWR;
-		tankDrive(AUTO_DRIVE_PWR - correctionPwr, AUTO_DRIVE_PWR + correctionPwr);
+		double correctionPwr = angleError * DRIVE_CIRCLE_PWR;
+		tankDrive(power - correctionPwr, power + correctionPwr);
 	}
 
 	public void rotate(Angle target) { // allows robot to rotate to a desired angle
@@ -136,5 +150,19 @@ public class DriveTrain {
 		power = Math.max(Math.min(power, ROTATE_MAX_PWR), -ROTATE_MAX_PWR);
 		tankDrive(-power, power);
 
+	}
+
+	boolean autoStraightFirstTime = true;
+
+	// If both joysticks are pushed really far up, activate driveStraight
+	public void autoStraight(boolean firstTime, double leftStickY, double rightStickY) {
+		autoStraightFirstTime = autoStraightFirstTime || firstTime;
+
+		if (leftStickY > 0.95 && rightStickY > 0.95) {
+			driveStraightNavX(autoStraightFirstTime, 1, 0);
+			autoStraightFirstTime = false;
+		} else {
+			autoStraightFirstTime = true;
+		}
 	}
 }

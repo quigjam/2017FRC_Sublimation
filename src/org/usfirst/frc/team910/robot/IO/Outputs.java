@@ -47,9 +47,12 @@ public class Outputs {
 		// leftMotor2 = new CANTalon(ElectroPaul.LEFT_MOTOR_PORT_2);
 		// rightMotor1 = new CANTalon(ElectroPaul.RIGHT_MOTOR_PORT_1);
 		// rightMotor2 = new CANTalon(ElectroPaul.RIGHT_MOTOR_PORT_2);
-		leftDriveCan = new CANTalon(ElectroPaul.LEFT_DRIVE_CAN);		leftDriveCan.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
+		leftDriveCan = new CANTalon(ElectroPaul.LEFT_DRIVE_CAN);		
+		leftDriveCan.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
 		leftDriveCan.setEncPosition(0);
+		leftDriveCan.reverseSensor(true);
 		leftDrive = new Talon(ElectroPaul.LEFT_DRIVE);
+		
 		rightDriveCan = new CANTalon(ElectroPaul.RIGHT_DRIVE_CAN);
 		rightDriveCan.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
 		rightDriveCan.setEncPosition(0);

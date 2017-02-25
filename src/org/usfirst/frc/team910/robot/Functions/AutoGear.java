@@ -15,8 +15,9 @@ public class AutoGear {
 	private static final double LAG_TIME = 0.1;
 	private static final double MIN_ARC_ANGLE = 30;
 	private static final double DRIVE_POWER = 0.2;
-	private static final double DELIVER_TIME = 3; 
-	private static final double REVERSE_TIME = 2; 
+	private static final double DELIVER_TIME = 3;
+	private static final double REVERSE_TIME = 2;
+	private static final double CIRCLE_POWER = 0.2;
 
 	private Inputs in;
 	private Sensors sense;
@@ -39,7 +40,7 @@ public class AutoGear {
 	private double botStart;
 	private double lastDistance = 0;
 	private double endTime = 0;
-	
+
 	public void run() {
 		if (in.autoGear) { // when we hit the auto gear button start up
 			Target currentTarget = getBestTarget();
@@ -66,9 +67,10 @@ public class AutoGear {
 			case DRIVE_STRAIGHT1:
 
 				// drive.driveStraightNavX(false);
-				if (((drive.leftDriveEncoder + drive.rightDriveEncoder) / 2) > (botStart + PathPlanning.distance)) { // if the average of the encoders is greater
-																													// than the starting average plus the
-																													// distance traveled in the pathplanning
+				if (((drive.leftDriveEncoder + drive.rightDriveEncoder) / 2) > (botStart + PathPlanning.distance)) { // if the average of the encoders is
+																														// greater
+																														// than the starting average plus the
+																														// distance traveled in the pathplanning
 					gearState = GearState.ARC; // go to the next state
 					botStart = (drive.leftDriveEncoder + drive.rightDriveEncoder) / 2; // take a new average for the bot start
 					lastDistance = botStart;
@@ -76,14 +78,17 @@ public class AutoGear {
 				break;
 
 			case ARC:
-				double distance = (drive.leftDriveEncoder + drive.rightDriveEncoder) / 2 - botStart; // set out distance to difference of our current average and
-																									// our past average
-				drive.driveCircle(drive.originAngle, distance, PathPlanning.CIRCLE_RADIUS, (distance - lastDistance),
-						PathPlanning.direction); // start driving on the arc
+				double distance = (drive.leftDriveEncoder + drive.rightDriveEncoder) / 2 - botStart; // set out distance to difference of our current average
+																										// and
+																										// our past average
+				double velocity =(distance - lastDistance) / sense.deltaTime; 
+				drive.driveCircle(CIRCLE_POWER, drive.originAngle, distance, PathPlanning.CIRCLE_RADIUS,
+						velocity, PathPlanning.direction); // start driving on the arc
 
-				if (((drive.leftDriveEncoder + drive.rightDriveEncoder) / 2) > (botStart + PathPlanning.arcdistance)) { // if our encoder average becomes greater
-																													// than out old average + how far we've gone
-																													// on the arc
+				if (((drive.leftDriveEncoder + drive.rightDriveEncoder) / 2) > (botStart + PathPlanning.arcdistance)) { // if our encoder average becomes
+																														// greater
+					// than out old average + how far we've gone
+					// on the arc
 					gearState = GearState.DRIVE_STRAIGHT2; // go to next state
 					drive.originAngle = sense.robotAngle; // set the origin angle as our current robot position
 				}
@@ -92,27 +97,27 @@ public class AutoGear {
 				if (Math.abs(currentTarget.cameraAngle) > MIN_ARC_ANGLE) {
 					gearState = GearState.DONE;
 				}
-				gear.gearposition(2);// extend panel to place gear 
+				gear.gearposition(2);// extend panel to place gear
 				drive.driveStraightNavX(false, DRIVE_POWER, 0);
 				if (sense.accelX > WALL_ACCEL) { // when we hit the wall and acceleration breaks
 					gearState = GearState.DELIVER_GEAR; // go to next step
-					endTime = Timer.getFPGATimestamp() + DELIVER_TIME; 
+					endTime = Timer.getFPGATimestamp() + DELIVER_TIME;
 				}
 				break;
 
 			case DELIVER_GEAR:
 				gear.gearRoller(-1);
-				if(endTime < Timer.getFPGATimestamp()) { 
-					gearState = GearState.REVERSE; 
-					endTime = Timer.getFPGATimestamp() + REVERSE_TIME; 
+				if (endTime < Timer.getFPGATimestamp()) {
+					gearState = GearState.REVERSE;
+					endTime = Timer.getFPGATimestamp() + REVERSE_TIME;
 				}
 				break;
 			// reverse out of gear peg
 			case REVERSE:
 				gear.gearRoller(0);
 				drive.driveStraightNavX(false, -DRIVE_POWER, 0);
-				if(endTime < Timer.getFPGATimestamp()) {
-					gearState = GearState.DONE; 
+				if (endTime < Timer.getFPGATimestamp()) {
+					gearState = GearState.DONE;
 				}
 				break;
 			case DONE:
@@ -125,26 +130,26 @@ public class AutoGear {
 	}
 
 	public Target getBestTarget() {
-		Target gearGoalLeft = sense.camera.gearGoalLeft.getCurrentTarget(); //target seen by left camera
-		Target gearGoalMid = sense.camera.gearGoalMid.getCurrentTarget(); //target seen by front camera
-		Target gearGoalRight = sense.camera.gearGoalRight.getCurrentTarget(); //target seen by right camera
+		Target gearGoalLeft = sense.camera.gearGoalLeft.getCurrentTarget(); // target seen by left camera
+		Target gearGoalMid = sense.camera.gearGoalMid.getCurrentTarget(); // target seen by front camera
+		Target gearGoalRight = sense.camera.gearGoalRight.getCurrentTarget(); // target seen by right camera
 
-		if (Timer.getFPGATimestamp() - gearGoalMid.time < LAG_TIME) { //if the most recent target is the middle
+		if (Timer.getFPGATimestamp() - gearGoalMid.time < LAG_TIME) { // if the most recent target is the middle
 			return gearGoalMid;
 		} else {
-			boolean goodLeft = Math.abs(gearGoalLeft.cameraAngle) < 90; //left is within optimal angle
-			boolean goodRight = Math.abs(gearGoalRight.cameraAngle) < 90; //right is within optimal angle
-			if (goodLeft && goodRight) { //if both are good
-				if (gearGoalLeft.distance < gearGoalRight.distance) { //if left is closer
+			boolean goodLeft = Math.abs(gearGoalLeft.cameraAngle) < 90; // left is within optimal angle
+			boolean goodRight = Math.abs(gearGoalRight.cameraAngle) < 90; // right is within optimal angle
+			if (goodLeft && goodRight) { // if both are good
+				if (gearGoalLeft.distance < gearGoalRight.distance) { // if left is closer
 					return gearGoalLeft;
-				} else { //right is closer
+				} else { // right is closer
 					return gearGoalRight;
 				}
-			} else if (goodLeft) { //if left is good
+			} else if (goodLeft) { // if left is good
 				return gearGoalLeft;
-			} else if (goodRight) { //if right is good
+			} else if (goodRight) { // if right is good
 				return gearGoalRight;
-			} else { //if mid was not most recent, but the other two are bad
+			} else { // if mid was not most recent, but the other two are bad
 				return gearGoalMid;
 			}
 		}
