@@ -30,7 +30,7 @@ public class DriveTrain {
 	// this is the main function called from robot
 
 	private enum DriveFunction {
-		DYNAMIC_BRAKING, TANK_DRIVE, DRIVE_STRAIGHT
+		DYNAMIC_BRAKING, TANK_DRIVE, DRIVE_STRAIGHT, AUTO_STRAIGHT
 	};
 
 	private DriveFunction prevTask = DriveFunction.TANK_DRIVE;
@@ -42,8 +42,11 @@ public class DriveTrain {
 			dynamicBrake(prevTask != DriveFunction.DYNAMIC_BRAKING);
 			prevTask = DriveFunction.DYNAMIC_BRAKING;
 		} else if (in.driveStraight) {
-			driveStraightNavX(prevTask != DriveFunction.DRIVE_STRAIGHT, in.rightJoyStickY, in.leftJoyStickX);
+			driveStraightEnc(prevTask != DriveFunction.DRIVE_STRAIGHT, in.rightJoyStickY, in.leftJoyStickX);
 			prevTask = DriveFunction.DRIVE_STRAIGHT;
+		} else if (in.autoStraight) {
+			autoStraight(prevTask != DriveFunction.AUTO_STRAIGHT, in.leftJoyStickY, in.rightJoyStickY);
+			prevTask = DriveFunction.AUTO_STRAIGHT;
 		} else {
 			tankDrive(in.leftJoyStickY, in.rightJoyStickY);
 			prevTask = DriveFunction.TANK_DRIVE;
@@ -81,7 +84,8 @@ public class DriveTrain {
 
 	private double initialEncDiff;
 
-	private void driveStraightEnc(boolean firstTime) {
+	// TODO: use new inputs in driveStraightEnc
+	private void driveStraightEnc(boolean firstTime, double power, double swerve) {
 
 		if (firstTime) {
 			initialEncDiff = out.leftDriveEncoder - out.rightDriveEncoder;
@@ -129,5 +133,19 @@ public class DriveTrain {
 		power = Math.max(Math.min(power, ROTATE_MAX_PWR), -ROTATE_MAX_PWR);
 		tankDrive(-power, power);
 
+	}
+
+	boolean autoStraightFirstTime = true;
+
+	// If both joysticks are pushed really far up, activate driveStraight
+	public void autoStraight(boolean firstTime, double leftStickY, double rightStickY) {
+		autoStraightFirstTime = autoStraightFirstTime || firstTime;
+
+		if (leftStickY > 0.95 && rightStickY > 0.95) {
+			driveStraightNavX(autoStraightFirstTime, 1, 0);
+			autoStraightFirstTime = false;
+		} else {
+			autoStraightFirstTime = true;
+		}
 	}
 }
