@@ -4,6 +4,7 @@ import org.usfirst.frc.team910.robot.Vision.Camera;
 
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -18,6 +19,10 @@ public class Sensors {
 
 	public double ultrasonicDistance;//Placeholder
 	
+	public double deltaTime;
+	
+	private double lastTime = 0;
+	
 	public Sensors() {
 
 		navx = new AHRS(SPI.Port.kMXP);
@@ -30,6 +35,10 @@ public class Sensors {
 		accelX = navx.getRawAccelX(); //Accleration of robot
 		SmartDashboard.putNumber("navxYaw", robotAngle.get());
 
+		double time = Timer.getFPGATimestamp();
+		deltaTime = time - lastTime;
+		lastTime = time;
+		
 	}
 
 }
