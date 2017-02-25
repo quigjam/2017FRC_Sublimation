@@ -1,5 +1,6 @@
 package org.usfirst.frc.team910.robot;
 
+import org.usfirst.frc.team910.robot.Auton.AutonMain;
 import org.usfirst.frc.team910.robot.Functions.AutoClimb;
 import org.usfirst.frc.team910.robot.Functions.AutoGear;
 import org.usfirst.frc.team910.robot.Functions.AutoShoot;
@@ -29,8 +30,11 @@ public class Robot extends IterativeRobot {
 	AutoGear autoGear;
 	AutoShoot autoShoot;
 
+	AutonMain autonmain;
+
 	/**
-	 * This function is run when the robot is first started up and should be used for any initialization code.
+	 * This function is run when the robot is first started up and should be
+	 * used for any initialization code.
 	 */
 	@Override
 	public void robotInit() {
@@ -47,11 +51,14 @@ public class Robot extends IterativeRobot {
 		autoClimb = new AutoClimb(in, sense, drive, climb);
 		autoGear = new AutoGear(in, sense, drive, gear);
 		autoShoot = new AutoShoot(in, shoot);
+
+		autonmain = new AutonMain();
 	}
 
 	@Override
 	public void autonomousInit() {
-
+		autonmain.init(in, sense, drive, gear, shoot);
+		sense.init();
 	}
 
 	/**
@@ -59,7 +66,10 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousPeriodic() {
-
+		sense.read();
+		out.readEncoders();
+		drive.run(true);
+		autonmain.run();
 	}
 
 	@Override
@@ -75,7 +85,7 @@ public class Robot extends IterativeRobot {
 		in.read();
 		sense.read();
 		out.readEncoders();
-		drive.run();
+		drive.run(false);
 		shoot.run();
 		gear.run();
 		climb.run();

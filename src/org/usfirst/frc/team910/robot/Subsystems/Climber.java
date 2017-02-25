@@ -20,7 +20,7 @@ public class Climber {
 		if (in.autoClimb || in.autoGear || in.autoShoot || in.autoHopper) {
 
 		} else if (in.reverseButton && in.climbButton) {
-			climb(-CLIMB_POWER);
+			climb(-CLIMB_POWER / 5);
 		} else if (in.climbButton) {
 			climb(CLIMB_POWER);
 		} else {
