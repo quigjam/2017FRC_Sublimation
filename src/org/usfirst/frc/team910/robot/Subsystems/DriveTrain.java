@@ -10,7 +10,7 @@ public class DriveTrain {
 	private static final double DRIVE_STRAIGHT_ENC_PWR = 0.1;
 	private static final double DYN_BRAKE_PWR = 0.5; // full power in 10 inches
 	private static final double DRIVE_STRAIGHT_NAVX_PWR = 0;
-	private static final double AUTO_DRIVE_PWR = 0.2;
+	private static final double DRIVE_CIRCLE_PWR = 0.05;
 	private static final double SWERVE_FACTOR_ENC = 0.5;
 	private static final double SWERVE_FACTOR_ANGLE = 0.01;
 	private static final double ROTATE_MAX_PWR = 0.2;
@@ -20,7 +20,7 @@ public class DriveTrain {
 	private Inputs in;
 	private Outputs out;
 	private Sensors sense;
-	
+
 	public double leftDriveEncoder;
 	public double rightDriveEncoder;
 
@@ -41,8 +41,7 @@ public class DriveTrain {
 	public void run() {
 		leftDriveEncoder = out.leftDriveEncoder;
 		rightDriveEncoder = out.rightDriveEncoder;
-		
-		
+
 		if (in.autoClimb || in.autoGear || in.autoShoot || in.autoHopper) {
 
 		} else if (in.dynamicBrake) {
@@ -126,12 +125,13 @@ public class DriveTrain {
 	// Drive in a circle using NavX
 	Angle circleTargetAngle = new Angle(0);
 
-	public void driveCircle(Angle startAngle, double distance, double radius, double velocity, double direction) {
+	public void driveCircle(double power, Angle startAngle, double distance, double radius, double velocity,
+			double direction) {
 		double K = 360 / (2 * Math.PI * radius);
-		circleTargetAngle.set(startAngle.get() + direction * K * distance + CIRCLE_DRIVE_KV * K * velocity);
+		circleTargetAngle.set(startAngle.get() + direction * K * distance + CIRCLE_DRIVE_KV * K * velocity * direction);
 		double angleError = circleTargetAngle.subtract(sense.robotAngle);
-		double correctionPwr = angleError * DRIVE_STRAIGHT_NAVX_PWR;
-		tankDrive(AUTO_DRIVE_PWR - correctionPwr, AUTO_DRIVE_PWR + correctionPwr);
+		double correctionPwr = angleError * DRIVE_CIRCLE_PWR;
+		tankDrive(power - correctionPwr, power + correctionPwr);
 	}
 
 	public void rotate(Angle target) { // allows robot to rotate to a desired angle
