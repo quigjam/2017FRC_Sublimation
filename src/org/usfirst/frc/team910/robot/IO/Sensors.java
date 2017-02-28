@@ -1,6 +1,7 @@
 package org.usfirst.frc.team910.robot.IO;
 
 import org.usfirst.frc.team910.robot.Vision.Camera;
+import java.util.concurrent.locks.ReentrantLock;
 
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SPI;
@@ -23,11 +24,15 @@ public class Sensors {
 	
 	private double lastTime = 0;
 	
+	private ReentrantLock rl;
+	
 	public Sensors() {
 
 		navx = new AHRS(SPI.Port.kMXP);
-		camera = new Camera();
 		robotAngle = new Angle(0);
+		rl = new ReentrantLock();
+		camera = new Camera(rl);
+
 	}
 	
 	

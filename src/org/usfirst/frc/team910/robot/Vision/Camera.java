@@ -1,6 +1,7 @@
 package org.usfirst.frc.team910.robot.Vision;
 
 import edu.wpi.first.wpilibj.Timer;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class Camera implements PixyEvent {
 
@@ -35,7 +36,7 @@ public class Camera implements PixyEvent {
 	private static final int BLOCK_MSG_OFFSET_HEIGHT = 4;
 	private static final int BLOCK_NUM_ELEMENTS = 5;
 	
-	public static final int PI_NETWORK_PORT_NUMBER = 10075 ;
+	private static final int PI_NETWORK_PORT_NUMBER = 10075 ;
    
 	public CameraData[] cameraData;
 	
@@ -46,20 +47,36 @@ public class Camera implements PixyEvent {
 	public TargetArray gearGoalMid;
 	public TargetArray gearGoalRight;
 
-	public Camera() {
-		PixyListener pl = new PixyListener(this, PI_NETWORK_PORT_NUMBER );
-		Thread t = new Thread(null, pl, "PixyListener");
-		t.start();
-		cameraData = new CameraData[MAX_CAMERAS];
-		for (int i = 0; i < cameraData.length; i++) {
-			cameraData[i] = new CameraData();
-		}	
+	private ReentrantLock mutex; // Synchronize access to cameraData
+	
+	public Camera(ReentrantLock rl) {
+		
+		// Save the ReentrantLock required for the synchronization / mutual exclusion 
+		this.mutex = rl;
+
 		boiler = new TargetArray();
 		rope = new TargetArray();
 		hopper = new TargetArray();
 		gearGoalLeft = new TargetArray();
 		gearGoalMid = new TargetArray();
 		gearGoalRight = new TargetArray();
+
+		mutex.lock(); // Enter critical section
+		// Create camera data structures 
+		try {
+			cameraData = new CameraData[MAX_CAMERAS];
+			for (int i = 0; i < cameraData.length; i++) {
+				cameraData[i] = new CameraData();
+			}	
+		} finally {
+			mutex.unlock(); // Exit critical section
+		}
+
+		// Start listening for messages from the Pi
+		PixyListener pl = new PixyListener(this, PI_NETWORK_PORT_NUMBER );
+		Thread t = new Thread(null, pl, "PixyListener");
+		t.start();
+		
 	}
 
 	// Messages received by the Pi that this code knows about:
@@ -98,48 +115,57 @@ public class Camera implements PixyEvent {
 				return;
 			}
 			
-			// Add the frame just received to the end of the list of frames up to the limit of the number of frames
-			// Otherwise, add this frame by overwriting / inserting this frame at the beginning of the list
-			int frameIndex;
-			if (cameraData[cameraNumber].currentFrame < FRAMES_PER_CAMERA) {
-				frameIndex = cameraData[cameraNumber].currentFrame;
-			} else {
-				frameIndex = cameraData[cameraNumber].currentFrame = 0;				
-			}
+			mutex.lock(); // Enter critical section
+			// Access camera data structures 
+			try {
+
+				// Add the frame just received to the end of the list of frames up to the limit of the number of frames
+				// Otherwise, add this frame by overwriting / inserting this frame at the beginning of the list for this camera
+				// Each message contains exactly one frame of data 
+				int frameIndex;
+				if (cameraData[cameraNumber].currentFrame < FRAMES_PER_CAMERA) {
+					frameIndex = cameraData[cameraNumber].currentFrame;
+				} else {
+					frameIndex = cameraData[cameraNumber].currentFrame = 0;				
+				}
 			
-			// Save the frame number received for this frame; maybe this will be useful for debugging, but it isn't used for anything functional
-			cameraData[cameraNumber].frames[frameIndex].frameNumber = Integer.parseInt(parts[2]);
+				// Save the frame number received for this frame; maybe this will be useful for debugging, but it isn't used for anything functional
+				cameraData[cameraNumber].frames[frameIndex].frameNumber = Integer.parseInt(parts[2]);
 
-			// Apply a time stamp to this frame which is the system clock time in seconds as counted by the roboRIO FPGA
-			cameraData[cameraNumber].frames[frameIndex].time = Timer.getFPGATimestamp();
+				// Apply a time stamp to this frame which is the system clock time in seconds as counted by the roboRIO FPGA
+				cameraData[cameraNumber].frames[frameIndex].time = Timer.getFPGATimestamp();
 
-			// Copy the number of blocks in this frame for this camera from the received message
-			int numBlocks = Integer.parseInt(parts[3]);
+				// Copy the number of blocks in this frame for this camera from the received message
+				int numBlocks = Integer.parseInt(parts[3]);
 
-			// Copy the blocks received for this frame
-			for(int i=0; i < numBlocks; i++ ) {
-				// Add the blocks just received to the end of the list of blocks for this frame up to the limit of the number of blocks
-				if (cameraData[cameraNumber].frames[frameIndex].currentBlock < BLOCKS_PER_FRAME) {
-     				// Index the block data within the message received from the Pi as follows:
-	    			// 4 (offset within the original / complete message where the first block appears) + i (current block within the message) * number of things within a block + offset within a block where the individual piece of data is located				
-		    		cameraData[cameraNumber].frames[frameIndex].blocks[cameraData[cameraNumber].frames[frameIndex].currentBlock].signature = Integer.parseInt(parts[4+(i*BLOCK_NUM_ELEMENTS)+BLOCK_MSG_OFFSET_SIG]);
-			    	cameraData[cameraNumber].frames[frameIndex].blocks[cameraData[cameraNumber].frames[frameIndex].currentBlock].xcord = Integer.parseInt(parts[4+(i*BLOCK_NUM_ELEMENTS)+BLOCK_MSG_OFFSET_X]);
-				    cameraData[cameraNumber].frames[frameIndex].blocks[cameraData[cameraNumber].frames[frameIndex].currentBlock].ycord = Integer.parseInt(parts[4+(i*BLOCK_NUM_ELEMENTS)+BLOCK_MSG_OFFSET_Y]);
-    				cameraData[cameraNumber].frames[frameIndex].blocks[cameraData[cameraNumber].frames[frameIndex].currentBlock].width = Integer.parseInt(parts[4+(i*BLOCK_NUM_ELEMENTS)+BLOCK_MSG_OFFSET_WIDTH]);
-	    			cameraData[cameraNumber].frames[frameIndex].blocks[cameraData[cameraNumber].frames[frameIndex].currentBlock].height = Integer.parseInt(parts[4+(i*BLOCK_NUM_ELEMENTS)+BLOCK_MSG_OFFSET_HEIGHT]);  			
-	    			// Update the location of the next block for this frame
+				// Copy the blocks received for this frame
+				for(int i=0; i < numBlocks; i++ ) {
+					// Add the blocks just received to the end of the list of blocks for this frame up to the limit of the number of blocks
+					// Otherwise, add these blocks by overwriting / inserting these blocks at the beginning of the list
+					if (cameraData[cameraNumber].frames[frameIndex].currentBlock == BLOCKS_PER_FRAME) {
+						cameraData[cameraNumber].frames[frameIndex].currentBlock = 0;				
+					}
+					// Extract the block data from the message received from the Pi as follows:
+					// 4 (offset within the original / complete message where the first block appears) + i (current block within the message) * number of things within a block + offset within a block where the individual piece of data is located				
+					cameraData[cameraNumber].frames[frameIndex].blocks[cameraData[cameraNumber].frames[frameIndex].currentBlock].signature = Integer.parseInt(parts[4+(i*BLOCK_NUM_ELEMENTS)+BLOCK_MSG_OFFSET_SIG]);
+					cameraData[cameraNumber].frames[frameIndex].blocks[cameraData[cameraNumber].frames[frameIndex].currentBlock].xcord = Integer.parseInt(parts[4+(i*BLOCK_NUM_ELEMENTS)+BLOCK_MSG_OFFSET_X]);
+					cameraData[cameraNumber].frames[frameIndex].blocks[cameraData[cameraNumber].frames[frameIndex].currentBlock].ycord = Integer.parseInt(parts[4+(i*BLOCK_NUM_ELEMENTS)+BLOCK_MSG_OFFSET_Y]);
+					cameraData[cameraNumber].frames[frameIndex].blocks[cameraData[cameraNumber].frames[frameIndex].currentBlock].width = Integer.parseInt(parts[4+(i*BLOCK_NUM_ELEMENTS)+BLOCK_MSG_OFFSET_WIDTH]);
+					cameraData[cameraNumber].frames[frameIndex].blocks[cameraData[cameraNumber].frames[frameIndex].currentBlock].height = Integer.parseInt(parts[4+(i*BLOCK_NUM_ELEMENTS)+BLOCK_MSG_OFFSET_HEIGHT]);  			
+					// Update the location of the next block for this frame
 					cameraData[cameraNumber].frames[frameIndex].currentBlock++;
 					// Add a block to the block counter for this frame
 					cameraData[cameraNumber].frames[frameIndex].numBlocks++;
-				} else { // Otherwise, add these blocks by overwriting / inserting these blocks at the beginning of the list
-					cameraData[cameraNumber].frames[frameIndex].currentBlock = 0;					
 				}
+			
+				// Update the location of the next frame for this camera
+				// Each message has exactly one frame of data 
+				cameraData[cameraNumber].currentFrame++;
+				
+			} finally {
+				mutex.unlock(); // Exit critical section
 			}
-			
-			// Update the location of the next frame for this camera
-			// Each message has exactly one frame of data 
-			cameraData[cameraNumber].currentFrame++;		
-			
+
 			break; // End of PIXY_MESSAGE_EVENT_OBJECT_DETECTED processing
 	    
 		default:
