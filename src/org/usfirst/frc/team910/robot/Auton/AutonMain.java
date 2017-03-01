@@ -8,6 +8,8 @@ import org.usfirst.frc.team910.robot.Subsystems.DriveTrain;
 import org.usfirst.frc.team910.robot.Subsystems.GearSystem;
 import org.usfirst.frc.team910.robot.Subsystems.Shooter;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 public class AutonMain {
 
 	ArrayList<AutonStep> steps;
@@ -15,7 +17,7 @@ public class AutonMain {
 
 	public AutonMain() {
 		steps = new ArrayList<AutonStep>();
-		steps.add(new AutonDriveStraight(10, 0.2, 0));
+		steps.add(new AutonDriveStraight(10, 0.2, 90));
 		steps.add(new AutonEndStep());
 	}
 
@@ -24,7 +26,8 @@ public class AutonMain {
 	}
 
 	public void run() {
-		steps.get(currentStep).run(); // institutes a state machine as an array of autons, works similarly to last year, but cleaner
+		SmartDashboard.putNumber("AutonStep", currentStep);
+		steps.get(currentStep).run(); // institutes a state machine as an array of autons, works similarly to a "switch"
 		if (steps.get(currentStep).isDone()) {
 			currentStep++;
 			steps.get(currentStep).setup();

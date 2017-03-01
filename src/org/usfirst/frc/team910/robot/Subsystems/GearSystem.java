@@ -56,25 +56,25 @@ public class GearSystem {
 	}
 
 	public void run() { 
-		if (in.autoClimb || in.autoGear || in.autoShoot || in.autoHopper)  { 	
-		}
+		if (in.autoClimb || in.autoGear || in.autoShoot || in.autoHopper)  { 	//if doing any of these
+		}																		// functions dont do gearintake
 		else { 
 			if(in.gearIntake) { 
-				gearRoller(ROLLER_POWER);
+				gearRoller(ROLLER_POWER);										//if we intake spin the motor to intake
 			}
 			else if(in.gearOuttake) { 
-				gearRoller(-ROLLER_POWER);
+				gearRoller(-ROLLER_POWER);										//if we outtake spin the motor the oppostie way to outtake
 			} else {
 				gearRoller(0);
 			}
 			
 			//TODO: Replace with position code
 			if(in.fireOverride && in.gearPanelPosition == 1){
-				out.setGearPanelPower(0.20);
+				out.setGearPanelPower(0.20);									// open gear panel
 			} else if (in.fireOverride && in.gearPanelPosition == 3){
-				out.setGearPanelPower(-0.20);
+				out.setGearPanelPower(-0.20);									//close gear panel
 			} else {
-				out.setGearPanelPower(0);
+				out.setGearPanelPower(0);										// stop moving gear panel
 			}
 		}
 	}	
