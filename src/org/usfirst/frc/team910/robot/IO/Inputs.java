@@ -59,9 +59,9 @@ public class Inputs {
 		autoClimb = leftStick.getRawButton(5);
 		autoStraight = rightStick.getRawButton(3); //TODO Make autoStraight toggle
 		// operator functions
-
-		primeButton = controlBoard.getRawButton(6) || gamepad.getRawButton(5);
-		fireButton = controlBoard.getRawButton(5) || gamepad.getRawButton(6);
+		//Change later for competition board. Check Steven's phone
+		primeButton = controlBoard.getRawButton(6) || gamepad.getRawButton(5); 
+		fireButton = controlBoard.getRawButton(5) || gamepad.getRawButton(6); 
 		fireOverride = controlBoard.getRawButton(14) || gamepad.getRawButton(3);
 		climbButton = controlBoard.getRawButton(1);
 		cameraEnable = controlBoard.getRawButton(7) || gamepad.getRawButton(4);

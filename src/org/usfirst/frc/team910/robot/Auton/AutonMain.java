@@ -24,7 +24,7 @@ public class AutonMain {
 	}
 
 	public void run() {
-		steps.get(currentStep).run(); // institutes a state machine as an array of autons, works similarly to a "switch"
+		steps.get(currentStep).run(); // institutes a state machine as an array of autons, works similarly to last year, but cleaner
 		if (steps.get(currentStep).isDone()) {
 			currentStep++;
 			steps.get(currentStep).setup();

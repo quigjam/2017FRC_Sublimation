@@ -26,7 +26,7 @@ public class ElectroPaul {//Shows what ports controls and motors are plugged int
 	public final static int RIGHT_DRIVE = 0;
 	public final static int SHOOTER_MOTOR = 12;
 	public static int TRANSPORTER_MOTOR;
-	public final static int AGITATOR_MOTOR = 5;
+	public final static int AGITATOR_MOTOR = 3;
 	public final static int CLIMB_MOTOR_1 = 6;
 	public final static int CLIMB_MOTOR_2 = 7;
 	public final static int GEAR_ROLLER_MOTOR = 9;
@@ -37,7 +37,7 @@ public class ElectroPaul {//Shows what ports controls and motors are plugged int
 		if(IS_COMP_BOT){
 			TRANSPORTER_MOTOR = 10;			
 		} else {
-			TRANSPORTER_MOTOR = 3;
+			TRANSPORTER_MOTOR = 5;
 		}
 	}
 	
