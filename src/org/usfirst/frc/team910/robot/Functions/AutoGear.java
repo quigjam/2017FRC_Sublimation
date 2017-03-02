@@ -121,7 +121,7 @@ public class AutoGear {
 				}
 				break;
 			case DONE:
-				drive.tankDrive(0, 0);
+				drive.tankDrive(0, 0, 1);
 				break;
 			}
 		} else {

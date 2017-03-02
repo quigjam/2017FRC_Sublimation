@@ -53,7 +53,7 @@ public class AutoHopper {
 
 			case DONE:
 //				if(){
-					drive.tankDrive(0, 0);							//stop
+					drive.tankDrive(0, 0, 1);							//stop
 //				}
 			}
 		}

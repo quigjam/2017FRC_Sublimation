@@ -16,7 +16,7 @@ public class DriveTrain {
 	private static final double DRIVE_CIRCLE_PWR = 0.05;
 	private static final double[] SWERVE_FACTOR_ENC = {2, 2, 0.5, 0.5};// in/0.1sec
 	private static final double[] SWERVE_DRIVE_SPEED_AXIS = {11, 12, 100, 101};// in/sec
-	private static final double SWERVE_FACTOR_ANGLE = 0.01;
+	private static final double SWERVE_FACTOR_ANGLE = 0.15;
 	private static final double ROTATE_MAX_PWR = 0.2;
 	private static final double ROTATE_PWR_FACTOR = 0.005;
 	private static final double CIRCLE_DRIVE_KV = 0; // Feed-Forward term for circleDrive
@@ -52,22 +52,24 @@ public class DriveTrain {
 			dynamicBrake(prevTask != DriveFunction.DYNAMIC_BRAKING);
 			prevTask = DriveFunction.DYNAMIC_BRAKING;
 		} else if (in.driveStraight) {
-			driveStraightEnc(prevTask != DriveFunction.DRIVE_STRAIGHT, in.rightJoyStickY, in.leftJoyStickX);
+			driveStraightNavX(prevTask != DriveFunction.DRIVE_STRAIGHT, in.rightJoyStickY, in.leftJoyStickX);
 			prevTask = DriveFunction.DRIVE_STRAIGHT;
 		} else if (in.autoStraight) {
 			autoStraight(prevTask != DriveFunction.AUTO_STRAIGHT, in.leftJoyStickY, in.rightJoyStickY);
 			prevTask = DriveFunction.AUTO_STRAIGHT;
 		} else {
-			tankDrive(in.leftJoyStickY, in.rightJoyStickY);
+			tankDrive(in.leftJoyStickY, in.rightJoyStickY, 1);
 			prevTask = DriveFunction.TANK_DRIVE;
 		}
 	}
 
-	public void tankDrive(double leftPower, double rightPower) {
+	public void tankDrive(double leftPower, double rightPower, double powerLimit) {
 		double pwrAdj = Math.max(Math.abs(leftPower), Math.abs(rightPower));
-		if (pwrAdj > 1) {
+		if (pwrAdj > powerLimit) {
 			leftPower /= pwrAdj;
+			leftPower *= powerLimit;
 			rightPower /= pwrAdj;
+			rightPower *= powerLimit;
 		}
 		out.setLeftDrive(leftPower);
 		out.setRightDrive(rightPower);
@@ -87,7 +89,7 @@ public class DriveTrain {
 			double leftEncDiff = leftEncPrev - leftEncoder;
 			double rightEncDiff = rightEncPrev - rightEncoder;
 
-			tankDrive(leftEncDiff * DYN_BRAKE_PWR, rightEncDiff * DYN_BRAKE_PWR);
+			tankDrive(leftEncDiff * DYN_BRAKE_PWR, rightEncDiff * DYN_BRAKE_PWR, 0.8);
 		}
 
 	}
@@ -109,7 +111,7 @@ public class DriveTrain {
 			double currentEncDiff = out.leftDriveEncoder - out.rightDriveEncoder;
 			double diffDiff = (initialEncDiff - currentEncDiff) * DRIVE_STRAIGHT_ENC_PWR;
 
-			tankDrive(in.rightJoyStickY + diffDiff, in.rightJoyStickY - diffDiff);
+			tankDrive(in.rightJoyStickY + diffDiff, in.rightJoyStickY - diffDiff, Math.max(0.3, Math.abs(in.rightJoyStickY)));
 		}
 
 	}
@@ -123,11 +125,11 @@ public class DriveTrain {
 		if (firstTime) {
 			originAngle.set(navxangle.get());
 		} else {
-			originAngle.add(swerve * SWERVE_FACTOR_ANGLE);
+			originAngle.add(swerve * -SWERVE_FACTOR_ANGLE);
 			double angledifference = originAngle.subtract(navxangle);
 			double powerDiff = angledifference * DRIVE_STRAIGHT_NAVX_PWR;
 
-			tankDrive(power - powerDiff, power + powerDiff);
+			tankDrive(power - powerDiff, power + powerDiff, Math.max(0.3, Math.abs(in.rightJoyStickY)));
 		}
 		SmartDashboard.putNumber("DriveStraightOriginAngle", originAngle.get());
 	}
@@ -141,14 +143,14 @@ public class DriveTrain {
 		circleTargetAngle.set(startAngle.get() + direction * K * distance + CIRCLE_DRIVE_KV * K * velocity * direction);
 		double angleError = circleTargetAngle.subtract(sense.robotAngle);
 		double correctionPwr = angleError * DRIVE_CIRCLE_PWR;
-		tankDrive(power - correctionPwr, power + correctionPwr);
+		tankDrive(power - correctionPwr, power + correctionPwr, power);
 	}
 
 	public void rotate(Angle target) { // allows robot to rotate to a desired angle
 		double adjAngle = target.subtract(sense.robotAngle);
 		double power = ROTATE_PWR_FACTOR * adjAngle;
 		power = Math.max(Math.min(power, ROTATE_MAX_PWR), -ROTATE_MAX_PWR);
-		tankDrive(-power, power);
+		tankDrive(-power, power, power);
 
 	}
 

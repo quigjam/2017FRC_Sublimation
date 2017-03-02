@@ -1,5 +1,7 @@
 package org.usfirst.frc.team910.robot.IO;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 public class Angle { //math to create angles throughout NavX-related and Auto functions
 	private double angle;
 	
@@ -22,8 +24,17 @@ public class Angle { //math to create angles throughout NavX-related and Auto fu
 	
 	//returns the shortest distance around the circle
 	public double subtract(Angle other) {
-		double difference = angle - other.get(); 
-		return difference % 180; 
+		double diff = angle - other.get(); //target minus actual
+		
+		if(diff > 180) {
+			diff = 360 - diff;
+		} else if(diff < -180) {
+			diff = 360 + diff;
+		}
+		
+		SmartDashboard.putNumber("Angle.sub", diff);
+		
+		return diff; 
 	}
 	
 	// this function ensures that our angle is positive when a negative number is passed in.

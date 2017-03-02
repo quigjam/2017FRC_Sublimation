@@ -63,17 +63,20 @@ public class Outputs {
 		shooterMotor = new CANTalon(ElectroPaul.SHOOTER_MOTOR);
 		shooterMotor.enableBrakeMode(false);
 		shooterMotor.configPeakOutputVoltage(0, -12);
-		shooterMotor.setCloseLoopRampRate(7);//7V per sec
 		shooterMotor.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
+		shooterMotor.setInverted(false);
 		shooterMotor.reverseOutput(true);
-		shooterMotor.reverseSensor(true);
-		shooterMotor.enableBrakeMode(false);
+		shooterMotor.reverseSensor(true); 
+		//shooterMotor.setCloseLoopRampRate(7);//7V per sec done below
+		shooterMotor.setPID(0.65, 0, 1.15, 0.062, 0, 7, 0);
 
 		transporterMotor = new CANTalon(ElectroPaul.TRANSPORTER_MOTOR);
 		transporterMotor.enableBrakeMode(true);
 		transporterMotor.setInverted(true);
-		transporterMotor.reverseOutput(true);
+		transporterMotor.reverseOutput(false);
 		transporterMotor.reverseSensor(true);
+		transporterMotor.configPeakOutputVoltage(0, -12);
+		transporterMotor.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
 		
 		agitatorMotor = new CANTalon(ElectroPaul.AGITATOR_MOTOR);
 		agitatorMotor.enableBrakeMode(false);
@@ -146,7 +149,8 @@ public class Outputs {
 			transporterMotor.set(0);
 		} else {
 			transporterMotor.changeControlMode(TalonControlMode.Speed);
-			transporterMotor.set(speed);
+			//transporterMotor.set(speed);
+			transporterMotor.setSetpoint(speed);
 		}
 	}
 
@@ -209,6 +213,7 @@ public class Outputs {
 			SmartDashboard.putNumber("Motor"+ motor + "current", current);
 		} else {
 			currentSum[motor] = 0;
+			//SmartDashboard.putNumber("Motor"+ motor + "current", current);
 		}
 		if (currentSum[motor] > AMP_SECOND_LIMIT) {
 			restEndTime[motor] = Timer.getFPGATimestamp() + MIN_REST_TIME;
@@ -217,6 +222,7 @@ public class Outputs {
 		return (restEndTime[motor] > Timer.getFPGATimestamp());
 	}
 
+	double maxTransporterSpeed = 0;
 	public void readEncoders() {
 		leftDriveEncoder = leftDriveCan.getPosition() * DRIVE_INCH_PER_REV;
 		rightDriveEncoder = rightDriveCan.getPosition()*DRIVE_INCH_PER_REV;
@@ -225,6 +231,12 @@ public class Outputs {
 		agitatorSpeedEncoder = agitatorMotor.getSpeed();
 		gearPanelPositionEncoder = gearPanelMotor1.getPosition();
 
+		if(transporterSpeedEncoder == 0){
+			maxTransporterSpeed = 0;
+		} else{
+			maxTransporterSpeed = Math.min(maxTransporterSpeed, transporterSpeedEncoder);
+		}
+		SmartDashboard.putNumber("MaxTransporterSpeed", maxTransporterSpeed);
 		SmartDashboard.putNumber("leftDriveEncoder", leftDriveEncoder);
 		SmartDashboard.putNumber("rightDriveEncoder", rightDriveEncoder);
 		SmartDashboard.putNumber("shooterSpeedEncoder", shooterSpeedEncoder);

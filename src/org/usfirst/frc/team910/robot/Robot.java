@@ -14,6 +14,8 @@ import org.usfirst.frc.team910.robot.Subsystems.GearSystem;
 import org.usfirst.frc.team910.robot.Subsystems.Shooter;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends IterativeRobot {
 
@@ -31,7 +33,7 @@ public class Robot extends IterativeRobot {
 	AutoShoot autoShoot;
 
 	AutonMain autonmain;
-
+	Solenoid light;
 	/**
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.
@@ -53,6 +55,7 @@ public class Robot extends IterativeRobot {
 		autoShoot = new AutoShoot(in, shoot);
 
 		autonmain = new AutonMain();
+		light = new Solenoid(0);
 	}
 
 	@Override
@@ -89,6 +92,8 @@ public class Robot extends IterativeRobot {
 		shoot.run();
 		gear.run();
 		climb.run();
+		
+		light.set(in.cameraEnable);
 	}
 
 	/**

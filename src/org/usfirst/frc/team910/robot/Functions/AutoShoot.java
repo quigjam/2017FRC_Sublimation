@@ -57,22 +57,22 @@ public class AutoShoot {
 				break;
 			case ALIGN:
 				drive.rotate(currentTarget.totalAngle); // face the target
-				shoot.shooterPrime(true);
+				shoot.shooterPrime(true,false);
 				if (Math.abs(currentTarget.cameraAngle) < ALLOWABLE_ANGLE_ERROR) { // when we are lined up
 					shootState = ShootState.PRIME; // go to the next step
 				}
 				break;
 
 			case PRIME:
-				shoot.shooterPrime(true); // prime
+				shoot.shooterPrime(true,false); // prime
 				if (shoot.upToSpeed()) { // when we get up to speed
 					shootState = ShootState.FIRE; // go to next state
 
 				}
 				break;
 			case FIRE:
-				shoot.shooterPrime(true);
-				shoot.shooterFire(true); // fire
+				shoot.shooterPrime(true,true);
+				//shoot.shooterFire(true); // fire
 			}
 
 		} else {
