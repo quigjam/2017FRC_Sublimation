@@ -19,7 +19,7 @@ public class DriveTrain {
 	private static final double SWERVE_FACTOR_ANGLE = 0.15;
 	private static final double ROTATE_MAX_PWR = 0.2;
 	private static final double ROTATE_PWR_FACTOR = 0.005;
-	private static final double CIRCLE_DRIVE_KV = 0; // Feed-Forward term for circleDrive
+	private static final double CIRCLE_DRIVE_KV = 0.002; // Feed-Forward term for circleDrive
 
 	private Inputs in;
 	private Outputs out;
@@ -141,6 +141,7 @@ public class DriveTrain {
 			double direction) {
 		double K = 360 / (2 * Math.PI * radius);
 		circleTargetAngle.set(startAngle.get() + direction * K * distance + CIRCLE_DRIVE_KV * K * velocity * direction);
+		SmartDashboard.putNumber("Circle Target Angle", circleTargetAngle.get());
 		double angleError = circleTargetAngle.subtract(sense.robotAngle);
 		double correctionPwr = angleError * DRIVE_CIRCLE_PWR;
 		tankDrive(power - correctionPwr, power + correctionPwr, power);

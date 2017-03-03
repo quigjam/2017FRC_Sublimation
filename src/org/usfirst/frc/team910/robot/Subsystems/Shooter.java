@@ -2,7 +2,7 @@ package org.usfirst.frc.team910.robot.Subsystems;
 
 import org.usfirst.frc.team910.robot.IO.Inputs;
 import org.usfirst.frc.team910.robot.IO.Outputs;
-
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Shooter {
@@ -36,13 +36,16 @@ public class Shooter {
 	public void shooterPrime(boolean primeButton, boolean fire) { // Moves the big roller
 		if (primeButton) { // if we hit the prime button
 			out.setShooterSpeed(SHOOTER_SPEED + jogoffset); // ready the shooter to fire (with our constant shooter speed + how much we have jogged)
-			out.setAgitatorPower(1); // start spinning the agitator to get the fuel moving
+			//out.setAgitatorPower(1); // start spinning the agitator to get the fuel moving
 			// out.setShooterPower (0.5);
 			
 			if(!fire){
 				out.setTransportPower(-0.2);
+				out.setAgitatorPower(0);
+				
 			} else{
 				out.setTransportSpeed(3500);
+				out.setAgitatorPower(1);
 			}
 		} else { // if anything else happens make sure the shooter motor doesn't move
 			out.setShooterPower(0);

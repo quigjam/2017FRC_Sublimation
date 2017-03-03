@@ -1,5 +1,7 @@
 package org.usfirst.frc.team910.robot.Auton;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 public class AutonDriveStraight extends AutonStep {
 
 	double distance;
@@ -7,9 +9,9 @@ public class AutonDriveStraight extends AutonStep {
 	double angle;
 
 	public AutonDriveStraight(double distance, double speed, double angle) {
-		distance = this.distance;
-		speed = this.speed;
-		angle = this.angle;
+		this.distance = distance;
+		this.speed = speed;
+		this.angle = angle;
 	}
 
 	@Override
@@ -18,7 +20,7 @@ public class AutonDriveStraight extends AutonStep {
 	}
 
 	@Override
-	public void run() {
+	public void run() { 
 		drive.originAngle.set(angle);
 		drive.driveStraightNavX(false, speed, 0);
 	}
@@ -26,7 +28,6 @@ public class AutonDriveStraight extends AutonStep {
 	@Override
 	public boolean isDone() {
 		double avgEncDist = (drive.leftDriveEncoder + drive.rightDriveEncoder) / 2;
-
 		return avgEncDist >= distance;
 	}
 

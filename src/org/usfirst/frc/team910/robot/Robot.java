@@ -56,6 +56,8 @@ public class Robot extends IterativeRobot {
 
 		autonmain = new AutonMain();
 		light = new Solenoid(0);
+		
+		sense.init();
 	}
 
 	@Override

@@ -14,7 +14,7 @@ public class AutonDriveCircle extends AutonStep {
 	public AutonDriveCircle(double distance, double power, double startAngle, double radius, boolean clockwise) {
 		this.endDistance = distance;
 		this.power = power;
-		this.startAngle.set(startAngle);
+		this.startAngle = new Angle(startAngle);
 		this.radius = radius;
 		if (clockwise)
 			direction = -1;

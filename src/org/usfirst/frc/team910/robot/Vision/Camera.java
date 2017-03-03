@@ -1,6 +1,8 @@
 package org.usfirst.frc.team910.robot.Vision;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import java.util.concurrent.locks.ReentrantLock;
 
 public class Camera implements PixyEvent {
@@ -87,6 +89,9 @@ public class Camera implements PixyEvent {
 	// PIXY_MESSAGE_EVENT_OBJECT_DETECTED message format is:
 	// PIXY_MESSAGE_EVENT_OBJECT_DETECTED, camera number, frame number, number of blocks, signature, x, y, width, height
 	public void eventGet(String s) {
+		
+		SmartDashboard.putString("LatestPixyMsg", s);
+		
 		String[] parts = s.split(",");
 		int messageType = Integer.parseInt(parts[0]);
 		switch(messageType){ // Check the message type 

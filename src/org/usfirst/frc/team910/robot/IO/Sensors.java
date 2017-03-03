@@ -39,7 +39,7 @@ public class Sensors {
 	double zeroYaw = 0;
 	public void init(){
 		//navx.zeroYaw();
-		zeroYaw = navx.getYaw();
+		zeroYaw = navx.getYaw() - 90;
 	}
 
 	public void read() {
