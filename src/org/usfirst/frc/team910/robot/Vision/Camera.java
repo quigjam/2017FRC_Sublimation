@@ -82,7 +82,6 @@ public class Camera implements PixyEvent {
 	}
 
 	// Messages received by the Pi that this code knows about:
-	//
 	// PIXY_MESSAGE_EVENT_ALIVE message format is:
 	// PIXY_MESSAGE_EVENT_ALIVE,number of cameras detected,camera ID,firmware major version, firmware minor version, firmware build number
 	//
