@@ -1,8 +1,10 @@
 package org.usfirst.frc.team910.robot;
 
+import org.usfirst.frc.team910.robot.Auton.AutonMain;
 import org.usfirst.frc.team910.robot.Functions.AutoClimb;
 import org.usfirst.frc.team910.robot.Functions.AutoGear;
 import org.usfirst.frc.team910.robot.Functions.AutoShoot;
+import org.usfirst.frc.team910.robot.IO.ElectroPaul;
 import org.usfirst.frc.team910.robot.IO.Inputs;
 import org.usfirst.frc.team910.robot.IO.Outputs;
 import org.usfirst.frc.team910.robot.IO.Sensors;
@@ -12,6 +14,8 @@ import org.usfirst.frc.team910.robot.Subsystems.GearSystem;
 import org.usfirst.frc.team910.robot.Subsystems.Shooter;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends IterativeRobot {
 
@@ -28,11 +32,15 @@ public class Robot extends IterativeRobot {
 	AutoGear autoGear;
 	AutoShoot autoShoot;
 
+	AutonMain autonmain;
+	Solenoid light;
 	/**
-	 * This function is run when the robot is first started up and should be used for any initialization code.
+	 * This function is run when the robot is first started up and should be
+	 * used for any initialization code.
 	 */
 	@Override
 	public void robotInit() {
+		ElectroPaul ep = new ElectroPaul();
 		in = new Inputs();
 		out = new Outputs();
 		sense = new Sensors();
@@ -44,12 +52,18 @@ public class Robot extends IterativeRobot {
 
 		autoClimb = new AutoClimb(in, sense, drive, climb);
 		autoGear = new AutoGear(in, sense, drive, gear);
-		autoShoot = new AutoShoot(out, in, shoot);
+		autoShoot = new AutoShoot(in, shoot);
+
+		autonmain = new AutonMain();
+		light = new Solenoid(0);
+		
+		sense.init();
 	}
 
 	@Override
 	public void autonomousInit() {
-
+		autonmain.init(in, sense, drive, gear, shoot);
+		sense.init();
 	}
 
 	/**
@@ -57,7 +71,10 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousPeriodic() {
-
+		sense.read();
+		out.readEncoders();
+		drive.run(true);
+		autonmain.run();
 	}
 
 	@Override
@@ -73,10 +90,12 @@ public class Robot extends IterativeRobot {
 		in.read();
 		sense.read();
 		out.readEncoders();
-		drive.run();
+		drive.run(false);
 		shoot.run();
 		gear.run();
 		climb.run();
+		
+		light.set(in.cameraEnable);
 	}
 
 	/**

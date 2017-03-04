@@ -30,6 +30,7 @@ public class PathPlanning {
 
 	public static double distance;
 	public static double arcdistance;
+	public static double direction;
 
 	public static void calculateArcPoints(Angle sensorsNavXangle, int inputsTargetGearPost, Angle inputsCameraAngle,
 			double inputsCameraDistance) {
@@ -144,12 +145,17 @@ public class PathPlanning {
 		robotIntersection.y = (perpendicularrobotLine.slope * robotIntersection.x) + perpendicularrobotLine.yIntercept;
 
 		distance = Math.sqrt((robotIntersection.x * robotIntersection.x) + (robotIntersection.y * robotIntersection.y));
-
+	
 		double arcangle = (Math.atan(perpendiculargoalLine.slope) - Math.atan(perpendicularrobotLine.slope));
 
 		if (arcangle > 180)
 			arcangle = 360 - arcangle;
 
 		arcdistance = (arcangle / 360) * CIRCLE_CIRCUMFERENCE;
+	if (sensorsNavXangle.get() > 90 && sensorsNavXangle.get() < 270){
+		direction = 1;
+	}else{
+		direction = -1;
+	}
 	}
 }

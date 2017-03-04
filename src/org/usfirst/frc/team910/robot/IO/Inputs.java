@@ -8,7 +8,7 @@ public class Inputs {
 	private static final double DEADBAND = 0.1;
 
 	private Joystick leftStick;
-	private Joystick rightStick;
+	private  Joystick rightStick;
 	private Joystick gamepad;
 	private Joystick controlBoard;
 
@@ -23,6 +23,7 @@ public class Inputs {
 	public boolean autoShoot;
 	public boolean autoClimb;
 	public boolean autoHopper;//4 left Work in progress
+	public boolean autoStraight;
 
 	// operator functions
 	public boolean primeButton;
@@ -56,11 +57,11 @@ public class Inputs {
 		autoGear = rightStick.getRawButton(4);
 		autoShoot = rightStick.getRawButton(5);
 		autoClimb = leftStick.getRawButton(5);
-
+		autoStraight = rightStick.getRawButton(3); //TODO Make autoStraight toggle
 		// operator functions
-
-		primeButton = controlBoard.getRawButton(6) || gamepad.getRawButton(5);
-		fireButton = controlBoard.getRawButton(5) || gamepad.getRawButton(6);
+		//Change later for competition board. Check Steven's phone
+		primeButton = controlBoard.getRawButton(6) || gamepad.getRawButton(5); 
+		fireButton = controlBoard.getRawButton(5) || gamepad.getRawButton(6); 
 		fireOverride = controlBoard.getRawButton(14) || gamepad.getRawButton(3);
 		climbButton = controlBoard.getRawButton(1);
 		cameraEnable = controlBoard.getRawButton(7) || gamepad.getRawButton(4);

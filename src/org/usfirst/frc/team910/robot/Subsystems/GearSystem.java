@@ -28,7 +28,7 @@ public class GearSystem {
 		this.sense = sense;
 	}
 	
-	public void gearposition(int gearPanelPosition, double rightwindowmotor, double leftwindowmotor,int ultrasonicDistance){ //Shows where a gear is on the panel
+	public void gearposition(int gearPanelPosition){ //Shows where a gear is on the panel
 		
 		switch(gearPanelPosition){
 		
@@ -36,18 +36,18 @@ public class GearSystem {
 			out.setGearPanelPower(START_POSITION);     	
 			break;
 		case 1: //hopperposition
-			if(ultrasonicDistance >= 0){
+			//if(ultrasonicDistance >= 0){
 				out.setGearPanelPower(HOPPER_POSITION);
-			}
+			//}
 			break;
 		
 		case 2: //gearposition
-			if(ultrasonicDistance <= 0){
+			//if(ultrasonicDistance <= 0){
 				out.setGearPanelPower(NATURAL_GEAR_POSITION);
-			}
-			if(ultrasonicDistance >= 0){
+			//}
+			//if(ultrasonicDistance >= 0){
 				out.setGearPanelPower(EXTENDED_GEAR_POSITION);
-			}
+			//}
 			break;
 		}
  
@@ -55,23 +55,27 @@ public class GearSystem {
 	}
 
 	public void run() { 
-		if (in.autoClimb || in.autoGear || in.autoShoot || in.autoHopper)  {   //if we hit any of these dont do anything	
-		}
-		else {                                      
-			if(in.gearIntake) {                          //if we hit the gear in-tank button
-				gearRoller(ROLLER_POWER);				//power the roller to pull in a gear
+
+		if (in.autoClimb || in.autoGear || in.autoShoot || in.autoHopper)  { 	//if doing any of these
+		}																		// functions dont do gearintake
+		else { 
+			if(in.gearIntake) { 
+				gearRoller(ROLLER_POWER);										//if we intake spin the motor to intake
 			}
-			else if(in.gearOuttake) {     				//if we hit the gear out-take button
-				gearRoller(-ROLLER_POWER);				//power the roller to push out a gear
+			else if(in.gearOuttake) { 
+				gearRoller(-ROLLER_POWER);										//if we outtake spin the motor the oppostie way to outtake
+			} else {
+				gearRoller(0);
+
 			}
 			
 			//TODO: Replace with position code
 			if(in.fireOverride && in.gearPanelPosition == 1){
-				out.setGearPanelPower(0.20);
+				out.setGearPanelPower(0.20);									// open gear panel
 			} else if (in.fireOverride && in.gearPanelPosition == 3){
-				out.setGearPanelPower(-0.20);
+				out.setGearPanelPower(-0.20);									//close gear panel
 			} else {
-				out.setGearPanelPower(0);
+				out.setGearPanelPower(0);										// stop moving gear panel
 			}
 		}
 	}	

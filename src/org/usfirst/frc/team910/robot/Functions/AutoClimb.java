@@ -19,7 +19,6 @@ public class AutoClimb {
 	private static final double DRIVE_TIME = 0.5; 
 
 	private Inputs in;
-	private Outputs out;
 	private Sensors sense;
 	private DriveTrain drive;
 	private Climber climb;
@@ -52,7 +51,7 @@ public class AutoClimb {
 				break;
 
 			case DRIVE:
-				drive.originAngle.set(sense.robotAngle.get() + sense.cameraAngle.get()); //set target angle to where the target is plus where we are
+				drive.originAngle.set(currentTarget.totalAngle.get()); //set target angle to where the target is plus where we are
 				drive.driveStraightNavX(false, DRIVE_POWER, 0);							//drive straight to the target
 				if ((currentTarget.distance) < ALLOWABLE_DISTANCE_ERROR) {				//if our distance from the target falls within an allowable error
 					climbState = ClimbState.DRIVE2;										//advance to the next state
@@ -60,9 +59,9 @@ public class AutoClimb {
 				}
 				break;
 			case DRIVE2:
-				drive.originAngle.set(sense.robotAngle.get() + sense.cameraAngle.get());//set target angle to where the target is plus where we are
+				drive.originAngle.set(currentTarget.totalAngle.get());//set target angle to where the target is plus where we are
 				drive.driveStraightNavX(false, DRIVE_POWER, 0);							//drive straight toward target
-				climb.forward(CLIMB_POWER);												//start climbing
+				climb.climb(CLIMB_POWER);												//start climbing
 				if(Timer.getFPGATimestamp() > endTime) { 								// when the time gets greater than our end time
 				climbState = climbState.CLIMB;											//go to CLIMB state
 				}
@@ -70,7 +69,7 @@ public class AutoClimb {
 
 			case CLIMB:
 
-				climb.forward(CLIMB_POWER);												//climb
+				climb.climb(CLIMB_POWER);												//climb
 			}
 
 		}
