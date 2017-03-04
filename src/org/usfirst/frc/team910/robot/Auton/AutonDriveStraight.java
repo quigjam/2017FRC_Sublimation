@@ -5,18 +5,23 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class AutonDriveStraight extends AutonStep {
 
+	private static final double V_MAX = 10.0;
+	private static final double ACCEL = 3.0;
+	private static final double PConst = 0.15;
+	
+	
+	
 	double distance;
 	double stopDistance;
-	double startDistance; 
-	double halfDistance; 
+	double startDistance;
+	double startTime;
+	double halfDistance;
+	double startDeccelTime;
 	double power;
 	double angle;
-	double startTime;
-	double rampEndTime;
-	double rampEndDist; 
-	double flatEnd; 
-	double currentPower; 
-	double rampDownStart; 
+	double currVel;
+	double x;
+
 	
 	private static final double RAMP_RATE = 0.5; //power per second 
 	private static final double RAMP_DOWN_OFFSET = 0.1; 
@@ -31,46 +36,42 @@ public class AutonDriveStraight extends AutonStep {
 	public void setup() {
 		startDistance = (drive.leftDriveEncoder + drive.rightDriveEncoder) / 2;
 		stopDistance = startDistance + distance; 
-		halfDistance = distance / 2 + startDistance; 
-		startTime = Timer.getFPGATimestamp(); 
-		currentPower = 0; 
-		rampEndTime = 0;
-		flatEnd = 0; 
-		rampEndDist = 0; 
-		rampDownStart = 0; 
+		halfDistance = distance / 2 + startDistance;
+		x = 0;
+		currVel = 0;
+		startTime = Timer.getFPGATimestamp();
+		
+		startDeccelTime = Math.sqrt(distance/2*ACCEL);
+		if (ACCEL*startDeccelTime > V_MAX){
+			double accelTime = V_MAX / ACCEL;
+			double accelDist = (V_MAX/2)*accelTime;
+			double vMaxDist = (halfDistance - accelDist);
+			double vMaxTime = vMaxDist / V_MAX; 
+			
+			startDeccelTime = accelTime + vMaxTime*2;
+		}
 	}
 
 	@Override
 	public void run() { 
 		double currentDistance = (drive.leftDriveEncoder + drive.rightDriveEncoder) / 2;
-		double currentTime = Timer.getFPGATimestamp();
-		double elapsedTime = currentTime - startTime;
-		if(currentDistance >= halfDistance) { // hold then ramp down
-			if(flatEnd == 0) { // first time second half reached
-				flatEnd = currentTime - startTime; 
-			}
-			if(currentDistance >= halfDistance + distance/2 - rampEndDist || elapsedTime >= flatEnd * 2 - rampEndTime) { // ramp down
-				if(rampDownStart == 0) {
-					rampDownStart = currentTime; 
-				} 
-				currentPower = power - (currentTime - rampDownStart) * RAMP_RATE - RAMP_DOWN_OFFSET; 
-			} else { 
-				currentPower = power; 
-			}
-		} else { // ramp up and hold 
-			currentPower = elapsedTime * RAMP_RATE; 
-			if(currentPower >= power) { // holding peak power
-				currentPower = power; 
-				if(rampEndTime == 0) { // first time peak power reached
-					rampEndTime = elapsedTime;
-					rampEndDist = currentDistance - startDistance; 
-				}
-			}
+		double accel = ACCEL;
+		if (Timer.getFPGATimestamp() > startTime+startDeccelTime){
+			accel = -ACCEL;
+		} else if(currVel == V_MAX) {
+			accel = 0;
 		}
-		drive.originAngle.set(angle);
-		drive.driveStraightNavX(false, currentPower, 0);
+		x = x + currVel*sense.deltaTime+0.5*accel*sense.deltaTime*sense.deltaTime;
+		currVel = currVel + accel*sense.deltaTime;
+		if(currVel > V_MAX) currVel = V_MAX;
 		
+		double distError = currentDistance - startDistance - x;
+		power = PConst * distError;
+		drive.driveStraightNavX(false, power, 0);
+		
+		//TODO Maybe add jerk later
 	}
+		
 
 	@Override
 	public boolean isDone() {
