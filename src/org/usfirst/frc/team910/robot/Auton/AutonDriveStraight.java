@@ -76,7 +76,7 @@ public class AutonDriveStraight extends AutonStep {
 	@Override
 	public boolean isDone() {
 		double avgEncDist = (drive.leftDriveEncoder + drive.rightDriveEncoder) / 2;
-		return avgEncDist >= distance;
+		return avgEncDist >= stopDistance;
 	}
 	
 }
