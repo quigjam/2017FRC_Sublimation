@@ -33,8 +33,7 @@ public class GearSystem {
 		switch(gearPanelPosition){
 		
 		case 0: //startposition
-			out.setGearPanelPower(START_POSITION);
-	
+			out.setGearPanelPower(START_POSITION);     	
 			break;
 		case 1: //hopperposition
 			if(ultrasonicDistance >= 0){
@@ -56,14 +55,14 @@ public class GearSystem {
 	}
 
 	public void run() { 
-		if (in.autoClimb || in.autoGear || in.autoShoot || in.autoHopper)  { 	
+		if (in.autoClimb || in.autoGear || in.autoShoot || in.autoHopper)  {   //if we hit any of these dont do anything	
 		}
-		else { 
-			if(in.gearIntake) { 
-				gearRoller(ROLLER_POWER);
+		else {                                      
+			if(in.gearIntake) {                          //if we hit the gear in-tank button
+				gearRoller(ROLLER_POWER);				//power the roller to pull in a gear
 			}
-			else if(in.gearOuttake) { 
-				gearRoller(-ROLLER_POWER);
+			else if(in.gearOuttake) {     				//if we hit the gear out-take button
+				gearRoller(-ROLLER_POWER);				//power the roller to push out a gear
 			}
 			
 			//TODO: Replace with position code
@@ -77,7 +76,7 @@ public class GearSystem {
 		}
 	}	
 	
-	public void gearRoller(double power) { 
+	public void gearRoller(double power) { 			//when called set the GearRoller to some power
 		out.setGearRoller(power);
 		
 	}
