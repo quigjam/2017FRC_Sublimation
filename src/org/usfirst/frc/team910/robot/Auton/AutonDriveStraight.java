@@ -7,7 +7,7 @@ public class AutonDriveStraight extends AutonStep {
 
 	private static final double V_MAX = 10.0;
 	private static final double ACCEL = 3.0;
-	private static final double PConst = 0.15;
+	private static final double PCONST = 0.15;
 	
 	
 	
@@ -66,7 +66,8 @@ public class AutonDriveStraight extends AutonStep {
 		if(currVel > V_MAX) currVel = V_MAX;
 		
 		double distError = currentDistance - startDistance - x;
-		power = PConst * distError;
+		power = PCONST * distError;
+		SmartDashboard.putNumber("autonPower", power);
 		drive.driveStraightNavX(false, power, 0);
 		
 		//TODO Maybe add jerk later
