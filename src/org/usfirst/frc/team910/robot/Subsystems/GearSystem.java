@@ -33,8 +33,7 @@ public class GearSystem {
 		switch(gearPanelPosition){
 		
 		case 0: //startposition
-			out.setGearPanelPower(START_POSITION);
-	
+			out.setGearPanelPower(START_POSITION);     	
 			break;
 		case 1: //hopperposition
 			//if(ultrasonicDistance >= 0){
@@ -56,6 +55,7 @@ public class GearSystem {
 	}
 
 	public void run() { 
+
 		if (in.autoClimb || in.autoGear || in.autoShoot || in.autoHopper)  { 	//if doing any of these
 		}																		// functions dont do gearintake
 		else { 
@@ -66,6 +66,7 @@ public class GearSystem {
 				gearRoller(-ROLLER_POWER);										//if we outtake spin the motor the oppostie way to outtake
 			} else {
 				gearRoller(0);
+
 			}
 			
 			//TODO: Replace with position code
@@ -79,7 +80,7 @@ public class GearSystem {
 		}
 	}	
 	
-	public void gearRoller(double power) { 
+	public void gearRoller(double power) { 			//when called set the GearRoller to some power
 		out.setGearRoller(power);
 		
 	}
