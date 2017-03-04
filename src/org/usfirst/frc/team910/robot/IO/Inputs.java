@@ -42,7 +42,7 @@ public class Inputs {
 	public Inputs() { //creates joysticks that are plugged into the port specified in ElectroPaul
 		leftStick = new Joystick(ElectroPaul.LEFT_JOYSTICK_PORT);
 		rightStick = new Joystick(ElectroPaul.RIGHT_JOYSTICK_PORT);
-		gamepad = new Joystick(ElectroPaul.GAME_PAD_JOYSTICK_PORT);
+		//gamepad = new Joystick(ElectroPaul.GAME_PAD_JOYSTICK_PORT);
 		controlBoard = new Joystick(ElectroPaul.CONTROL_BOARD_JOYSTICK_PORT);
 	}
 
@@ -60,16 +60,16 @@ public class Inputs {
 		autoStraight = rightStick.getRawButton(3); //TODO Make autoStraight toggle
 		// operator functions
 		//Change later for competition board. Check Steven's phone
-		primeButton = controlBoard.getRawButton(6) || gamepad.getRawButton(5); 
-		fireButton = controlBoard.getRawButton(5) || gamepad.getRawButton(6); 
-		fireOverride = controlBoard.getRawButton(14) || gamepad.getRawButton(3);
+		primeButton = controlBoard.getRawButton(6) ;//|| gamepad.getRawButton(5); 
+		fireButton = controlBoard.getRawButton(5) ;//|| gamepad.getRawButton(6); 
+		fireOverride = controlBoard.getRawButton(14) ;//|| gamepad.getRawButton(3);
 		climbButton = controlBoard.getRawButton(1);
-		cameraEnable = controlBoard.getRawButton(7) || gamepad.getRawButton(4);
-		reverseButton = controlBoard.getRawButton(2) || gamepad.getRawButton(5);
-		gearIntake = controlBoard.getRawButton(12) || gamepad.getRawButton(6);
-		gearOuttake = controlBoard.getRawButton(13) || gamepad.getRawButton(7);
-		jogShooterUp = controlBoard.getRawButton(17) || gamepad.getRawAxis(3) > 0.9;
-		jogShooterDown = controlBoard.getRawButton(18) || gamepad.getRawAxis(2) > 0.9;
+		cameraEnable = controlBoard.getRawButton(7) ;//|| gamepad.getRawButton(4);
+		reverseButton = controlBoard.getRawButton(2) ;//|| gamepad.getRawButton(5);
+		gearIntake = controlBoard.getRawButton(12) ;//|| gamepad.getRawButton(6);
+		gearOuttake = controlBoard.getRawButton(13) ;//|| gamepad.getRawButton(7);
+		jogShooterUp = controlBoard.getRawButton(17) ;//|| gamepad.getRawAxis(3) > 0.9;
+		jogShooterDown = controlBoard.getRawButton(18) ;//|| gamepad.getRawAxis(2) > 0.9;
 		
 		if(controlBoard.getRawButton(15)){
 			gearPanelPosition = 1;

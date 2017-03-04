@@ -1,6 +1,9 @@
 package org.usfirst.frc.team910.robot.Vision;
 
 import java.net.*;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import java.io.*;
 
 public class PixyListener implements Runnable {
@@ -32,7 +35,9 @@ public class PixyListener implements Runnable {
 		try {
 			serverSocket = new ServerSocket(port); // Create socket on specified port
 
-			System.out.println("Waiting for connection.....");
+			SmartDashboard.putString("socketWaiting", "Waiting for connection.....");
+			
+//			System.out.println("Waiting for connection.....");
 
 			clientSocket = serverSocket.accept(); 
 			System.out.println("Connection successful");
