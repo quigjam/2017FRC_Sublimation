@@ -5,8 +5,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class AutonDriveStraight extends AutonStep {
 
-	private static final double V_MAX = 10.0;
-	private static final double ACCEL = 3.0;
+	private static final double V_MAX = 60.0;
+	private static final double ACCEL = 12.0;
 	private static final double PCONST = 0.15;
 	
 	
@@ -41,7 +41,7 @@ public class AutonDriveStraight extends AutonStep {
 		currVel = 0;
 		startTime = Timer.getFPGATimestamp();
 		
-		startDeccelTime = Math.sqrt(distance/2*ACCEL);
+		startDeccelTime = Math.sqrt(distance/ACCEL);
 		if (ACCEL*startDeccelTime > V_MAX){
 			double accelTime = V_MAX / ACCEL;
 			double accelDist = (V_MAX/2)*accelTime;
@@ -65,7 +65,7 @@ public class AutonDriveStraight extends AutonStep {
 		currVel = currVel + accel*sense.deltaTime;
 		if(currVel > V_MAX) currVel = V_MAX;
 		
-		double distError = currentDistance - startDistance - x;
+		double distError = startDistance + x - currentDistance;
 		power = PCONST * distError;
 		SmartDashboard.putNumber("autonPower", power);
 		drive.driveStraightNavX(false, power, 0);
