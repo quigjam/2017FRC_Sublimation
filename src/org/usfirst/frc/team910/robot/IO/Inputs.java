@@ -85,8 +85,10 @@ public class Inputs {
 	public double deadband(double deadband, double joyPos) { //Creates a deadzone that prevents overly sensitive inputs
 		if (Math.abs(joyPos) < deadband) {
 			return(0);
-		}else{
+		}else if (joyPos > 0){
 			return (joyPos - deadband) / (1 - deadband);
+		} else {
+			return (joyPos + deadband) / (1 - deadband);
 		}
 	}
 }
