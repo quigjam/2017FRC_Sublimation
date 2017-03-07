@@ -17,15 +17,15 @@ public class AutonDriveStraight extends AutonStep {
 	double startTime;
 	double halfDistance;
 	double startDeccelTime;
-	double power;
+	double maxPower;
 	double angle;
 	double currVel;
 	double x;
 
 	
-	public AutonDriveStraight(double distance, double speed, double angle) {
+	public AutonDriveStraight(double distance, double maxPower, double angle) {
 		this.distance = distance;
-		this.power = speed;
+		this.maxPower = maxPower;
 		this.angle = angle;
 	}
 
@@ -54,8 +54,8 @@ public class AutonDriveStraight extends AutonStep {
 		double currentDistance = (drive.leftDriveEncoder + drive.rightDriveEncoder) / 2;
 		double accel = ACCEL;
 		
-		//if (Timer.getFPGATimestamp() > startTime+startDeccelTime){
-		if (currentDistance > halfDistance) {
+		if (Timer.getFPGATimestamp() > startTime + startDeccelTime){
+		//if (currentDistance > halfDistance) {
 			accel = -ACCEL;
 		} else if(currVel == V_MAX) {
 			accel = 0;
@@ -65,13 +65,13 @@ public class AutonDriveStraight extends AutonStep {
 		if(Math.abs(x) >= Math.abs(distance) - ALLOWABLE_ERROR){
 			//add to I term here if we need to
 		} else {
-			x = x + currVel*sense.deltaTime+0.5*accel*sense.deltaTime*sense.deltaTime;
+			x = x + currVel*sense.deltaTime + 0.5*accel*sense.deltaTime*sense.deltaTime;
 			currVel = currVel + accel*sense.deltaTime;
 			if(currVel > V_MAX) currVel = V_MAX;
 		}
 		
 		double distError = startDistance + x - currentDistance;
-		power = PCONST * distError;
+		double power = PCONST * distError;
 		
 		SmartDashboard.putNumber("autonPower", power);
 		drive.driveStraightNavX(false, power, 0);

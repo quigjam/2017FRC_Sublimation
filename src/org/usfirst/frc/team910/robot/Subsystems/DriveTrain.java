@@ -65,6 +65,8 @@ public class DriveTrain {
 
 	public void tankDrive(double leftPower, double rightPower, double powerLimit) {
 		double pwrAdj = Math.max(Math.abs(leftPower), Math.abs(rightPower));
+		SmartDashboard.putNumber("lDrivePower", leftPower);
+		SmartDashboard.putNumber("rDrivePower", rightPower);
 		if (pwrAdj > powerLimit) {
 			leftPower /= pwrAdj;
 			leftPower *= powerLimit;
@@ -131,7 +133,9 @@ public class DriveTrain {
 			double angledifference = originAngle.subtract(navxangle);
 			double powerDiff = angledifference * DRIVE_STRAIGHT_NAVX_PWR;
 
-			tankDrive(power - powerDiff, power + powerDiff, Math.max(0.3, Math.abs(power)));
+			double driveStraightPower = Math.max(0.3, Math.abs(power));
+			SmartDashboard.putNumber("dsPower", driveStraightPower);
+			tankDrive(power - powerDiff, power + powerDiff, driveStraightPower);
 		}
 		SmartDashboard.putNumber("DriveStraightOriginAngle", originAngle.get());
 	}
