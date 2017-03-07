@@ -71,6 +71,8 @@ public class DriveTrain {
 			rightPower /= pwrAdj;
 			rightPower *= powerLimit;
 		}
+		SmartDashboard.putNumber("leftDrivePower", leftPower);
+		SmartDashboard.putNumber("rightDrivePower", rightPower);
 		out.setLeftDrive(leftPower);
 		out.setRightDrive(rightPower);
 	}
@@ -129,7 +131,7 @@ public class DriveTrain {
 			double angledifference = originAngle.subtract(navxangle);
 			double powerDiff = angledifference * DRIVE_STRAIGHT_NAVX_PWR;
 
-			tankDrive(power - powerDiff, power + powerDiff, Math.max(0.3, Math.abs(in.rightJoyStickY)));
+			tankDrive(power - powerDiff, power + powerDiff, Math.max(0.3, Math.abs(power)));
 		}
 		SmartDashboard.putNumber("DriveStraightOriginAngle", originAngle.get());
 	}

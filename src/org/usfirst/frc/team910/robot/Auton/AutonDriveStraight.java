@@ -5,10 +5,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class AutonDriveStraight extends AutonStep {
 
-	private static final double V_MAX = 60.0;
-	private static final double ACCEL = 12.0;
+	private static final double V_MAX = 100.0;
+	private static final double ACCEL = 18.0;
 	private static final double PCONST = 0.15;
-	
+	private static final double ALLOWABLE_ERROR = 2;
 	
 	
 	double distance;
@@ -22,9 +22,6 @@ public class AutonDriveStraight extends AutonStep {
 	double currVel;
 	double x;
 
-	
-	private static final double RAMP_RATE = 0.5; //power per second 
-	private static final double RAMP_DOWN_OFFSET = 0.1; 
 	
 	public AutonDriveStraight(double distance, double speed, double angle) {
 		this.distance = distance;
@@ -56,17 +53,26 @@ public class AutonDriveStraight extends AutonStep {
 	public void run() { 
 		double currentDistance = (drive.leftDriveEncoder + drive.rightDriveEncoder) / 2;
 		double accel = ACCEL;
-		if (Timer.getFPGATimestamp() > startTime+startDeccelTime){
+		
+		//if (Timer.getFPGATimestamp() > startTime+startDeccelTime){
+		if (currentDistance > halfDistance) {
 			accel = -ACCEL;
 		} else if(currVel == V_MAX) {
 			accel = 0;
 		}
-		x = x + currVel*sense.deltaTime+0.5*accel*sense.deltaTime*sense.deltaTime;
-		currVel = currVel + accel*sense.deltaTime;
-		if(currVel > V_MAX) currVel = V_MAX;
+		
+		//if we have finished the ramping dont drive backwards 
+		if(Math.abs(x) >= Math.abs(distance) - ALLOWABLE_ERROR){
+			//add to I term here if we need to
+		} else {
+			x = x + currVel*sense.deltaTime+0.5*accel*sense.deltaTime*sense.deltaTime;
+			currVel = currVel + accel*sense.deltaTime;
+			if(currVel > V_MAX) currVel = V_MAX;
+		}
 		
 		double distError = startDistance + x - currentDistance;
 		power = PCONST * distError;
+		
 		SmartDashboard.putNumber("autonPower", power);
 		drive.driveStraightNavX(false, power, 0);
 		
@@ -77,7 +83,7 @@ public class AutonDriveStraight extends AutonStep {
 	@Override
 	public boolean isDone() {
 		double avgEncDist = (drive.leftDriveEncoder + drive.rightDriveEncoder) / 2;
-		return avgEncDist >= stopDistance;
+		return avgEncDist >= stopDistance - ALLOWABLE_ERROR;
 	}
 	
 }
