@@ -12,7 +12,7 @@ public class DriveTrain {
 
 	private static final double DRIVE_STRAIGHT_ENC_PWR = 0.1;
 	private static final double DYN_BRAKE_PWR = 0.5; // full power in 10 inches
-	private static final double DRIVE_STRAIGHT_NAVX_PWR = 0.05;
+	private static final double DRIVE_STRAIGHT_NAVX_PWR = 0.04;
 	private static final double DRIVE_CIRCLE_PWR = 0.05;
 	private static final double[] SWERVE_FACTOR_ENC = {2, 2, 0.5, 0.5};// in/0.1sec
 	private static final double[] SWERVE_DRIVE_SPEED_AXIS = {11, 12, 100, 101};// in/sec
@@ -65,12 +65,16 @@ public class DriveTrain {
 
 	public void tankDrive(double leftPower, double rightPower, double powerLimit) {
 		double pwrAdj = Math.max(Math.abs(leftPower), Math.abs(rightPower));
+		SmartDashboard.putNumber("lDrivePower", leftPower);
+		SmartDashboard.putNumber("rDrivePower", rightPower);
 		if (pwrAdj > powerLimit) {
 			leftPower /= pwrAdj;
 			leftPower *= powerLimit;
 			rightPower /= pwrAdj;
 			rightPower *= powerLimit;
 		}
+		SmartDashboard.putNumber("leftDrivePower", leftPower);
+		SmartDashboard.putNumber("rightDrivePower", rightPower);
 		out.setLeftDrive(leftPower);
 		out.setRightDrive(rightPower);
 	}
@@ -129,7 +133,9 @@ public class DriveTrain {
 			double angledifference = originAngle.subtract(navxangle);
 			double powerDiff = angledifference * DRIVE_STRAIGHT_NAVX_PWR;
 
-			tankDrive(power - powerDiff, power + powerDiff, Math.max(0.3, Math.abs(in.rightJoyStickY)));
+			double driveStraightPower = Math.max(0.3, Math.abs(power));
+			SmartDashboard.putNumber("dsPower", driveStraightPower);
+			tankDrive(power - powerDiff, power + powerDiff, driveStraightPower);
 		}
 		SmartDashboard.putNumber("DriveStraightOriginAngle", originAngle.get());
 	}

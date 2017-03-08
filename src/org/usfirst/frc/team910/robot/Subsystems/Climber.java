@@ -9,7 +9,7 @@ public class Climber {
 	private Inputs in;
 
 	private static final double CLIMB_POWER = 1;
-	private static final double REVERSE_CLIMB_POWER = .50;
+	private static final double REVERSE_CLIMB_POWER = 0.15;
 
 	public Climber(Outputs out, Inputs in) {
 		this.out = out;
@@ -20,7 +20,7 @@ public class Climber {
 		if (in.autoClimb || in.autoGear || in.autoShoot || in.autoHopper) {
 
 		} else if (in.reverseButton && in.climbButton) {
-			climb(-CLIMB_POWER / 5);
+			climb(-REVERSE_CLIMB_POWER);
 		} else if (in.climbButton) {
 			climb(CLIMB_POWER);
 		} else {
