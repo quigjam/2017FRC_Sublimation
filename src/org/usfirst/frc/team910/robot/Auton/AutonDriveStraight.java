@@ -6,9 +6,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class AutonDriveStraight extends AutonStep {
 
 	private static final double V_MAX = 100.0;
-	private static final double ACCEL = 18.0;
-	private static final double PCONST = 0.15;
-	private static final double ALLOWABLE_ERROR = 2;
+	private static final double ACCEL = 60.0;
+	private static final double PCONST = 0.15*0.7;
+	private static final double ALLOWABLE_ERROR = 0.5;
+	private static final double V_CONST = 1/200;
 	
 	
 	double distance;
@@ -21,6 +22,7 @@ public class AutonDriveStraight extends AutonStep {
 	double angle;
 	double currVel;
 	double x;
+	double stopTime;
 
 	
 	public AutonDriveStraight(double distance, double maxPower, double angle) {
@@ -39,6 +41,7 @@ public class AutonDriveStraight extends AutonStep {
 		startTime = Timer.getFPGATimestamp();
 		
 		startDeccelTime = Math.sqrt(distance/ACCEL);
+		stopTime = startDeccelTime*2;
 		if (ACCEL*startDeccelTime > V_MAX){
 			double accelTime = V_MAX / ACCEL;
 			double accelDist = (V_MAX/2)*accelTime;
@@ -46,7 +49,10 @@ public class AutonDriveStraight extends AutonStep {
 			double vMaxTime = vMaxDist / V_MAX; 
 			
 			startDeccelTime = accelTime + vMaxTime*2;
+			stopTime = startDeccelTime + accelTime;
 		}
+		
+		stopTime += startTime;
 	}
 
 	@Override
@@ -62,7 +68,7 @@ public class AutonDriveStraight extends AutonStep {
 		}
 		
 		//if we have finished the ramping dont drive backwards 
-		if(Math.abs(x) >= Math.abs(distance) - ALLOWABLE_ERROR){
+		if(Math.abs(x) >= Math.abs(distance) - ALLOWABLE_ERROR || Timer.getFPGATimestamp() > stopTime){
 			//add to I term here if we need to
 		} else {
 			x = x + currVel*sense.deltaTime + 0.5*accel*sense.deltaTime*sense.deltaTime;
@@ -71,7 +77,7 @@ public class AutonDriveStraight extends AutonStep {
 		}
 		
 		double distError = startDistance + x - currentDistance;
-		double power = PCONST * distError;
+		double power = PCONST * distError + currVel * V_CONST;
 		
 		SmartDashboard.putNumber("autonPower", power);
 		drive.driveStraightNavX(false, power, 0);

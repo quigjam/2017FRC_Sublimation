@@ -12,7 +12,7 @@ public class DriveTrain {
 
 	private static final double DRIVE_STRAIGHT_ENC_PWR = 0.1;
 	private static final double DYN_BRAKE_PWR = 0.5; // full power in 10 inches
-	private static final double DRIVE_STRAIGHT_NAVX_PWR = 0.05;
+	private static final double DRIVE_STRAIGHT_NAVX_PWR = 0.04;
 	private static final double DRIVE_CIRCLE_PWR = 0.05;
 	private static final double[] SWERVE_FACTOR_ENC = {2, 2, 0.5, 0.5};// in/0.1sec
 	private static final double[] SWERVE_DRIVE_SPEED_AXIS = {11, 12, 100, 101};// in/sec
