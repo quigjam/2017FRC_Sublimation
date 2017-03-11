@@ -34,6 +34,7 @@ public class Robot extends IterativeRobot {
 
 	AutonMain autonmain;
 	Solenoid light;
+	Solenoid light2;
 	/**
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.
@@ -52,10 +53,11 @@ public class Robot extends IterativeRobot {
 
 		autoClimb = new AutoClimb(in, sense, drive, climb);
 		autoGear = new AutoGear(in, sense, drive, gear);
-		autoShoot = new AutoShoot(in, shoot);
+		autoShoot = new AutoShoot(in, shoot, sense, drive);
 
 		autonmain = new AutonMain();
 		light = new Solenoid(0);
+		light2 = new Solenoid(1);
 		
 		sense.init();
 	}
@@ -91,11 +93,15 @@ public class Robot extends IterativeRobot {
 		sense.read();
 		out.readEncoders();
 		drive.run(false);
+	
+		autoShoot.run();
+		
 		shoot.run();
 		gear.run();
 		climb.run();
 		
 		light.set(in.cameraEnable);
+		light2.set(in.cameraEnable);
 	}
 
 	/**

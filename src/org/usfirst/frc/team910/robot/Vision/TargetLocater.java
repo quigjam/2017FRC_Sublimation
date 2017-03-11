@@ -9,8 +9,8 @@ public class TargetLocater implements Runnable {
 	protected static final double X_DEG_PER_PIXEL = 75 / 640;
 
 	//ycord vs distance
-	protected static final double[] BOILER_DIST_AXIS = { 10, 80, 140, 340 };
-	protected static final double[] BOILER_DIST_TABLE = { 180, 120, 60, 0 };
+	protected static final double[] BOILER_DIST_AXIS = { 26, 85, 108, 123, 132, 144, 154, 163, 194 };
+	protected static final double[] BOILER_DIST_TABLE = { 0, 24, 36, 48, 60, 72, 84, 96, 180 };
 
 	protected static final double[] ROPE_DIST_AXIS = { 1, 1 };
 	protected static final double[] ROPE_DIST_TABLE = { 1, 1 };
