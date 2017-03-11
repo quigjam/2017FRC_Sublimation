@@ -12,17 +12,18 @@ public class AutonDriveStraight extends AutonStep {
 	private static final double V_CONST = 1 / 200;
 
 	double distance;
-	double stopDistance;
-	double startDistance;
 	double startTime;
-	double halfDistance;
-	double startDeccelTime;
 	double maxPower;
 	double angle;
 	double v;
 	double x;
 	double a;
 	double jerk;
+	
+	double stopDistance;
+	double startDistance;
+	double halfDistance;
+	double startDeccelTime;
 
 	public AutonDriveStraight(double distance, double maxPower, double angle) {
 		this.distance = distance;
@@ -40,15 +41,15 @@ public class AutonDriveStraight extends AutonStep {
 		a = MAX_ACCEL;
 		startTime = Timer.getFPGATimestamp();
 
-		double t = Math.sqrt((6 * distance) / (5 * MAX_ACCEL));
+		double t = Math.sqrt((6 * distance) / MAX_ACCEL);
 		jerk = -(2 * MAX_ACCEL) / t;
-		double tv = Math.sqrt((2 * V_MAX / MAX_ACCEL) / jerk);
+		double tv = (2 * V_MAX / MAX_ACCEL);
 		if (t > 2 * tv) {
 			jerk = -2 * MAX_ACCEL / tv;
 			t = 2 * tv;
-			x = (1 / 6) * jerk * t * t * t + 0.5 * MAX_ACCEL * t * t;
+			double xa = (1 / 6) * jerk * t * t * t + 0.5 * MAX_ACCEL * t * t;
 
-			double constVelDist = distance - x;
+			double constVelDist = distance - xa;
 			double constVelTime = constVelDist / V_MAX;
 
 			startDeccelTime = tv + constVelTime + startTime;

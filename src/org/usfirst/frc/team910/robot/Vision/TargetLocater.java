@@ -6,10 +6,11 @@ public class TargetLocater implements Runnable {
 	protected static final int Y_FOV = 47;
 	protected static final int X_RES = 640;
 	protected static final int Y_RES = 400;
-	protected static final int X_DEG_PER_PIXEL = 75 / 640;
+	protected static final double X_DEG_PER_PIXEL = 75 / 640;
 
-	protected static final double[] BOILER_DIST_AXIS = { 1, 1 };
-	protected static final double[] BOILER_DIST_TABLE = { 1, 1 };
+	//ycord vs distance
+	protected static final double[] BOILER_DIST_AXIS = { 10, 80, 140, 340 };
+	protected static final double[] BOILER_DIST_TABLE = { 180, 120, 60, 0 };
 
 	protected static final double[] ROPE_DIST_AXIS = { 1, 1 };
 	protected static final double[] ROPE_DIST_TABLE = { 1, 1 };

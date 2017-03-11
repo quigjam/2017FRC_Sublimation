@@ -4,6 +4,7 @@ import org.usfirst.frc.team910.robot.IO.Sensors;
 import org.usfirst.frc.team910.robot.IO.Util;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class TargetLocaterHigh extends TargetLocater implements Runnable {
 
@@ -63,16 +64,35 @@ public class TargetLocaterHigh extends TargetLocater implements Runnable {
 					}
 
 				}
+				if (!foundBot)
+					useTopBoiler(); // if we still havent found a low boiler, use only the top as the target
 				topBoiler = null;
+				foundBot = false;
 			}
 
 		}
 	}
 
 	private Block topBoiler = null;
+	private boolean foundBot = false;
 
+	// if we didnt find a low boiler block, just use the top one
+	private void useTopBoiler(){
+		Target thisBoiler = boiler.getNextTarget();
+		thisBoiler.cameraAngle = (topBoiler.xcord - (X_RES / 2)) * X_DEG_PER_PIXEL + physcamangle;
+		thisBoiler.distance = Util.interpolate(BOILER_DIST_AXIS, BOILER_DIST_TABLE, topBoiler.ycord);
+		thisBoiler.robotAngle = sense.robotAngle.get();
+		thisBoiler.time = Timer.getFPGATimestamp();
+		thisBoiler.totalAngle.set(thisBoiler.cameraAngle + thisBoiler.robotAngle);
+		boiler.setNextTargetAsCurrent();
+		return;
+	}
+	
 	public void checkBoiler(Block currentblock) {
 
+		SmartDashboard.putNumber("BoilerArea", currentblock.height * currentblock.width);
+		SmartDashboard.putNumber("BoilerAspect", currentblock.width / currentblock.height);
+		
 		if (topBoiler == null && checkLimit(top_boiler_area_limit, currentblock.width * currentblock.height)
 				&& checkLimit(top_boiler_aspectratio_limit, currentblock.width / currentblock.height)) {
 			topBoiler = currentblock;
@@ -89,7 +109,7 @@ public class TargetLocaterHigh extends TargetLocater implements Runnable {
 			thisBoiler.time = Timer.getFPGATimestamp();
 			thisBoiler.totalAngle.set(thisBoiler.cameraAngle + thisBoiler.robotAngle);
 			boiler.setNextTargetAsCurrent();
-
+			foundBot = true;
 		}
 	}
 

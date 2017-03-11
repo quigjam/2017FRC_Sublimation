@@ -1,5 +1,7 @@
 package org.usfirst.frc.team910.robot.Vision;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 public class TargetArray {
 	private Target[] targets;
 	private int currentTarget;
@@ -30,6 +32,12 @@ public class TargetArray {
 		if (currentTarget > targets.length) {
 			currentTarget = 0;
 		}
+		
+		SmartDashboard.putNumber("mrtdDist", targets[currentTarget].distance);
+		SmartDashboard.putNumber("mrtdCamAngle", targets[currentTarget].cameraAngle);
+		SmartDashboard.putNumber("mrtdRobAngle", targets[currentTarget].robotAngle);
+		SmartDashboard.putNumber("mrtdTime", targets[currentTarget].time);
+		SmartDashboard.putNumber("mrtdTotAngle", targets[currentTarget].totalAngle.get());
 	}
 
 }

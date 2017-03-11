@@ -5,6 +5,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.usfirst.frc.team910.robot.IO.Sensors;
+
 public class Camera implements PixyEvent {
 
 	private static final int PIXY_MESSAGE_EVENT_ALIVE = 1;
@@ -48,10 +50,12 @@ public class Camera implements PixyEvent {
 	public TargetArray gearGoalLeft;
 	public TargetArray gearGoalMid;
 	public TargetArray gearGoalRight;
+	
+	public TargetLocaterHigh highTargetLoc;
 
 	private ReentrantLock mutex; // Synchronize access to cameraData
 	
-	public Camera(ReentrantLock rl) {
+	public Camera(ReentrantLock rl, Sensors sense) {
 		
 		// Save the ReentrantLock required for the synchronization / mutual exclusion 
 		this.mutex = rl;
@@ -77,6 +81,10 @@ public class Camera implements PixyEvent {
 		// Start listening for messages from the Pi
 		PixyListener pl = new PixyListener(this, PI_NETWORK_PORT_NUMBER );
 		Thread t = new Thread(null, pl, "PixyListener");
+		t.start();
+		
+		highTargetLoc = new TargetLocaterHigh(cameraData[3], boiler, rope, sense, 0);
+		t = new Thread(null, highTargetLoc, "TargetLocaterHigh");
 		t.start();
 		
 	}
@@ -160,7 +168,9 @@ public class Camera implements PixyEvent {
 					if (cameraData[cameraNumber].frames[newestFrame].currentBlock < BLOCKS_PER_FRAME) {
 						cameraData[cameraNumber].frames[newestFrame].currentBlock++;
 					} else {
-						cameraData[cameraNumber].frames[newestFrame].currentBlock = 0;				
+						//we do not want to overwrite, so break out instead
+						break;
+						//cameraData[cameraNumber].frames[newestFrame].currentBlock = 0;				
 					}
 					// Add a block to the block counter for this frame
 					cameraData[cameraNumber].frames[newestFrame].numBlocks++;
