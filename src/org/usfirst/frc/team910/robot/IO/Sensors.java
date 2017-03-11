@@ -31,7 +31,7 @@ public class Sensors {
 		navx = new AHRS(SPI.Port.kMXP);
 		robotAngle = new Angle(0);
 		rl = new ReentrantLock();
-		camera = new Camera(rl);
+		camera = new Camera(rl, this);
 
 	}
 	
