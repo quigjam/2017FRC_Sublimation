@@ -8,6 +8,7 @@ import org.usfirst.frc.team910.robot.Subsystems.Shooter;
 import org.usfirst.frc.team910.robot.Vision.Target;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class AutoShoot {
 
@@ -86,5 +87,7 @@ public class AutoShoot {
 		} else {
 			shootState = ShootState.values()[0]; // reset state machine
 		}
+		
+		SmartDashboard.putString("ShootState", shootState.toString());
 	}
 }

@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Outputs {
 
 	private static final double CURRENT_LIMIT = 40; // in amps
-	private static final double AMP_SECOND_LIMIT = 70;
+	private static final double AMP_SEC_LIMIT = 70; //in amp*sec 
 	private static final double MIN_REST_TIME = 5;// in seconds
 	private static final double DRIVE_INCH_PER_REV = 4*Math.PI;
 
@@ -168,6 +168,11 @@ public class Outputs {
 	}
 
 	public void setClimbPower(double power) { ////Lets climb be set by power
+		if(power != 0){
+			SmartDashboard.putNumber("ClimberMotor1Current", pdp.getCurrent(ElectroPaul.CLIMB_MOTOR_1));//Just for testing 3/12/17
+			SmartDashboard.putNumber("ClimberMotor2Current", pdp.getCurrent(ElectroPaul.CLIMB_MOTOR_2));//Just for testing 3/12/17
+		}
+		
 		if (currentMonitor(ElectroPaul.CLIMB_MOTOR_1) || currentMonitor(ElectroPaul.CLIMB_MOTOR_2)) { //Fire hazard prevention
 			climbMotor1.set(0);
 			climbMotor2.set(0);
@@ -213,12 +218,13 @@ public class Outputs {
 		}
 		if (current > CURRENT_LIMIT) {
 			currentSum[motor] += current * 0.02;
+			SmartDashboard.putNumber("MotorSum" + motor, currentSum[motor]);
 			SmartDashboard.putNumber("Motor"+ motor + "current", current);
 		} else {
 			currentSum[motor] = 0;
 			//SmartDashboard.putNumber("Motor"+ motor + "current", current);
 		}
-		if (currentSum[motor] > AMP_SECOND_LIMIT) {
+		if (currentSum[motor] > AMP_SEC_LIMIT) {
 			restEndTime[motor] = Timer.getFPGATimestamp() + MIN_REST_TIME;
 			SmartDashboard.putNumber("Resting motor" + motor + "until: ", restEndTime[motor]);
 		}
