@@ -43,11 +43,12 @@ public class AutonDriveStraight extends AutonStep {
 
 		double t = Math.sqrt((6 * distance) / MAX_ACCEL);
 		jerk = -(2 * MAX_ACCEL) / t;
-		double tv = (2 * V_MAX / MAX_ACCEL);
-		if (t > 2 * tv) {
-			jerk = -2 * MAX_ACCEL / tv;
+		double maxVel = MAX_ACCEL * t / 4;
+		if (maxVel > V_MAX) {
+			double tv = 2 * V_MAX / MAX_ACCEL;
+			jerk = -MAX_ACCEL / tv;
 			t = 2 * tv;
-			double xa = (1 / 6) * jerk * t * t * t + 0.5 * MAX_ACCEL * t * t;
+			double xa = (1 / 6.0) * MAX_ACCEL * t * t;
 
 			double constVelDist = distance - xa;
 			double constVelTime = constVelDist / V_MAX;
@@ -78,6 +79,7 @@ public class AutonDriveStraight extends AutonStep {
 		} else {
 			a = 0;
 			v = 0;
+			x = distance;
 		}
 		double distError = startDistance + x - currentDistance;
 		double power = PCONST * distError + v * V_CONST;
