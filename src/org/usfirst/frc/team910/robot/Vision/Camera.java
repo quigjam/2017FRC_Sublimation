@@ -26,7 +26,7 @@ public class Camera implements PixyEvent {
 	private static final int LEFT_PIXY = PIXY_CAM_ID_1;
 	private static final int RIGHT_PIXY = PIXY_CAM_ID_2;
 	private static final int FRONT_LOW_PIXY = PIXY_CAM_ID_3;
-	private static final int FRONT_HIGH_PIXY = PIXY_CAM_ID_4;
+	private static final int FRONT_HIGH_PIXY = PIXY_CAM_ID_5;
 	
 	public static final int BLOCKS_PER_FRAME = 64;
 	public static final int FRAMES_PER_CAMERA = 10;
@@ -83,6 +83,7 @@ public class Camera implements PixyEvent {
 		Thread t = new Thread(null, pl, "PixyListener");
 		t.start();
 		
+		
 		highTargetLoc = new TargetLocaterHigh(cameraData[3], boiler, rope, sense, 0);
 		t = new Thread(null, highTargetLoc, "TargetLocaterHigh");
 		t.start();
@@ -105,6 +106,7 @@ public class Camera implements PixyEvent {
 		
 		case PIXY_MESSAGE_EVENT_ALIVE: 
 			System.out.println("Alive message received:" + s);
+			SmartDashboard.putString("PixyAlive", s);
 			return; // End of PIXY_MESSAGE_EVENT_ALIVE processing
 
 		case PIXY_MESSAGE_EVENT_OBJECT_DETECTED:
@@ -153,19 +155,24 @@ public class Camera implements PixyEvent {
 
 				// Copy the number of blocks in this frame for this camera from the received message
 				int numBlocks = Integer.parseInt(parts[3]);
+				
+				//reset blocks to 0
+				cameraData[cameraNumber].frames[newestFrame].currentBlock = 0;
 
 				// Copy the blocks received for this frame
 				for(int i=0; i < numBlocks; i++ ) {
 					// Extract the block data from the message received from the Pi as follows:
-					// 4 (offset within the original / complete message where the first block appears) + i (current block within the message) * number of things within a block + offset within a block where the individual piece of data is located				
-					cameraData[cameraNumber].frames[newestFrame].blocks[cameraData[cameraNumber].frames[newestFrame].currentBlock].signature = Integer.parseInt(parts[4+(i*BLOCK_NUM_ELEMENTS)+BLOCK_MSG_OFFSET_SIG]);
-					cameraData[cameraNumber].frames[newestFrame].blocks[cameraData[cameraNumber].frames[newestFrame].currentBlock].xcord = Integer.parseInt(parts[4+(i*BLOCK_NUM_ELEMENTS)+BLOCK_MSG_OFFSET_X]);
-					cameraData[cameraNumber].frames[newestFrame].blocks[cameraData[cameraNumber].frames[newestFrame].currentBlock].ycord = Integer.parseInt(parts[4+(i*BLOCK_NUM_ELEMENTS)+BLOCK_MSG_OFFSET_Y]);
-					cameraData[cameraNumber].frames[newestFrame].blocks[cameraData[cameraNumber].frames[newestFrame].currentBlock].width = Integer.parseInt(parts[4+(i*BLOCK_NUM_ELEMENTS)+BLOCK_MSG_OFFSET_WIDTH]);
-					cameraData[cameraNumber].frames[newestFrame].blocks[cameraData[cameraNumber].frames[newestFrame].currentBlock].height = Integer.parseInt(parts[4+(i*BLOCK_NUM_ELEMENTS)+BLOCK_MSG_OFFSET_HEIGHT]);
+					// 4 (offset within the original / complete message where the first block appears) + i (current block within the message) * number of things within a block + offset within a block where the individual piece of data is located
+					int frameIdx = cameraData[cameraNumber].frames[newestFrame].currentBlock;
+					SmartDashboard.putNumber("frameIdx", frameIdx);
+					cameraData[cameraNumber].frames[newestFrame].blocks[frameIdx].signature = Integer.parseInt(parts[4+(i*BLOCK_NUM_ELEMENTS)+BLOCK_MSG_OFFSET_SIG]);
+					cameraData[cameraNumber].frames[newestFrame].blocks[frameIdx].xcord = Integer.parseInt(parts[4+(i*BLOCK_NUM_ELEMENTS)+BLOCK_MSG_OFFSET_X]);
+					cameraData[cameraNumber].frames[newestFrame].blocks[frameIdx].ycord = Integer.parseInt(parts[4+(i*BLOCK_NUM_ELEMENTS)+BLOCK_MSG_OFFSET_Y]);
+					cameraData[cameraNumber].frames[newestFrame].blocks[frameIdx].width = Integer.parseInt(parts[4+(i*BLOCK_NUM_ELEMENTS)+BLOCK_MSG_OFFSET_WIDTH]);
+					cameraData[cameraNumber].frames[newestFrame].blocks[frameIdx].height = Integer.parseInt(parts[4+(i*BLOCK_NUM_ELEMENTS)+BLOCK_MSG_OFFSET_HEIGHT]);
 					// Add the blocks just received to the end of the list of blocks for this frame up to the limit of the number of blocks
 					// Otherwise, add these blocks by overwriting / inserting these blocks at the beginning of the list
-					if (cameraData[cameraNumber].frames[newestFrame].currentBlock < BLOCKS_PER_FRAME) {
+					if (cameraData[cameraNumber].frames[newestFrame].currentBlock < BLOCKS_PER_FRAME - 1) {
 						cameraData[cameraNumber].frames[newestFrame].currentBlock++;
 					} else {
 						//we do not want to overwrite, so break out instead
@@ -178,7 +185,13 @@ public class Camera implements PixyEvent {
 			
 				// Update the location of the next frame for this camera
 				// Each message has exactly one frame of data 
-				cameraData[cameraNumber].currentFrame++;
+				if(cameraData[cameraNumber].currentFrame < FRAMES_PER_CAMERA - 1){
+					cameraData[cameraNumber].currentFrame++;
+				} else {
+					cameraData[cameraNumber].currentFrame = 0;
+				}
+				
+				
 				
 			} finally {
 				mutex.unlock(); // Exit critical section

@@ -37,7 +37,7 @@ public class PixyListener implements Runnable {
 
 			SmartDashboard.putString("socketWaiting", "Waiting for connection.....");
 			
-//			System.out.println("Waiting for connection.....");
+			System.out.println("Waiting for connection.....");
 
 			clientSocket = serverSocket.accept(); 
 			System.out.println("Connection successful");
@@ -54,6 +54,13 @@ public class PixyListener implements Runnable {
 		} catch (IOException e) {
 			System.out.println("PixyListener exception of some sort: exit");
 			System.exit(1);
+		} finally {
+			try {
+				serverSocket.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
 	}

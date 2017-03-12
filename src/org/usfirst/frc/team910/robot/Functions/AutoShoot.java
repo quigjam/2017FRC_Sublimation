@@ -14,18 +14,21 @@ public class AutoShoot {
 	private static final double DRIVE_POWER = 0.2;
 	private static final double ALLOWABLE_ANGLE_ERROR = 1;
 	private static final double LAG_TIME = 0.1;
-	private static final double SHOOT_DISTANCE = 40;
-	private static final double ALLOWABLE_DISTANCE_ERROR = 3;
+	private static final double SHOOT_DISTANCE = 24;
+	private static final double ALLOWABLE_DISTANCE_ERROR = 1.5;
+	
+	private static final double P_CONST = 0.15;//15% pwr per in
 
 	private Inputs in;
 	private Shooter shoot;
 	private Sensors sense;
 	private DriveTrain drive;
 
-	public AutoShoot( Inputs in, Shooter shoot) {
-
+	public AutoShoot( Inputs in, Shooter shoot, Sensors sense, DriveTrain drive) {
+		this.sense = sense;
 		this.in = in;
 		this.shoot = shoot;
+		this.drive = drive;
 	}
 
 	private enum ShootState {
@@ -48,7 +51,13 @@ public class AutoShoot {
 				break;
 			case DRIVE:
 				drive.originAngle.set(currentTarget.totalAngle.get()); // set our origin angel toward the target
-				drive.driveStraightNavX(false, DRIVE_POWER, 0); // drive toward it
+				
+				double power = P_CONST * (currentTarget.distance - SHOOT_DISTANCE);
+				if(Math.abs(power) > DRIVE_POWER){
+					power = power / Math.abs(power) * DRIVE_POWER;
+				}
+				
+				drive.driveStraightNavX(false, power, 0); // drive toward it
 				if (Math.abs(currentTarget.distance - SHOOT_DISTANCE) < ALLOWABLE_DISTANCE_ERROR) { // when we get close enough to the target // when camera
 																									// class is done we will get the distance of the camera to
 																									// be < 0.05
@@ -57,22 +66,21 @@ public class AutoShoot {
 				break;
 			case ALIGN:
 				drive.rotate(currentTarget.totalAngle); // face the target
-				shoot.shooterPrime(true,false);
+				//shoot.shooterPrime(true,false);
 				if (Math.abs(currentTarget.cameraAngle) < ALLOWABLE_ANGLE_ERROR) { // when we are lined up
 					shootState = ShootState.PRIME; // go to the next step
 				}
 				break;
 
 			case PRIME:
-				shoot.shooterPrime(true,false); // prime
+				//shoot.shooterPrime(true,false); // prime
 				if (shoot.upToSpeed()) { // when we get up to speed
 					shootState = ShootState.FIRE; // go to next state
 
 				}
 				break;
 			case FIRE:
-				shoot.shooterPrime(true,true);
-				//shoot.shooterFire(true); // fire
+				//shoot.shooterPrime(true,true);
 			}
 
 		} else {

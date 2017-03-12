@@ -21,7 +21,7 @@ public class TargetArray {
 
 	public Target getNextTarget() {
 		int index = currentTarget + 1;
-		if (index > targets.length) {
+		if (index >= targets.length) {
 			index = 0;
 		}
 		return targets[index];
@@ -29,7 +29,7 @@ public class TargetArray {
 
 	public void setNextTargetAsCurrent() {
 		currentTarget++;
-		if (currentTarget > targets.length) {
+		if (currentTarget >= targets.length) {
 			currentTarget = 0;
 		}
 		
