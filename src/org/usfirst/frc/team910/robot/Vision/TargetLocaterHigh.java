@@ -37,12 +37,19 @@ public class TargetLocaterHigh extends TargetLocater implements Runnable {
 
 	}
 
+	private double oldTime = 0;
+	
 	public synchronized void run() {
 		while (true) {
+			double time = Timer.getFPGATimestamp();
+			SmartDashboard.putNumber("TLocTime", time - oldTime);
+			oldTime = time;
+			
 			Frame f = getMostRecentFrame();
 			if (f.currentBlock < 1) {
 				try {
-					this.wait(60);
+					//this.wait(200);
+					Thread.sleep(20);
 				} catch (InterruptedException e) {
 					System.out.println(e.getMessage());
 				}
@@ -69,6 +76,7 @@ public class TargetLocaterHigh extends TargetLocater implements Runnable {
 					useTopBoiler(); // if we still havent found a low boiler, use only the top as the target
 				topBoiler = null;
 				foundBot = false;
+				f.currentBlock = 0;
 			}
 
 		}
@@ -81,11 +89,11 @@ public class TargetLocaterHigh extends TargetLocater implements Runnable {
 	private void useTopBoiler(){
 		SmartDashboard.putNumber("settingboiler", Timer.getFPGATimestamp());
 		Target thisBoiler = boiler.getNextTarget();
-		thisBoiler.cameraAngle = (topBoiler.xcord - (X_RES / 2)) * X_DEG_PER_PIXEL + physcamangle;
+		thisBoiler.cameraAngle = ((X_RES / 2.0) - topBoiler.xcord) * X_DEG_PER_PIXEL + physcamangle;
 		thisBoiler.distance = Util.interpolate(BOILER_DIST_AXIS, BOILER_DIST_TABLE, topBoiler.ycord);
-		thisBoiler.robotAngle = sense.robotAngle.get();
+		thisBoiler.robotAngle = topBoiler.robotAngle;
 		thisBoiler.time = Timer.getFPGATimestamp();
-		thisBoiler.totalAngle.set(thisBoiler.cameraAngle + thisBoiler.robotAngle);
+		thisBoiler.totalAngle.set(thisBoiler.robotAngle + thisBoiler.cameraAngle);
 		boiler.setNextTargetAsCurrent();
 		return;
 	}
@@ -94,6 +102,7 @@ public class TargetLocaterHigh extends TargetLocater implements Runnable {
 
 		SmartDashboard.putNumber("BoilerArea", (double) currentblock.height * (double) currentblock.width);
 		SmartDashboard.putNumber("BoilerAspect", (double) currentblock.width / (double) currentblock.height);
+		SmartDashboard.putNumber("boiler xval", currentblock.xcord);
 		
 		if (topBoiler == null && checkLimit(top_boiler_area_limit, (double) currentblock.width * (double) currentblock.height)
 				&& checkLimit(top_boiler_aspectratio_limit, (double) currentblock.width / (double) currentblock.height)) {
@@ -108,7 +117,7 @@ public class TargetLocaterHigh extends TargetLocater implements Runnable {
 			Target thisBoiler = boiler.getNextTarget();
 			thisBoiler.cameraAngle = (currentblock.xcord - (X_RES / 2)) * X_DEG_PER_PIXEL + physcamangle;
 			thisBoiler.distance = Util.interpolate(BOILER_DIST_AXIS, BOILER_DIST_TABLE, currentblock.width);
-			thisBoiler.robotAngle = sense.robotAngle.get();
+			thisBoiler.robotAngle = currentblock.robotAngle;
 			thisBoiler.time = Timer.getFPGATimestamp();
 			thisBoiler.totalAngle.set(thisBoiler.cameraAngle + thisBoiler.robotAngle);
 			boiler.setNextTargetAsCurrent();

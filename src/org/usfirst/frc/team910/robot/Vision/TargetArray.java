@@ -28,9 +28,11 @@ public class TargetArray {
 	}
 
 	public void setNextTargetAsCurrent() {
-		currentTarget++;
-		if (currentTarget >= targets.length) {
+		
+		if (currentTarget + 1 >= targets.length) {
 			currentTarget = 0;
+		} else {
+			currentTarget++;
 		}
 		
 		SmartDashboard.putNumber("mrtdDist", targets[currentTarget].distance);

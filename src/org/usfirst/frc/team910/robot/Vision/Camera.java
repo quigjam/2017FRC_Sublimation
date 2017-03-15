@@ -55,10 +55,13 @@ public class Camera implements PixyEvent {
 
 	private ReentrantLock mutex; // Synchronize access to cameraData
 	
+	private Sensors sense; 
+	
 	public Camera(ReentrantLock rl, Sensors sense) {
 		
 		// Save the ReentrantLock required for the synchronization / mutual exclusion 
 		this.mutex = rl;
+		this.sense = sense;
 
 		boiler = new TargetArray();
 		rope = new TargetArray();
@@ -88,6 +91,7 @@ public class Camera implements PixyEvent {
 		t = new Thread(null, highTargetLoc, "TargetLocaterHigh");
 		t.start();
 		
+		SmartDashboard.putString("PixyAlive", "Not Yet");
 	}
 
 	// Messages received by the Pi that this code knows about:
@@ -96,7 +100,12 @@ public class Camera implements PixyEvent {
 	//
 	// PIXY_MESSAGE_EVENT_OBJECT_DETECTED message format is:
 	// PIXY_MESSAGE_EVENT_OBJECT_DETECTED, camera number, frame number, number of blocks, signature, x, y, width, height
+	private double oldTime = 0;
 	public void eventGet(String s) {
+	
+		double time = Timer.getFPGATimestamp();
+		SmartDashboard.putNumber("CamTime", time - oldTime);
+		oldTime = time;
 		
 		SmartDashboard.putString("LatestPixyMsg", s);
 		
@@ -170,6 +179,7 @@ public class Camera implements PixyEvent {
 					cameraData[cameraNumber].frames[newestFrame].blocks[frameIdx].ycord = Integer.parseInt(parts[4+(i*BLOCK_NUM_ELEMENTS)+BLOCK_MSG_OFFSET_Y]);
 					cameraData[cameraNumber].frames[newestFrame].blocks[frameIdx].width = Integer.parseInt(parts[4+(i*BLOCK_NUM_ELEMENTS)+BLOCK_MSG_OFFSET_WIDTH]);
 					cameraData[cameraNumber].frames[newestFrame].blocks[frameIdx].height = Integer.parseInt(parts[4+(i*BLOCK_NUM_ELEMENTS)+BLOCK_MSG_OFFSET_HEIGHT]);
+					cameraData[cameraNumber].frames[newestFrame].blocks[frameIdx].robotAngle = sense.robotAngle.get();
 					// Add the blocks just received to the end of the list of blocks for this frame up to the limit of the number of blocks
 					// Otherwise, add these blocks by overwriting / inserting these blocks at the beginning of the list
 					if (cameraData[cameraNumber].frames[newestFrame].currentBlock < BLOCKS_PER_FRAME - 1) {

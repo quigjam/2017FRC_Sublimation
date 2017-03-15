@@ -115,6 +115,11 @@ public class Outputs {
 		rightDriveCan.set(power);
 		rightDrive.set(power);
 	}
+	
+	public void setDriveBrake(boolean brake){
+		leftDriveCan.enableBrakeMode(brake);
+		rightDriveCan.enableBrakeMode(brake);
+	}
 
 	public void setShooterPower(double power) {
 		shooterMotor.changeControlMode(TalonControlMode.PercentVbus); //Lets shooter be set by power

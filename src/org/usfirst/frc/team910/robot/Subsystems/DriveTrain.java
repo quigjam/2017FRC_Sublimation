@@ -17,8 +17,8 @@ public class DriveTrain {
 	private static final double[] SWERVE_FACTOR_ENC = {2, 2, 0.5, 0.5};// in/0.1sec
 	private static final double[] SWERVE_DRIVE_SPEED_AXIS = {11, 12, 100, 101};// in/sec
 	private static final double SWERVE_FACTOR_ANGLE = 0.15;
-	private static final double ROTATE_MAX_PWR = 0.2;
-	private static final double ROTATE_PWR_FACTOR = 0.005;
+	private static final double ROTATE_MAX_PWR = 0.4;
+	private static final double ROTATE_PWR_FACTOR = 0.1;
 	private static final double CIRCLE_DRIVE_KV = 0.002; // Feed-Forward term for circleDrive
 
 	private Inputs in;
@@ -47,17 +47,21 @@ public class DriveTrain {
 		rightDriveEncoder = out.rightDriveEncoder;
 
 		if (in.autoClimb || in.autoGear || in.autoShoot || in.autoHopper || auton) {
-
-		} else if (in.dynamicBrake) {
+			
+		} else if (in.dynamicBrake) {	
+			setBrakes(false);
 			dynamicBrake(prevTask != DriveFunction.DYNAMIC_BRAKING);
 			prevTask = DriveFunction.DYNAMIC_BRAKING;
 		} else if (in.driveStraight) {
-			driveStraightNavX(prevTask != DriveFunction.DRIVE_STRAIGHT, in.rightJoyStickY, in.leftJoyStickX);
+			setBrakes(false);
+			driveStraightEnc(prevTask != DriveFunction.DRIVE_STRAIGHT, in.rightJoyStickY, in.leftJoyStickX);
 			prevTask = DriveFunction.DRIVE_STRAIGHT;
 		} else if (in.autoStraight) {
+			setBrakes(false);
 			autoStraight(prevTask != DriveFunction.AUTO_STRAIGHT, in.leftJoyStickY, in.rightJoyStickY);
 			prevTask = DriveFunction.AUTO_STRAIGHT;
 		} else {
+			setBrakes(false);
 			tankDrive(in.leftJoyStickY, in.rightJoyStickY, 1);
 			prevTask = DriveFunction.TANK_DRIVE;
 		}
@@ -155,9 +159,15 @@ public class DriveTrain {
 
 	public void rotate(Angle target) { // allows robot to rotate to a desired angle
 		double adjAngle = target.subtract(sense.robotAngle);
+		//double adjAngle = sense.robotAngle.subtract(target);
+		SmartDashboard.putNumber("rotateAngle", adjAngle);
 		double power = ROTATE_PWR_FACTOR * adjAngle;
-		power = Math.max(Math.min(power, ROTATE_MAX_PWR), -ROTATE_MAX_PWR);
-		tankDrive(-power, power, power);
+		
+		if(Math.abs(power) > ROTATE_MAX_PWR){
+			power = power / Math.abs(power) * ROTATE_MAX_PWR;
+		}
+		SmartDashboard.putNumber("rotatePower", power);
+		tankDrive(-power, power, Math.abs(power));
 
 	}
 
@@ -173,5 +183,9 @@ public class DriveTrain {
 		} else {
 			autoStraightFirstTime = true;
 		}
+	}
+	
+	public void setBrakes(boolean brakes){
+		out.setDriveBrake(brakes);
 	}
 }

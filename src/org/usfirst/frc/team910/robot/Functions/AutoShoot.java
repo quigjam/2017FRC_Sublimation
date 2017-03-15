@@ -12,13 +12,16 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class AutoShoot {
 
-	private static final double DRIVE_POWER = 0.2;
+	private static final double DRIVE_POWER = 0.7;
 	private static final double ALLOWABLE_ANGLE_ERROR = 1;
 	private static final double LAG_TIME = 0.1;
-	private static final double SHOOT_DISTANCE = 24;
-	private static final double ALLOWABLE_DISTANCE_ERROR = 1.5;
+	private static final double SETTLE_TIME = 0.75;
+	private static final double SHOOT_DISTANCE = 48;
+	private static final double ALLOWABLE_DISTANCE_ERROR = 6;
 	
-	private static final double P_CONST = 0.15;//15% pwr per in
+	private static final double P_CONST = 0.075;
+	private static final double V_CONST = 0.5;
+	private static final double SPEED_FILT = 0.3;
 
 	private Inputs in;
 	private Shooter shoot;
@@ -38,13 +41,20 @@ public class AutoShoot {
 
 	private ShootState shootState = ShootState.values()[0]; // put them in an array
 	private Target currentTarget;
+	
+	private double prevDist = 0;
+	private double prevVel = 0;
+	private double timeSpentClose = 0;
 
 	public void run() {
 		if (in.autoShoot) { // when we hit the auto shoot button
 			currentTarget = sense.camera.boiler.getCurrentTarget(); // set our current target to the boiler
 			switch (shootState) {
 			case CAM_CHECK:
-
+				shoot.shooterPrime(false,false);
+				timeSpentClose = 0;
+				prevDist = (drive.leftDriveEncoder + drive.rightDriveEncoder) / 2;
+				drive.setBrakes(false);
 				if (Timer.getFPGATimestamp() - currentTarget.time < LAG_TIME) { // check to see if we see the target within an allowable time
 					shootState = ShootState.DRIVE; // go to next state
 				}
@@ -53,23 +63,36 @@ public class AutoShoot {
 			case DRIVE:
 				drive.originAngle.set(currentTarget.totalAngle.get()); // set our origin angel toward the target
 				
-				double power = P_CONST * (currentTarget.distance - SHOOT_DISTANCE);
+				double vel = ((drive.leftDriveEncoder + drive.rightDriveEncoder) / 2 - prevDist) * sense.deltaTime;
+				prevVel += SPEED_FILT * (vel - prevVel);
+				
+				double distPower = P_CONST * (currentTarget.distance - SHOOT_DISTANCE);
+				double velPower = - prevVel* V_CONST;
+				double power =  distPower + velPower;
+				SmartDashboard.putNumber("distPower", distPower);
+				SmartDashboard.putNumber("velPower", velPower);
 				if(Math.abs(power) > DRIVE_POWER){
 					power = power / Math.abs(power) * DRIVE_POWER;
 				}
 				
 				drive.driveStraightNavX(false, power, 0); // drive toward it
-				if (Math.abs(currentTarget.distance - SHOOT_DISTANCE) < ALLOWABLE_DISTANCE_ERROR) { // when we get close enough to the target // when camera
-																									// class is done we will get the distance of the camera to
-																									// be < 0.05
-					shootState = ShootState.ALIGN; // go to next state
+				//when close to target
+				if (Math.abs(currentTarget.distance - SHOOT_DISTANCE) < ALLOWABLE_DISTANCE_ERROR) { 
+					timeSpentClose += sense.deltaTime;
+					if(timeSpentClose > SETTLE_TIME){
+						shootState = ShootState.ALIGN; // go to next state
+					}
+				} else {
+					timeSpentClose = 0;
 				}
 				break;
 			case ALIGN:
+				drive.setBrakes(true);
 				drive.rotate(currentTarget.totalAngle); // face the target
 				//shoot.shooterPrime(true,false);
 				if (Math.abs(currentTarget.cameraAngle) < ALLOWABLE_ANGLE_ERROR) { // when we are lined up
 					shootState = ShootState.PRIME; // go to the next step
+					drive.tankDrive(0, 0, 1);
 				}
 				break;
 

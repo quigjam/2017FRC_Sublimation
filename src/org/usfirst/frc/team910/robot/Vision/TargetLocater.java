@@ -2,11 +2,11 @@ package org.usfirst.frc.team910.robot.Vision;
 
 public class TargetLocater implements Runnable {
 
-	protected static final int X_FOV = 75;
-	protected static final int Y_FOV = 47;
-	protected static final int X_RES = 640;
-	protected static final int Y_RES = 400;
-	protected static final double X_DEG_PER_PIXEL = 75 / 640;
+	protected static final double X_FOV = 85; //75
+	protected static final double Y_FOV = 47;
+	protected static final double X_RES = 320;
+	protected static final double Y_RES = 200;
+	protected static final double X_DEG_PER_PIXEL = X_FOV / X_RES;
 
 	//ycord vs distance
 	protected static final double[] BOILER_DIST_AXIS = { 26, 85, 108, 123, 132, 144, 154, 163, 194 };

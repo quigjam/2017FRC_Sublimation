@@ -7,6 +7,7 @@ public class Block {
 	int ycord;
 	int width;
 	int height;
+	double robotAngle;
 
 	public Block() {
 		signature = 0;
@@ -14,5 +15,6 @@ public class Block {
 		ycord = 0;
 		width = 0;
 		height = 0;
+		robotAngle = 0;
 	}
 }
