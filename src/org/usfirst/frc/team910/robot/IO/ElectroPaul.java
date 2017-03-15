@@ -20,10 +20,14 @@ public class ElectroPaul {// Shows what ports controls and motors are plugged in
 	// public final static int RIGHT_ENCODER_PORT_1 = 5;
 	// public final static int RIGHT_ENCODER_PORT_2 = 6;
 
-	public final static int LEFT_DRIVE_CAN = 2;
-	public final static int RIGHT_DRIVE_CAN = 13;
-	public final static int LEFT_DRIVE = 1; //as of 3/11/17
-	public final static int RIGHT_DRIVE = 14; //as of 3/11/17
+	public final static int LEFT_DRIVE_CAN1 = 2;
+	public final static int RIGHT_DRIVE_CAN1 = 13;
+	public final static int LEFT_DRIVE_CAN2 = 13;
+	public final static int RIGHT_DRIVE_CAN2 = 13;
+	public final static int LEFT_DRIVE_CAN3 = 13;
+	public final static int RIGHT_DRIVE_CAN3 = 13;
+	//public final static int LEFT_DRIVE = 1; //as of 3/11/17
+	//public final static int RIGHT_DRIVE = 14; //as of 3/11/17
 	public final static int SHOOTER_MOTOR = 12;
 	public final static int TRANSPORTER_MOTOR = 10; // for both robots as of 3/11/17
 	public final static int AGITATOR_MOTOR = 3;

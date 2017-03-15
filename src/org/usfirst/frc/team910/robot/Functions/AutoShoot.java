@@ -19,9 +19,9 @@ public class AutoShoot {
 	private static final double SHOOT_DISTANCE = 48;
 	private static final double ALLOWABLE_DISTANCE_ERROR = 6;
 	
-	private static final double P_CONST = 0.075;
-	private static final double V_CONST = 0.5;
-	private static final double SPEED_FILT = 0.3;
+	private static double P_CONST = 0.075;
+	private static double V_CONST = 0.5;
+	private static double SPEED_FILT = 0.3;
 
 	private Inputs in;
 	private Shooter shoot;
@@ -47,6 +47,11 @@ public class AutoShoot {
 	private double timeSpentClose = 0;
 
 	public void run() {
+		
+		SmartDashboard.getNumber("P_CONST", P_CONST);
+		SmartDashboard.getNumber("V_CONST", V_CONST);
+		SmartDashboard.getNumber("SPEED_FILT", SPEED_FILT);
+		
 		if (in.autoShoot) { // when we hit the auto shoot button
 			currentTarget = sense.camera.boiler.getCurrentTarget(); // set our current target to the boiler
 			switch (shootState) {

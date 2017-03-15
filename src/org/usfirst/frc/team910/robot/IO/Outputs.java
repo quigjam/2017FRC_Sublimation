@@ -20,10 +20,14 @@ public class Outputs {
 	// private CANTalon leftMotor2;
 	// private CANTalon rightMotor1;
 	// private CANTalon rightMotor2;
-	private CANTalon leftDriveCan;
-	private CANTalon rightDriveCan;
-	private Talon leftDrive;
-	private Talon rightDrive;
+	private CANTalon leftDriveCan1;
+	private CANTalon leftDriveCan2;
+	private CANTalon leftDriveCan3;
+	private CANTalon rightDriveCan1;
+	private CANTalon rightDriveCan2;
+	private CANTalon rightDriveCan3;
+	//private Talon leftDrive;
+	//private Talon rightDrive;
 	private CANTalon shooterMotor;
 	private CANTalon transporterMotor;
 	private CANTalon agitatorMotor;
@@ -47,18 +51,24 @@ public class Outputs {
 		// leftMotor2 = new CANTalon(ElectroPaul.LEFT_MOTOR_PORT_2);
 		// rightMotor1 = new CANTalon(ElectroPaul.RIGHT_MOTOR_PORT_1);
 		// rightMotor2 = new CANTalon(ElectroPaul.RIGHT_MOTOR_PORT_2);
-		leftDriveCan = new CANTalon(ElectroPaul.LEFT_DRIVE_CAN);		
-		leftDriveCan.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
-		leftDriveCan.setEncPosition(0);
-		leftDriveCan.reverseSensor(true);
-		leftDrive = new Talon(ElectroPaul.LEFT_DRIVE);
+		leftDriveCan1 = new CANTalon(ElectroPaul.LEFT_DRIVE_CAN1);		
+		leftDriveCan1.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
+		leftDriveCan1.setEncPosition(0);
+		leftDriveCan1.reverseSensor(true);
+		leftDriveCan2 = new CANTalon(ElectroPaul.LEFT_DRIVE_CAN2);
+		leftDriveCan3 = new CANTalon(ElectroPaul.LEFT_DRIVE_CAN3);
+		//leftDrive = new Talon(ElectroPaul.LEFT_DRIVE);
 		
-		rightDriveCan = new CANTalon(ElectroPaul.RIGHT_DRIVE_CAN);
-		rightDriveCan.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
-		rightDriveCan.setEncPosition(0);
-		rightDriveCan.setInverted(true);
-		rightDrive = new Talon(ElectroPaul.RIGHT_DRIVE);
-		rightDrive.setInverted(true);
+		rightDriveCan1 = new CANTalon(ElectroPaul.RIGHT_DRIVE_CAN1);
+		rightDriveCan1.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
+		rightDriveCan1.setEncPosition(0);
+		rightDriveCan1.setInverted(true);
+		rightDriveCan2 = new CANTalon(ElectroPaul.RIGHT_DRIVE_CAN2);
+		rightDriveCan2.setInverted(true);
+		rightDriveCan3 = new CANTalon(ElectroPaul.RIGHT_DRIVE_CAN3);
+		rightDriveCan3.setInverted(true);
+		//rightDrive = new Talon(ElectroPaul.RIGHT_DRIVE);
+		//rightDrive.setInverted(true);
 
 		shooterMotor = new CANTalon(ElectroPaul.SHOOTER_MOTOR);
 		shooterMotor.enableBrakeMode(false);
@@ -90,13 +100,17 @@ public class Outputs {
 		gearRollerMotor = new CANTalon(ElectroPaul.GEAR_ROLLER_MOTOR);
 		gearRollerMotor.reverseOutput(true);
 		gearRollerMotor.setInverted(true);
+		
 		gearPanelMotor1 = new CANTalon(ElectroPaul.GEAR_PANEL_MOTOR_1);
 		gearPanelMotor1.enableBrakeMode(false);
-		//gearPanelMotor1.setInverted(true);  //FLIP ALL THE THINGS
+		gearPanelMotor1.setFeedbackDevice(FeedbackDevice.AnalogEncoder);
 		//gearPanelMotor1.reverseOutput(true);
 		//gearPanelMotor1.reverseSensor(true);
 		gearPanelMotor2 = new CANTalon(ElectroPaul.GEAR_PANEL_MOTOR_2);
 		gearPanelMotor2.enableBrakeMode(false);
+		gearPanelMotor2.setFeedbackDevice(FeedbackDevice.AnalogEncoder);
+		//gearPanelMotor2.reverseOutput(true);
+		//gearPanelMotor2.reverseSensor(true);
 		
 		pdp = new PowerDistributionPanel(0);
 
@@ -105,20 +119,28 @@ public class Outputs {
 	public void setLeftDrive(double power) {
 		// leftMotor1.set(-power);
 		// leftMotor2.set(-power);
-		leftDriveCan.set(power);
-		leftDrive.set(power);
+		leftDriveCan1.set(power);
+		leftDriveCan2.set(power);
+		leftDriveCan3.set(power);
+		//leftDrive.set(power);
 	}
 
 	public void setRightDrive(double power) {
 		// rightMotor1.set(power);
 		// rightMotor2.set(power);
-		rightDriveCan.set(power);
-		rightDrive.set(power);
+		rightDriveCan1.set(power);
+		rightDriveCan2.set(power);
+		rightDriveCan3.set(power);
+		//rightDrive.set(power);
 	}
 	
 	public void setDriveBrake(boolean brake){
-		leftDriveCan.enableBrakeMode(brake);
-		rightDriveCan.enableBrakeMode(brake);
+		leftDriveCan1.enableBrakeMode(brake);
+		leftDriveCan2.enableBrakeMode(brake);
+		leftDriveCan3.enableBrakeMode(brake);
+		rightDriveCan1.enableBrakeMode(brake);
+		rightDriveCan2.enableBrakeMode(brake);
+		rightDriveCan3.enableBrakeMode(brake);
 	}
 
 	public void setShooterPower(double power) {
@@ -195,7 +217,7 @@ public class Outputs {
 
 	}
 
-	public void setGearPanelSpeed(double position) {
+	public void setGearPanelPosition(double position) {
 		gearPanelMotor1.changeControlMode(TalonControlMode.Position);
 		gearPanelMotor2.changeControlMode(TalonControlMode.Position);
 		gearPanelMotor1.set(position);
@@ -238,8 +260,8 @@ public class Outputs {
 
 	double maxTransporterSpeed = 0;
 	public void readEncoders() {
-		leftDriveEncoder = leftDriveCan.getPosition() * DRIVE_INCH_PER_REV;
-		rightDriveEncoder = rightDriveCan.getPosition()*DRIVE_INCH_PER_REV;
+		leftDriveEncoder = leftDriveCan1.getPosition() * DRIVE_INCH_PER_REV;
+		rightDriveEncoder = rightDriveCan1.getPosition()*DRIVE_INCH_PER_REV;
 		shooterSpeedEncoder = shooterMotor.getSpeed();
 		transporterSpeedEncoder = transporterMotor.getSpeed();
 		agitatorSpeedEncoder = agitatorMotor.getSpeed();

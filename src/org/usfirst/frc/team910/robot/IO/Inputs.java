@@ -38,6 +38,8 @@ public class Inputs {
 	public int targetGearPost;
 	public boolean gearIntake;
 	public boolean gearOuttake;
+	public boolean autoMode;
+	public boolean manualMode;
 
 	public Inputs() { //creates joysticks that are plugged into the port specified in ElectroPaul
 		leftStick = new Joystick(ElectroPaul.LEFT_JOYSTICK_PORT);
@@ -70,6 +72,8 @@ public class Inputs {
 		gearOuttake = controlBoard.getRawButton(13) ;//|| gamepad.getRawButton(7);
 		jogShooterUp = controlBoard.getRawButton(17) ;//|| gamepad.getRawAxis(3) > 0.9;
 		jogShooterDown = controlBoard.getRawButton(18) ;//|| gamepad.getRawAxis(2) > 0.9;
+		manualMode = controlBoard.getRawButton(14);
+		autoMode = !manualMode;
 		
 		if(controlBoard.getRawButton(15)){
 			gearPanelPosition = 1;
