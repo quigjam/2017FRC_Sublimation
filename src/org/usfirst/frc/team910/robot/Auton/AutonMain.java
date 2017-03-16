@@ -47,7 +47,7 @@ public class AutonMain {
 		hopperShootAutonRed.add(new AutonDriveTime(0.7, 0.75, -90));
 		hopperShootAutonRed.add(new AutonEndStep());
 		
-		//steps = new ArrayList<AutonStep>();
+		steps = new ArrayList<AutonStep>();
 		//steps.add(new AutonResetAngle());
 		//steps.add(new AutonDriveStraight(192, 0.5, 0));
 		//steps.add(new AutonDriveCircle(9.5*12, 0.4, 0, 6*12, true));
