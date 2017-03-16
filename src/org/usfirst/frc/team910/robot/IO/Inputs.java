@@ -6,11 +6,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Inputs {
 
 	private static final double DEADBAND = 0.1;
+	private static final double DEADBAND_XBOX = 0.2;
 
 	private Joystick leftStick;
 	private  Joystick rightStick;
 	private Joystick gamepad;
 	private Joystick controlBoard;
+	private Joystick driverGamepad;
 
 	// driver functions
 	public double leftJoyStickY;
@@ -46,10 +48,15 @@ public class Inputs {
 		rightStick = new Joystick(ElectroPaul.RIGHT_JOYSTICK_PORT);
 		//gamepad = new Joystick(ElectroPaul.GAME_PAD_JOYSTICK_PORT);
 		controlBoard = new Joystick(ElectroPaul.CONTROL_BOARD_JOYSTICK_PORT);
+		driverGamepad = new Joystick(ElectroPaul.DRIVER_GAME_PAD_PORT);
 	}
-
+ 
 	public void read() {
 		// driver functions
+			
+		double xboxLY = deadband(DEADBAND_XBOX, driverGamepad.getRawAxis(1));
+		double xboxRX = deadband(DEADBAND_XBOX, driverGamepad.getRawAxis(4));
+		
 		leftJoyStickY = deadband(DEADBAND, -leftStick.getY()); //joystick with deadband taken into account
 		rightJoyStickY = deadband(DEADBAND, -rightStick.getY());
 		leftJoyStickX = deadband(DEADBAND, leftStick.getX());
@@ -60,6 +67,14 @@ public class Inputs {
 		autoShoot = rightStick.getRawButton(5);
 		autoClimb = leftStick.getRawButton(5);
 		autoStraight = rightStick.getRawButton(3); //TODO Make autoStraight toggle
+		
+		//if the xbox controller is active, override with drive straight and drive with it
+		if(xboxLY > 0|| xboxRX > 0){
+			leftJoyStickX = xboxRX;
+			rightJoyStickY = xboxLY;
+			driveStraight = true;
+		}
+		
 		// operator functions
 		//Change later for competition board. Check Steven's phone
 		primeButton = controlBoard.getRawButton(6) ;//|| gamepad.getRawButton(5); 

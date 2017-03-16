@@ -25,8 +25,8 @@ public class Camera implements PixyEvent {
 	
 	private static final int LEFT_PIXY = PIXY_CAM_ID_1;
 	private static final int RIGHT_PIXY = PIXY_CAM_ID_2;
-	private static final int FRONT_LOW_PIXY = PIXY_CAM_ID_3;
-	private static final int FRONT_HIGH_PIXY = PIXY_CAM_ID_5;
+	private static final int FRONT_LOW_PIXY = PIXY_CAM_ID_4;
+	private static final int FRONT_HIGH_PIXY = PIXY_CAM_ID_3;
 	
 	public static final int BLOCKS_PER_FRAME = 64;
 	public static final int FRAMES_PER_CAMERA = 10;

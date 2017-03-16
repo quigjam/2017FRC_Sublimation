@@ -6,16 +6,19 @@ public class AutonDriveCircle extends AutonStep {
 
 	double endDistance;
 	double startDistance;
+	double distance;
 	double power;
 	Angle startAngle;
+	double endAngle;
 	double radius;
 	double direction;
 
-	public AutonDriveCircle(double distance, double power, double startAngle, double radius, boolean clockwise) {
-		this.endDistance = distance;
+	public AutonDriveCircle(double distance, double power, double startAngle, double radius, double endAngle, boolean clockwise) {
+		this.distance = distance;
 		this.power = power;
 		this.startAngle = new Angle(startAngle);
 		this.radius = radius;
+		this.endAngle = endAngle;
 		if (clockwise)
 			direction = -1;
 		else
@@ -26,6 +29,7 @@ public class AutonDriveCircle extends AutonStep {
 	@Override
 	public void setup() {
 		startDistance = (drive.leftDriveEncoder + drive.rightDriveEncoder) / 2;
+		endDistance = startDistance + distance;
 	}
 
 	double prevDist = 0;
@@ -40,6 +44,6 @@ public class AutonDriveCircle extends AutonStep {
 
 	@Override
 	public boolean isDone() {
-		return ((drive.leftDriveEncoder + drive.rightDriveEncoder) / 2) > (startDistance + endDistance);
+		return ((drive.leftDriveEncoder + drive.rightDriveEncoder) / 2) > (endDistance);
 	}
 }

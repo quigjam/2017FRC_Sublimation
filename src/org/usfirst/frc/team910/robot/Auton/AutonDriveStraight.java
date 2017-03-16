@@ -5,11 +5,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class AutonDriveStraight extends AutonStep {
 
-	private static final double MAX_ACCEL = 60;
+	private static final double MAX_ACCEL = 170;
 	private static final double V_MAX = 100.0;
 	private static final double PCONST = 0.15 * 0.7;
 	private static final double ALLOWABLE_ERROR = 1;
-	private static final double V_CONST = 1 / 200;
+	private static final double V_CONST = 1 / 200.0;
 
 	double distance;
 	double startTime;

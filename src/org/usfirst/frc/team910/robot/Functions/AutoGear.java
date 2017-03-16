@@ -97,7 +97,7 @@ public class AutoGear {
 				if (Math.abs(currentTarget.cameraAngle) > MIN_ARC_ANGLE) {
 					gearState = GearState.DONE;
 				}
-				gear.gearposition(2);// extend panel to place gear
+				//gear.gearposition(2);// extend panel to place gear
 				drive.driveStraightNavX(false, DRIVE_POWER, 0);
 				if (sense.accelX > WALL_ACCEL) { // when we hit the wall and acceleration breaks
 					gearState = GearState.DELIVER_GEAR; // go to next step

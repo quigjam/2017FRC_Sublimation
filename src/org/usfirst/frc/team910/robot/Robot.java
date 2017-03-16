@@ -117,6 +117,8 @@ public class Robot extends IterativeRobot {
 		in.read();
 		sense.read();
 		out.readEncoders();
+		
+		autonmain.setAutonProfile();
 	}
 
 }

@@ -2,6 +2,8 @@ package org.usfirst.frc.team910.robot.Subsystems;
 
 import org.usfirst.frc.team910.robot.IO.Inputs;
 import org.usfirst.frc.team910.robot.IO.Outputs;
+import org.usfirst.frc.team910.robot.IO.Util;
+
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -9,6 +11,9 @@ public class Shooter {
 	private static final double SHOOTER_SPEED = 1850;
 	private static final double JOG_AMOUNT = 10;
 	private static final double ALLOWABLE_SHOOTER_ERROR = 50;
+	
+	private static final double[] SHOOTER_PWR_AXIS = {12, 18, 36, 48, 60};
+	private static final double[] SHOOTER_PWR_TABLE = {1650, 1680, 1900, 1920, 1950};
 
 	private Outputs out;
 	private Inputs in;
@@ -26,16 +31,20 @@ public class Shooter {
 
 		} else { // if we do anything else
 
-			shooterPrime(in.primeButton, in.fireButton); // call prime with the prime button
+			shooterPrime(in.primeButton, in.fireButton, 37); // call prime with the prime button
 
 			//shooterFire(in.fireButton); // and shooter with the fire button
 
 		}
 	}
 
-	public void shooterPrime(boolean primeButton, boolean fire) { // Moves the big roller
+	private double shooterSetSpeed = 0;
+	
+	public void shooterPrime(boolean primeButton, boolean fire, double dist) { // Moves the big roller
 		if (primeButton) { // if we hit the prime button
-			out.setShooterSpeed(SHOOTER_SPEED + jogoffset); // ready the shooter to fire (with our constant shooter speed + how much we have jogged)
+			
+			shooterSetSpeed = Util.interpolate(SHOOTER_PWR_AXIS, SHOOTER_PWR_TABLE, dist);
+			out.setShooterSpeed(shooterSetSpeed + jogoffset); // ready the shooter to fire (with our constant shooter speed + how much we have jogged)
 			//out.setAgitatorPower(1); // start spinning the agitator to get the fuel moving
 			// out.setShooterPower (0.5);
 			
@@ -55,7 +64,7 @@ public class Shooter {
 	}
 
 	public boolean upToSpeed() { // lets us know when we get the shooter motor up to the speed we set it to
-		return out.shooterSpeedEncoder > SHOOTER_SPEED + jogoffset - ALLOWABLE_SHOOTER_ERROR;
+		return out.shooterSpeedEncoder > shooterSetSpeed + jogoffset - ALLOWABLE_SHOOTER_ERROR;
 	}
 
 	public void shooterFire(boolean fireButton) { // Moves the smaller roller, transports balls from hopper

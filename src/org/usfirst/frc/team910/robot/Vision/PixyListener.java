@@ -39,7 +39,8 @@ public class PixyListener implements Runnable {
 			
 			System.out.println("Waiting for connection.....");
 
-			clientSocket = serverSocket.accept(); 
+			clientSocket = serverSocket.accept();
+			clientSocket.setKeepAlive(true);
 			System.out.println("Connection successful");
 			System.out.println("Waiting for input.....");
 
