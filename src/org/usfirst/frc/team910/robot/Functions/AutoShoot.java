@@ -13,16 +13,17 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class AutoShoot {
 
-	private static double DRIVE_POWER = 0.4;
+	private static double DRIVE_POWER = 0.8;
 	private static final double ALLOWABLE_ANGLE_ERROR = 1;
 	private static final double LAG_TIME = 0.1;
-	private static final double SETTLE_TIME = 0.75;
+	private static final double SETTLE_TIME = 0.5;
 	private static final double SHOOT_DISTANCE = 36;
 	private static final double ALLOWABLE_DISTANCE_ERROR = 8;
+	private static final double REVERSE_DIST = 36;
 	
-	private static double P_CONST = 0.075;
-	private static double V_CONST = 15;
-	private static double SPEED_FILT = 0.3;
+	private static double P_CONST = 0.035;
+	private static double V_CONST = 45;
+	private static double SPEED_FILT = 0.4;
 	private static double RAMP_FILT = 0.1;
 
 	private Inputs in;
@@ -40,7 +41,7 @@ public class AutoShoot {
 	}
 
 	private enum ShootState {
-		CAM_CHECK, DRIVE, ALIGN, PRIME, FIRE; // construct all the states we need
+		CAM_CHECK, DRIVE, ALIGN, PRIME, FIRE, REVERSE; // construct all the states we need
 	};
 
 	private ShootState shootState = ShootState.values()[0]; // put them in an array
@@ -53,16 +54,18 @@ public class AutoShoot {
 	private double rampFactor = 0;
 	
 	Preferences prefs;
+	
+	private double stopDist = 0;
 
 	public void run() {
 		
-		P_CONST = prefs.getDouble("P_CONST", P_CONST);
-		V_CONST = prefs.getDouble("V_CONST", V_CONST);
-		SPEED_FILT = prefs.getDouble("SPEED_FILT", SPEED_FILT);
-		DRIVE_POWER = prefs.getDouble("DRIVE_POWER", DRIVE_POWER);
-		RAMP_FILT = prefs.getDouble("RAMP_FILT", RAMP_FILT);
+		//P_CONST = prefs.getDouble("P_CONST", P_CONST);
+		//V_CONST = prefs.getDouble("V_CONST", V_CONST);
+		//SPEED_FILT = prefs.getDouble("SPEED_FILT", SPEED_FILT);
+		//DRIVE_POWER = prefs.getDouble("DRIVE_POWER", DRIVE_POWER);
+		//RAMP_FILT = prefs.getDouble("RAMP_FILT", RAMP_FILT);
 		
-		SmartDashboard.putNumber("drivepower", DRIVE_POWER);
+		//SmartDashboard.putNumber("drivepower", DRIVE_POWER);
 		
 		if (in.autoShoot) { // when we hit the auto shoot button
 			currentTarget = sense.camera.boiler.getCurrentTarget(); // set our current target to the boiler
@@ -73,11 +76,17 @@ public class AutoShoot {
 				prevDist = (drive.leftDriveEncoder + drive.rightDriveEncoder) / 2;
 				drive.setBrakes(false);
 				rampFactor = currentTarget.distance;
-				if (Timer.getFPGATimestamp() - currentTarget.time < LAG_TIME) { // check to see if we see the target within an allowable time
+				if (Timer.getFPGATimestamp() - currentTarget.time < LAG_TIME && !in.autoShootNoCam) { // check to see if we see the target within an allowable time
 					shootState = ShootState.DRIVE; // go to next state
+				} else if (in.autoShootNoCam){
+					shootState = ShootState.REVERSE;
+					drive.driveStraightNavX(true, 0, 0);
+					currentTarget.distance = REVERSE_DIST;
+					stopDist = (drive.leftDriveEncoder + drive.rightDriveEncoder) / 2 + REVERSE_DIST;
 				}
 
 				break;
+				
 			case DRIVE:
 				drive.originAngle.set(currentTarget.totalAngle.get()); // set our origin angel toward the target
 				
@@ -108,10 +117,11 @@ public class AutoShoot {
 					timeSpentClose = 0;
 				}
 				break;
+				
 			case ALIGN:
 				drive.setBrakes(true);
 				drive.rotate(currentTarget.totalAngle); // face the target
-				//shoot.shooterPrime(true,false,currentTarget.distance);
+				shoot.shooterPrime(true,false,currentTarget.distance);
 				if (Math.abs(currentTarget.cameraAngle) < ALLOWABLE_ANGLE_ERROR) { // when we are lined up
 					shootState = ShootState.PRIME; // go to the next step
 					drive.tankDrive(0, 0, 1);
@@ -119,20 +129,39 @@ public class AutoShoot {
 				break;
 
 			case PRIME:
-				//shoot.shooterPrime(true,false,currentTarget.distance); // prime
-				if (shoot.upToSpeed()) { // when we get up to speed
+				shoot.shooterPrime(true,false,currentTarget.distance); // prime
+				if (shoot.upToSpeed() || in.fireButton) { // when we get up to speed
 					shootState = ShootState.FIRE; // go to next state
 
 				}
 				break;
+				
 			case FIRE:
-				//shoot.shooterPrime(true,true,currentTarget.distance);
+				shoot.shooterPrime(true,true,currentTarget.distance);
+				break;
+			
+			case REVERSE:
+				shoot.shooterPrime(true,false,REVERSE_DIST);
+				drive.driveStraightNavX(false, 0.4, 0);
+				if((drive.leftDriveEncoder + drive.rightDriveEncoder) / 2 > stopDist){
+					drive.tankDrive(0, 0, 1);
+					shootState = ShootState.PRIME;
+				}
+				break;
 			}
-
+			
 		} else {
 			shootState = ShootState.values()[0]; // reset state machine
 		}
 		
 		SmartDashboard.putString("ShootState", shootState.toString());
+	}
+	
+	public boolean isShooting(){
+		return shootState == ShootState.FIRE;
+	}
+	
+	public boolean isCamAlign(){
+		return shootState == ShootState.CAM_CHECK;
 	}
 }

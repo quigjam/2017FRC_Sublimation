@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Shooter {
 	private static final double SHOOTER_SPEED = 1850;
 	private static final double JOG_AMOUNT = 10;
-	private static final double ALLOWABLE_SHOOTER_ERROR = 50;
+	private static final double ALLOWABLE_SHOOTER_ERROR = 70;
 	
 	private static final double[] SHOOTER_PWR_AXIS = {12, 18, 36, 48, 60};
 	private static final double[] SHOOTER_PWR_TABLE = {1650, 1680, 1900, 1920, 1950};
@@ -67,14 +67,14 @@ public class Shooter {
 		return out.shooterSpeedEncoder > shooterSetSpeed + jogoffset - ALLOWABLE_SHOOTER_ERROR;
 	}
 
-	public void shooterFire(boolean fireButton) { // Moves the smaller roller, transports balls from hopper
+	/*public void shooterFire(boolean fireButton) { // Moves the smaller roller, transports balls from hopper
 		if (fireButton) { // when we hit that fire button
 			//out.setTransportPower(0.75); // start up the transporter motor and start moving balls into the shooter motor
 			out.setTransportSpeed(2000);
 		} else { // if anything else happens make sure the transport motor doesn't move
 			out.setTransportPower(0);
 		}
-	}
+	}*/
 
 	boolean prevjogup = false;
 	boolean prevjogdown = false;

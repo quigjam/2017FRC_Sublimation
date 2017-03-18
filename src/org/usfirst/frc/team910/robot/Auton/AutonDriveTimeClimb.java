@@ -2,23 +2,21 @@ package org.usfirst.frc.team910.robot.Auton;
 
 import edu.wpi.first.wpilibj.Timer;
 
-public class AutonDriveTime extends AutonStep {
+public class AutonDriveTimeClimb extends AutonStep {
 	
-	private static final double POWER_FILT = 0.15;
+	private static final double POWER_FILT = 0.1;
 	
 	private double power;
 	private double time;
 	private double angle;
-	private boolean prime;
 	
 	private double endTime;
 	private double prevPower;
 	
-	public AutonDriveTime(double power, double time, double angle, boolean prime){
+	public AutonDriveTimeClimb(double power, double time, double angle){
 		this.power = power;
 		this.time = time;
 		this.angle = angle;
-		this.prime = prime;
 		prevPower = 0;
 	}
 	
@@ -30,15 +28,16 @@ public class AutonDriveTime extends AutonStep {
 		prevPower += POWER_FILT * (power - prevPower);
 		drive.originAngle.set(angle);
 		drive.driveStraightNavX(false, prevPower, 0);
-		
-		if(prime){
-			shoot.shooterPrime(true, false, 36);
-		} else {
-			shoot.shooterPrime(false, false, 36);
-		}
+		in.climbButton = true;
+		climb.run();
 	}
 	
 	public boolean isDone() {
-		return Timer.getFPGATimestamp() > endTime;
+		if(Timer.getFPGATimestamp() > endTime){
+			in.climbButton = false;
+			climb.run();
+			return true;
+		}
+		return false;
 	}
 }

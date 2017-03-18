@@ -23,6 +23,7 @@ public class Inputs {
 	public boolean driveStraight;
 	public boolean autoGear;
 	public boolean autoShoot;
+	public boolean autoShootNoCam;
 	public boolean autoClimb;
 	public boolean autoHopper;//4 left Work in progress
 	public boolean autoStraight;
@@ -42,20 +43,22 @@ public class Inputs {
 	public boolean gearOuttake;
 	public boolean autoMode;
 	public boolean manualMode;
+	public boolean shift;
+	public int autonSelection;
 
 	public Inputs() { //creates joysticks that are plugged into the port specified in ElectroPaul
 		leftStick = new Joystick(ElectroPaul.LEFT_JOYSTICK_PORT);
 		rightStick = new Joystick(ElectroPaul.RIGHT_JOYSTICK_PORT);
 		//gamepad = new Joystick(ElectroPaul.GAME_PAD_JOYSTICK_PORT);
 		controlBoard = new Joystick(ElectroPaul.CONTROL_BOARD_JOYSTICK_PORT);
-		driverGamepad = new Joystick(ElectroPaul.DRIVER_GAME_PAD_PORT);
+		//driverGamepad = new Joystick(ElectroPaul.DRIVER_GAME_PAD_PORT);
 	}
  
 	public void read() {
 		// driver functions
 			
-		double xboxLY = deadband(DEADBAND_XBOX, driverGamepad.getRawAxis(1));
-		double xboxRX = deadband(DEADBAND_XBOX, driverGamepad.getRawAxis(4));
+		//double xboxLY = deadband(DEADBAND_XBOX, driverGamepad.getRawAxis(1));
+		//double xboxRX = deadband(DEADBAND_XBOX, driverGamepad.getRawAxis(4));
 		
 		leftJoyStickY = deadband(DEADBAND, -leftStick.getY()); //joystick with deadband taken into account
 		rightJoyStickY = deadband(DEADBAND, -rightStick.getY());
@@ -64,16 +67,17 @@ public class Inputs {
 		dynamicBrake = leftStick.getTrigger();
 		driveStraight = rightStick.getTrigger();
 		autoGear = rightStick.getRawButton(4);
-		autoShoot = rightStick.getRawButton(5);
+		autoShoot = rightStick.getRawButton(5) || rightStick.getRawButton(6);
+		autoShootNoCam = rightStick.getRawButton(6);
 		autoClimb = leftStick.getRawButton(5);
 		autoStraight = rightStick.getRawButton(3); //TODO Make autoStraight toggle
 		
 		//if the xbox controller is active, override with drive straight and drive with it
-		if(xboxLY > 0|| xboxRX > 0){
+		/*if(xboxLY > 0|| xboxRX > 0){
 			leftJoyStickX = xboxRX;
 			rightJoyStickY = xboxLY;
 			driveStraight = true;
-		}
+		}*/
 		
 		// operator functions
 		//Change later for competition board. Check Steven's phone
@@ -89,6 +93,7 @@ public class Inputs {
 		jogShooterDown = controlBoard.getRawButton(18) ;//|| gamepad.getRawAxis(2) > 0.9;
 		manualMode = controlBoard.getRawButton(14);
 		autoMode = !manualMode;
+		shift = controlBoard.getRawButton(3);
 		
 		if(controlBoard.getRawButton(15)){
 			gearPanelPosition = 1;
@@ -98,6 +103,16 @@ public class Inputs {
 			gearPanelPosition = 2;
 		}
 		
+		if(controlBoard.getRawButton(8)){
+			//RIGHT
+			autonSelection = 3;
+		} else if(controlBoard.getRawButton(9)){
+			//LEFT
+			autonSelection = 1;
+		} else {
+			//CENTER
+			autonSelection = 2;
+		}
 
 	}
 

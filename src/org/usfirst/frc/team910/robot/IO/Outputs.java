@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Outputs {
 
-	private static final double CURRENT_LIMIT = 40; // in amps
+	private static final double CURRENT_LIMIT = 90; // in amps
 	private static final double AMP_SEC_LIMIT = 70; //in amp*sec 
 	private static final double MIN_REST_TIME = 5;// in seconds
 	private static final double DRIVE_INCH_PER_REV = 4*Math.PI;
@@ -43,8 +43,15 @@ public class Outputs {
 	public double shooterSpeedEncoder;
 	public double transporterSpeedEncoder;
 	public double agitatorSpeedEncoder;
+	public double gearIntakeCurrent;
 
-	public double gearPanelPositionEncoder;
+	public double gearPanelPositionEncoderL;
+	public double gearPanelPositionEncoderR;
+	
+	public double gearPanel1Current;
+	public double gearPanel2Current;
+	public double climb1Current;
+	public double climb2Current;
 
 	public Outputs() {
 		// leftMotor1 = new CANTalon(ElectroPaul.LEFT_MOTOR_PORT_1);
@@ -88,6 +95,7 @@ public class Outputs {
 		transporterMotor.reverseSensor(true);
 		transporterMotor.configPeakOutputVoltage(0, -12);
 		transporterMotor.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
+		transporterMotor.setPID(0.025, 0, 0.03, 0.04, 0, 0, 0);
 		
 		agitatorMotor = new CANTalon(ElectroPaul.AGITATOR_MOTOR);
 		agitatorMotor.enableBrakeMode(false);
@@ -103,14 +111,18 @@ public class Outputs {
 		
 		gearPanelMotor1 = new CANTalon(ElectroPaul.GEAR_PANEL_MOTOR_1);
 		gearPanelMotor1.enableBrakeMode(false);
-		gearPanelMotor1.setFeedbackDevice(FeedbackDevice.AnalogEncoder);
+		gearPanelMotor1.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Absolute);
+		gearPanelMotor1.configPeakOutputVoltage(1.75, -10);
+		gearPanelMotor1.setPID(3, 0, 0);
 		//gearPanelMotor1.reverseOutput(true);
 		//gearPanelMotor1.reverseSensor(true);
 		gearPanelMotor2 = new CANTalon(ElectroPaul.GEAR_PANEL_MOTOR_2);
 		gearPanelMotor2.enableBrakeMode(false);
-		gearPanelMotor2.setFeedbackDevice(FeedbackDevice.AnalogEncoder);
+		gearPanelMotor2.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Absolute);
+		gearPanelMotor2.configPeakOutputVoltage(1.75, -10);
+		gearPanelMotor2.setPID(3, 0, 0);
 		//gearPanelMotor2.reverseOutput(true);
-		//gearPanelMotor2.reverseSensor(true);
+		gearPanelMotor2.reverseSensor(true);
 		
 		pdp = new PowerDistributionPanel(0);
 
@@ -217,11 +229,11 @@ public class Outputs {
 
 	}
 
-	public void setGearPanelPosition(double position) {
+	public void setGearPanelPosition(double posL, double posR) {
 		gearPanelMotor1.changeControlMode(TalonControlMode.Position);
 		gearPanelMotor2.changeControlMode(TalonControlMode.Position);
-		gearPanelMotor1.set(position);
-		gearPanelMotor2.set(position);
+		gearPanelMotor1.set(posL);
+		gearPanelMotor2.set(posR);
 	}
 
 	public void setGearRoller(double power) {
@@ -265,20 +277,34 @@ public class Outputs {
 		shooterSpeedEncoder = shooterMotor.getSpeed();
 		transporterSpeedEncoder = transporterMotor.getSpeed();
 		agitatorSpeedEncoder = agitatorMotor.getSpeed();
-		gearPanelPositionEncoder = gearPanelMotor1.getPosition();
+		gearPanelPositionEncoderL = gearPanelMotor1.getPosition();
+		gearPanelPositionEncoderR = gearPanelMotor2.getPosition();
 
 		if(transporterSpeedEncoder == 0){
 			maxTransporterSpeed = 0;
 		} else{
 			maxTransporterSpeed = Math.min(maxTransporterSpeed, transporterSpeedEncoder);
 		}
+		
+		gearIntakeCurrent = pdp.getCurrent(ElectroPaul.GEAR_ROLLER_MOTOR);
+		gearPanel1Current = pdp.getCurrent(ElectroPaul.GEAR_PANEL_MOTOR_1);
+		gearPanel2Current = pdp.getCurrent(ElectroPaul.GEAR_PANEL_MOTOR_2);
+		
+		climb1Current = pdp.getCurrent(ElectroPaul.CLIMB_MOTOR_1);
+		climb2Current = pdp.getCurrent(ElectroPaul.CLIMB_MOTOR_2);
+		
+		SmartDashboard.putNumber("GearPanel1Current", gearPanel1Current);
+		SmartDashboard.putNumber("GearPanel2Current", gearPanel2Current);
+		
 		SmartDashboard.putNumber("MaxTransporterSpeed", maxTransporterSpeed);
 		SmartDashboard.putNumber("leftDriveEncoder", leftDriveEncoder);
 		SmartDashboard.putNumber("rightDriveEncoder", rightDriveEncoder);
 		SmartDashboard.putNumber("shooterSpeedEncoder", shooterSpeedEncoder);
 		SmartDashboard.putNumber("transporterSpeedEncoder", transporterSpeedEncoder);
 		SmartDashboard.putNumber("agitatorSpeedEncoder", agitatorSpeedEncoder);
-		SmartDashboard.putNumber("gearPanelPositionEncoder", gearPanelPositionEncoder);
+		SmartDashboard.putNumber("gearPanelPositionEncoderL", gearPanelPositionEncoderL);
+		SmartDashboard.putNumber("gearPanelPositionEncoderR", gearPanelPositionEncoderR);
+		SmartDashboard.putNumber("GearIntakeCurrent", gearIntakeCurrent);
 
 	}
 }

@@ -13,6 +13,8 @@ import org.usfirst.frc.team910.robot.Subsystems.DriveTrain;
 import org.usfirst.frc.team910.robot.Subsystems.GearSystem;
 import org.usfirst.frc.team910.robot.Subsystems.Shooter;
 
+import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -35,6 +37,8 @@ public class Robot extends IterativeRobot {
 	AutonMain autonmain;
 	Solenoid light;
 	Solenoid light2;
+	
+	AnalogInput ai;
 	/**
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.
@@ -60,11 +64,16 @@ public class Robot extends IterativeRobot {
 		light2 = new Solenoid(1);
 		
 		sense.init();
+		
+		ai = new AnalogInput(0);
+		
+		autonmain.init(in, sense, drive, gear, shoot, climb, autoShoot);
+		
+		CameraServer.getInstance().startAutomaticCapture();
 	}
 
 	@Override
 	public void autonomousInit() {
-		autonmain.init(in, sense, drive, gear, shoot);
 		sense.init();
 	}
 
@@ -77,6 +86,9 @@ public class Robot extends IterativeRobot {
 		out.readEncoders();
 		drive.run(true);
 		autonmain.run();
+		
+		light.set(true);
+		light2.set(true);
 	}
 
 	@Override
@@ -119,6 +131,8 @@ public class Robot extends IterativeRobot {
 		out.readEncoders();
 		
 		autonmain.setAutonProfile();
+		
+		SmartDashboard.putNumber("ai0", ai.getVoltage());
 	}
 
 }

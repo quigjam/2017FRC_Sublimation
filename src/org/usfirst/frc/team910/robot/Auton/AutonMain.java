@@ -2,8 +2,10 @@ package org.usfirst.frc.team910.robot.Auton;
 
 import java.util.ArrayList;
 
+import org.usfirst.frc.team910.robot.Functions.AutoShoot;
 import org.usfirst.frc.team910.robot.IO.Inputs;
 import org.usfirst.frc.team910.robot.IO.Sensors;
+import org.usfirst.frc.team910.robot.Subsystems.Climber;
 import org.usfirst.frc.team910.robot.Subsystems.DriveTrain;
 import org.usfirst.frc.team910.robot.Subsystems.GearSystem;
 import org.usfirst.frc.team910.robot.Subsystems.Shooter;
@@ -30,38 +32,62 @@ public class AutonMain {
 	public AutonMain() {
 		justDrive = new ArrayList<AutonStep>();
 		justDrive.add(new AutonResetAngle());
-		justDrive.add(new AutonDriveTime(0.7, 5, 0));
+		justDrive.add(new AutonDriveTime(0.7, 5, 0, false));
 		justDrive.add(new AutonEndStep());
 		
 		hopperShootAutonBlue = new ArrayList<AutonStep>();
 		hopperShootAutonBlue.add(new AutonResetAngle());
-		hopperShootAutonBlue.add(new AutonDriveStraight(5.5*12, 0.4, 0));
+		hopperShootAutonBlue.add(new AutonDriveStraight(4*12-1, 0.4, 0));
 		hopperShootAutonBlue.add(new AutonDriveCircle(2*Math.PI*2.5*12/4, 0.7, 0, 2.5*12, 90, false));
-		hopperShootAutonBlue.add(new AutonDriveTime(0.7, 0.75, 90));
+		hopperShootAutonBlue.add(new AutonDriveTimeClimb(0.7, 0.75, 90));
+		hopperShootAutonBlue.add(new AutonWaitAtHopper(3));
+		hopperShootAutonBlue.add(new AutonDriveTime(-0.9, 0.5, 90, true));
+		hopperShootAutonBlue.add(new AutonDriveTime(0.9, 0.3, 135, true));
+		hopperShootAutonBlue.add(new AutonAutoShoot(6));
 		hopperShootAutonBlue.add(new AutonEndStep());
 		
 		hopperShootAutonRed = new ArrayList<AutonStep>();
 		hopperShootAutonRed.add(new AutonResetAngle());
-		hopperShootAutonRed.add(new AutonDriveStraight(5.5*12, 0.4, 0));
+		hopperShootAutonRed.add(new AutonDriveStraight(4*12-1, 0.4, 0));
 		hopperShootAutonRed.add(new AutonDriveCircle(2*Math.PI*2.5*12/4, 0.7, 0, 2.5*12, -90, true));
-		hopperShootAutonRed.add(new AutonDriveTime(0.7, 0.75, -90));
+		hopperShootAutonRed.add(new AutonDriveTimeClimb(0.7, 0.75, -90));
+		hopperShootAutonRed.add(new AutonWaitAtHopper(3));
+		hopperShootAutonRed.add(new AutonDriveTime(-0.9, 0.5, -90, true));
+		hopperShootAutonRed.add(new AutonDriveTime(0.9, 0.3, -135, true));
+		hopperShootAutonRed.add(new AutonAutoShoot(6));
 		hopperShootAutonRed.add(new AutonEndStep());
 		
-		//steps = new ArrayList<AutonStep>();
+		steps = new ArrayList<AutonStep>();
 		//steps.add(new AutonResetAngle());
 		//steps.add(new AutonDriveStraight(192, 0.5, 0));
 		//steps.add(new AutonDriveCircle(9.5*12, 0.4, 0, 6*12, true));
 		steps.add(new AutonEndStep());
 		
-		//steps = hopperShootAuton;
+		steps = hopperShootAutonRed;
 	}
 
-	public void init(Inputs in, Sensors sense, DriveTrain drive, GearSystem gear, Shooter shoot) {
-		AutonStep.setRobotReferences(in, sense, drive, gear, shoot);
-		SmartDashboard.putString("AutonKey", "Auton Profiles:\n0) Just Drive Forward\n1) Hopper Shoot Drive");
+	public void init(Inputs in, Sensors sense, DriveTrain drive, GearSystem gear, Shooter shoot, Climber climb, AutoShoot as) {
+		AutonStep.setRobotReferences(in, sense, drive, gear, shoot, climb, as);
+		//SmartDashboard.putString("AutonKey", "Auton Profiles:\n0) Just Drive Forward\n1) Hopper Shoot Drive");
 	}
 	
 	public void setAutonProfile(){
+		
+		switch(AutonStep.in.autonSelection){
+		case 1:
+			steps = hopperShootAutonBlue;
+			break;
+		case 2:
+			steps = justDrive;
+			break;
+		case 3:
+			steps = hopperShootAutonRed;
+			break;
+			default:
+				
+		}
+		
+		/*
 		DriverStation ds = DriverStation.getInstance();
 		AUTON_PROFILE = Preferences.getInstance().getInt("AUTON_PROFILE", AUTON_PROFILE);
 		SmartDashboard.putNumber("AutonProfile", AUTON_PROFILE);
@@ -101,6 +127,8 @@ public class AutonMain {
 		} else {
 			//be sad because no auton
 		}
+		*/
+		
 		
 	}
 

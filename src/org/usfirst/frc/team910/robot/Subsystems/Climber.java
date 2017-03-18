@@ -8,6 +8,7 @@ public class Climber {
 	private Outputs out;
 	private Inputs in;
 
+	private static final double SHIFT_FACTOR = 0.6;
 	private static final double CLIMB_POWER = 1;
 	private static final double REVERSE_CLIMB_POWER = 0.15;
 
@@ -22,7 +23,11 @@ public class Climber {
 		} else if (in.reverseButton && in.climbButton) {
 			climb(-REVERSE_CLIMB_POWER);
 		} else if (in.climbButton) {
-			climb(CLIMB_POWER);
+			if(in.shift){
+				climb(CLIMB_POWER * SHIFT_FACTOR);
+			} else {
+				climb(CLIMB_POWER);
+			}
 		} else {
 			climb(0);
 

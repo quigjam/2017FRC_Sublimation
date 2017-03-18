@@ -5,7 +5,7 @@ public class AutonEndStep extends AutonStep {
 	@Override
 	public void run(){
 		drive.tankDrive(0, 0, 1);
-		shoot.shooterPrime(false,false);
+		shoot.shooterPrime(false,false, 0);
 		gear.gearRoller(0);
 	}
 	
