@@ -4,7 +4,6 @@ import org.usfirst.frc.team910.robot.IO.Inputs;
 import org.usfirst.frc.team910.robot.IO.Outputs;
 import org.usfirst.frc.team910.robot.IO.Sensors;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class GearSystem {
@@ -74,8 +73,7 @@ public class GearSystem {
 	private double gearUpTime = 0;
 	private double gearDnTime = 0;
 	
-	private double timer = 0;
-	private boolean timerExpired = false;
+	
 	public void run() {
 
 		SmartDashboard.putBoolean("HasGear", currentTripped);
@@ -162,30 +160,24 @@ public class GearSystem {
 			} else {// position mode
 				
 				
-				if (in.gearPanelPosition == 1) {//down
-
+				if (in.gearPanelPosition == 1) {
 					gearUpLimit = false;
 					gearUpTime = 0;
-					if(timerExpired){
+					if(gearDnLimit){
 						out.setGearPanelPower(0);
 					} else {
 						out.setGearPanelPower(GEAR_PANEL_POWER_UP); // open gear panel
 					}
-					if(Timer.getFPGATimestamp() > timer){
+					if(out.gearPanel1Current + out.gearPanel2Current > PANEL_CURRENT_PEAK){
 						gearDnTime += sense.deltaTime;
-						timerExpired = true;
 						if(gearDnTime > PANEL_CURRENT_TIME){
 							gearDnLimit = true;
 						}
 					} else {
 						gearDnTime = 0;
-						timer = 0;
 					}
 					
 				} else if (in.gearPanelPosition == 3) {
-					timer = Timer.getFPGATimestamp() + GEAR_DN_TIME;
-					timerExpired = false;
-					
 					gearDnLimit = false;
 					gearDnTime = 0;
 					if(gearUpLimit){
@@ -208,8 +200,6 @@ public class GearSystem {
 					gearUpLimit = false;
 					gearDnTime = 0;
 					gearUpTime = 0;
-					timer = Timer.getFPGATimestamp() + GEAR_DN_TIME;
-					timerExpired = false;
 					
 					out.setGearPanelPosition(SCORE_POSITION_L,SCORE_POSITION_R);
 				}

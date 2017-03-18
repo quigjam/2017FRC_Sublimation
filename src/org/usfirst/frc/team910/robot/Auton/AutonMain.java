@@ -29,10 +29,11 @@ public class AutonMain {
 	ArrayList<AutonStep> justDrive;
 	int currentStep = 0;
 
+	ArrayList<AutonStep> gearAuto;
 	public AutonMain() {
 		justDrive = new ArrayList<AutonStep>();
 		justDrive.add(new AutonResetAngle());
-		justDrive.add(new AutonDriveTime(0.7, 5, 0, false));
+		justDrive.add(new AutonDriveTime(0.7, 3, 0, false));
 		justDrive.add(new AutonEndStep());
 		
 		hopperShootAutonBlue = new ArrayList<AutonStep>();
@@ -56,6 +57,13 @@ public class AutonMain {
 		hopperShootAutonRed.add(new AutonDriveTime(0.9, 0.3, -135, true));
 		hopperShootAutonRed.add(new AutonAutoShoot(6));
 		hopperShootAutonRed.add(new AutonEndStep());
+		
+		gearAuto = new ArrayList<AutonStep>();
+		gearAuto.add(new AutonResetAngle());
+		gearAuto.add(new AutonDriveStraight(5*12 , 0.4, 0));
+		gearAuto.add(new AutonDriveTime(0.5, 2.5, -45, false));
+		gearAuto.add(new AutonGearDeploy());
+		gearAuto.add(new AutonEndStep());
 		
 		steps = new ArrayList<AutonStep>();
 		//steps.add(new AutonResetAngle());
