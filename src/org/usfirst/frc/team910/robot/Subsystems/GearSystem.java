@@ -19,11 +19,11 @@ public class GearSystem {
 
 	private static final double GROUND_POSITION = 200;
 	private static final double SCORE_POSITION_L = 0.624;
-	private static final double SCORE_POSITION_R = -0.636;
+	private static final double SCORE_POSITION_R = 0.36;
 	private static final double SAFE_POSITION = 800;
 	private static final double ROLLER_POWER = 0.9;
 	private static final double CURRENT_SPIKE_TIME = 0.5;
-	private static final double CURRENT_MAX = 8;
+	private static final double CURRENT_MAX = 5;
 	
 	private static final double GEAR_PANEL_POWER_UP = 0.35;
 	private static final double GEAR_PANEL_POWER_DN = 0.7;
@@ -72,6 +72,8 @@ public class GearSystem {
 	private boolean gearDnLimit = false;
 	private double gearUpTime = 0;
 	private double gearDnTime = 0;
+	
+	
 	
 	
 	public void run() {

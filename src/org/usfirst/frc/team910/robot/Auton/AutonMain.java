@@ -38,23 +38,23 @@ public class AutonMain {
 		
 		hopperShootAutonBlue = new ArrayList<AutonStep>();
 		hopperShootAutonBlue.add(new AutonResetAngle());
-		hopperShootAutonBlue.add(new AutonDriveStraight(4*12-1, 0.4, 0));
+		hopperShootAutonBlue.add(new AutonDriveStraight(4*12, 0.4, 0));
 		hopperShootAutonBlue.add(new AutonDriveCircle(2*Math.PI*2.5*12/4, 0.7, 0, 2.5*12, 90, false));
 		hopperShootAutonBlue.add(new AutonDriveTimeClimb(0.7, 0.75, 90));
 		hopperShootAutonBlue.add(new AutonWaitAtHopper(3));
 		hopperShootAutonBlue.add(new AutonDriveTime(-0.9, 0.5, 90, true));
-		hopperShootAutonBlue.add(new AutonDriveTime(0.9, 0.3, 135, true));
+		hopperShootAutonBlue.add(new AutonDriveTime(0.9, 0.45, 135, true));
 		hopperShootAutonBlue.add(new AutonAutoShoot(6));
 		hopperShootAutonBlue.add(new AutonEndStep());
 		
 		hopperShootAutonRed = new ArrayList<AutonStep>();
 		hopperShootAutonRed.add(new AutonResetAngle());
-		hopperShootAutonRed.add(new AutonDriveStraight(4*12-1, 0.4, 0));
+		hopperShootAutonRed.add(new AutonDriveStraight(4*12, 0.4, 0));
 		hopperShootAutonRed.add(new AutonDriveCircle(2*Math.PI*2.5*12/4, 0.7, 0, 2.5*12, -90, true));
 		hopperShootAutonRed.add(new AutonDriveTimeClimb(0.7, 0.75, -90));
 		hopperShootAutonRed.add(new AutonWaitAtHopper(3));
 		hopperShootAutonRed.add(new AutonDriveTime(-0.9, 0.5, -90, true));
-		hopperShootAutonRed.add(new AutonDriveTime(0.9, 0.3, -135, true));
+		hopperShootAutonRed.add(new AutonDriveTime(0.9, 0.45, -135, true));
 		hopperShootAutonRed.add(new AutonAutoShoot(6));
 		hopperShootAutonRed.add(new AutonEndStep());
 		
