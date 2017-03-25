@@ -58,6 +58,7 @@ public class AutonMain {
 		hopperShootAutonRed.add(new AutonAutoShoot(6));
 		hopperShootAutonRed.add(new AutonEndStep());
 		
+
 		gearAuto = new ArrayList<AutonStep>();
 		gearAuto.add(new AutonResetAngle());
 		gearAuto.add(new AutonDriveStraight(5*12 , 0.4, 0));
