@@ -25,6 +25,7 @@ public class AutonMain {
 	private static final int HOPPER_SHOOT_AUTO = 1;
 	ArrayList<AutonStep> hopperShootAutonBlue;
 	ArrayList<AutonStep> hopperShootAutonRed;
+	ArrayList<AutonStep> testingAuto;
 	private static final int JUST_DRIVE_AUTO = 0;
 	ArrayList<AutonStep> justDrive;
 	int currentStep = 0;
@@ -66,13 +67,19 @@ public class AutonMain {
 		gearAuto.add(new AutonGearDeploy());
 		gearAuto.add(new AutonEndStep());
 		
+		testingAuto = new ArrayList<AutonStep>();
+		testingAuto.add(new AutonResetAngle());
+		testingAuto.add(new AutonFastArc());
+		testingAuto.add(new AutonEndStep());
+		
 		steps = new ArrayList<AutonStep>();
 		//steps.add(new AutonResetAngle());
 		//steps.add(new AutonDriveStraight(192, 0.5, 0));
 		//steps.add(new AutonDriveCircle(9.5*12, 0.4, 0, 6*12, true));
 		steps.add(new AutonEndStep());
 		
-		steps = hopperShootAutonRed;
+		//steps = hopperShootAutonRed;
+		steps = testingAuto;
 	}
 
 	public void init(Inputs in, Sensors sense, DriveTrain drive, GearSystem gear, Shooter shoot, Climber climb, AutoShoot as) {
@@ -82,7 +89,7 @@ public class AutonMain {
 	
 	public void setAutonProfile(){
 		
-		switch(AutonStep.in.autonSelection){
+		/*switch(AutonStep.in.autonSelection){
 		case 1:
 			steps = hopperShootAutonBlue;
 			break;
@@ -95,6 +102,8 @@ public class AutonMain {
 			default:
 				
 		}
+		*/
+		
 		
 		/*
 		DriverStation ds = DriverStation.getInstance();
