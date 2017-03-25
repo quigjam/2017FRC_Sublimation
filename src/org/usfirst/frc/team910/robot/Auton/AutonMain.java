@@ -43,7 +43,7 @@ public class AutonMain {
 		hopperShootAutonBlue.add(new AutonDriveTimeClimb(0.7, 0.75, 90));
 		hopperShootAutonBlue.add(new AutonWaitAtHopper(3));
 		hopperShootAutonBlue.add(new AutonDriveTime(-0.9, 0.5, 90, true));
-		hopperShootAutonBlue.add(new AutonDriveTime(0.9, 0.45, 135, true));
+		hopperShootAutonBlue.add(new AutonDriveTime(0.9, 0.5, 142, true));
 		hopperShootAutonBlue.add(new AutonAutoShoot(6));
 		hopperShootAutonBlue.add(new AutonEndStep());
 		
