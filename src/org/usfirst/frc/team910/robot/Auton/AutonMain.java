@@ -20,6 +20,7 @@ public class AutonMain {
 	private static final int RED = 0;
 	private static final int BLUE = 1;
 	private static int DEFAULT_ALLIANCE = RED;
+	private boolean blueAlliance = false;
 	
 	ArrayList<AutonStep> steps;
 	private static final int HOPPER_SHOOT_AUTO = 1;
@@ -89,6 +90,8 @@ public class AutonMain {
 	
 	public void setAutonProfile(){
 		
+		blueAlliance = false;
+		
 		/*switch(AutonStep.in.autonSelection){
 		case 1:
 			steps = hopperShootAutonBlue;
@@ -155,7 +158,7 @@ public class AutonMain {
 		steps.get(currentStep).run(); // institutes a state machine as an array of autons, works similarly to a "switch"
 		if (steps.get(currentStep).isDone()) {
 			currentStep++;
-			steps.get(currentStep).setup();
+			steps.get(currentStep).setup(blueAlliance);
 		}
 	}
 }

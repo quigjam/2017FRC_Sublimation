@@ -29,7 +29,7 @@ public class AutonStep {
 	}
 	
 	//Placeholder functions
-	public void setup(){
+	public void setup(boolean blueAlliance){
 		
 	}
 	

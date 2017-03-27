@@ -20,7 +20,7 @@ public class AutonDriveTimeClimb extends AutonStep {
 		prevPower = 0;
 	}
 	
-	public void setup() {
+	public void setup(boolean blueAlliance) {
 		endTime = Timer.getFPGATimestamp() + time;
 	}
 	

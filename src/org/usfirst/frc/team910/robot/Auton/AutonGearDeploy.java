@@ -10,7 +10,7 @@ public class AutonGearDeploy extends AutonStep {
 		
 	}
 	
-	public void setup(){
+	public void setup(boolean blueAlliance){
 		startTime = Timer.getFPGATimestamp();
 	}
 	

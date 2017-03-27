@@ -26,7 +26,7 @@ public class AutonDriveDist extends AutonStep{
 	}
 
 	@Override
-	public void setup() {
+	public void setup(boolean blueAlliance) {
 		startDistance = (drive.leftDriveEncoder + drive.rightDriveEncoder) / 2;
 		stopDistance = startDistance + distance;
 		halfDistance = distance / 2 + startDistance;

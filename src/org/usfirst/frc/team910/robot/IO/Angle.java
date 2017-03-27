@@ -37,6 +37,20 @@ public class Angle { //math to create angles throughout NavX-related and Auto fu
 		return diff; 
 	}
 	
+	public double subtract(double other) {
+		double diff = angle - mod(other); //target minus actual
+		
+		if(diff > 180) {
+			diff = 360 - diff;
+		} else if(diff < -180) {
+			diff = 360 + diff;
+		}
+		
+		SmartDashboard.putNumber("Angle.sub", diff);
+		
+		return diff; 
+	}
+	
 	// this function ensures that our angle is positive when a negative number is passed in.
 	private double mod(double value){
 		return (value % 360 + 360) % 360;
