@@ -20,6 +20,7 @@ public class ElectroPaul {// Shows what ports controls and motors are plugged in
 	// public final static int LEFT_ENCODER_PORT_2 = 4;
 	// public final static int RIGHT_ENCODER_PORT_1 = 5;
 	// public final static int RIGHT_ENCODER_PORT_2 = 6;
+	
 
 	public final static int LEFT_DRIVE_CAN1 = 2;//yes this is dumb, we know... #blameelectrical
 	public final static int RIGHT_DRIVE_CAN1 = 13;

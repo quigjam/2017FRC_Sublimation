@@ -45,8 +45,8 @@ public class Outputs {
 	public double agitatorSpeedEncoder;
 	public double gearIntakeCurrent;
 
-	public double gearPanelPositionEncoderL;
-	public double gearPanelPositionEncoderR;
+	public double gearPanelPositionPotL;
+	public double gearPanelPositionPotR;
 	
 	public double gearPanel1Current;
 	public double gearPanel2Current;
@@ -111,18 +111,20 @@ public class Outputs {
 		
 		gearPanelMotor1 = new CANTalon(ElectroPaul.GEAR_PANEL_MOTOR_1);
 		gearPanelMotor1.enableBrakeMode(false);
-		gearPanelMotor1.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Absolute);
+		gearPanelMotor1.setFeedbackDevice(FeedbackDevice.AnalogEncoder);
 		gearPanelMotor1.configPeakOutputVoltage(1.75, -10);
 		gearPanelMotor1.setPID(3, 0, 0);
 		//gearPanelMotor1.reverseOutput(true);
 		//gearPanelMotor1.reverseSensor(true);
 		gearPanelMotor2 = new CANTalon(ElectroPaul.GEAR_PANEL_MOTOR_2);
 		gearPanelMotor2.enableBrakeMode(false);
-		gearPanelMotor2.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Absolute);
+		gearPanelMotor2.setFeedbackDevice(FeedbackDevice.AnalogEncoder);
 		gearPanelMotor2.configPeakOutputVoltage(1.75, -10);
 		gearPanelMotor2.setPID(3, 0, 0);
 		//gearPanelMotor2.reverseOutput(true);
 		gearPanelMotor2.reverseSensor(true);
+		
+		
 		
 		pdp = new PowerDistributionPanel(0);
 
@@ -277,8 +279,9 @@ public class Outputs {
 		shooterSpeedEncoder = shooterMotor.getSpeed();
 		transporterSpeedEncoder = transporterMotor.getSpeed();
 		agitatorSpeedEncoder = agitatorMotor.getSpeed();
-		gearPanelPositionEncoderL = gearPanelMotor1.getPosition();
-		gearPanelPositionEncoderR = gearPanelMotor2.getPosition();
+		
+		gearPanelPositionPotL = gearPanelMotor1.getPosition();
+		gearPanelPositionPotR = gearPanelMotor2.getPosition();
 
 		if(transporterSpeedEncoder == 0){
 			maxTransporterSpeed = 0;
@@ -302,8 +305,8 @@ public class Outputs {
 		SmartDashboard.putNumber("shooterSpeedEncoder", shooterSpeedEncoder);
 		SmartDashboard.putNumber("transporterSpeedEncoder", transporterSpeedEncoder);
 		SmartDashboard.putNumber("agitatorSpeedEncoder", agitatorSpeedEncoder);
-		SmartDashboard.putNumber("gearPanelPositionEncoderL", gearPanelPositionEncoderL);
-		SmartDashboard.putNumber("gearPanelPositionEncoderR", gearPanelPositionEncoderR);
+		SmartDashboard.putNumber("gearPanelPositionPotL", gearPanelPositionPotL);
+		SmartDashboard.putNumber("gearPanelPositionPotR", gearPanelPositionPotR);
 		SmartDashboard.putNumber("GearIntakeCurrent", gearIntakeCurrent);
 
 	}
