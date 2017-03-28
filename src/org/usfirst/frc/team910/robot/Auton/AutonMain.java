@@ -21,6 +21,17 @@ public class AutonMain {
 	private static final int BLUE = 1;
 	private static int DEFAULT_ALLIANCE = RED;
 	private boolean blueAlliance = false;
+	private static final double[] turnPowerL_2Hopper = { 1, 1,    1, 0.15,  1.2,    1 };
+	private static final double[] turnPowerR_2Hopper = { 1, 1,    1,    1,  0.8,    1 };
+	private static final double[] turnAngle_2Hopper =  { 0, 0,    0,   45,   90,   90 };
+	private static final double[] xDistAxis_2Hopper =  { 0, 0, 31.5, 52.5, 71.5, 73.5 };
+	private static final double[] turnPowerL_From_Hopper = { 0,   1,  1,    1,    1};
+	private static final double[] turnPowerR_From_Hopper = { -1, -1,  0,    1,    1};
+	private static final double[] turnAngle_From_Hopper =  { 90,  0, -90, -135, 160};
+	private static final double[] xDistAxis_From_Hopper =  { 0, -10,-24.5, -36, -50};
+	private static final double END_POINT = 28;
+	private static final double END_POINT_THE_SECOND = 50; 
+	
 	
 	ArrayList<AutonStep> steps;
 	private static final int HOPPER_SHOOT_AUTO = 1;
@@ -38,7 +49,8 @@ public class AutonMain {
 		justDrive.add(new AutonDriveTime(0.7, 3, 0, false));
 		justDrive.add(new AutonEndStep());
 		
-		hopperShootAutonBlue = new ArrayList<AutonStep>();
+		//old autons
+	  /*hopperShootAutonBlue = new ArrayList<AutonStep>();
 		hopperShootAutonBlue.add(new AutonResetAngle());
 		hopperShootAutonBlue.add(new AutonDriveStraight(4*12, 0.4, 0));
 		hopperShootAutonBlue.add(new AutonDriveCircle(2*Math.PI*2.5*12/4, 0.7, 0, 2.5*12, 90, false));
@@ -58,7 +70,7 @@ public class AutonMain {
 		hopperShootAutonRed.add(new AutonDriveTime(-0.9, 0.5, -90, true));
 		hopperShootAutonRed.add(new AutonDriveTime(0.9, 0.45, -135, true));
 		hopperShootAutonRed.add(new AutonAutoShoot(6));
-		hopperShootAutonRed.add(new AutonEndStep());
+		hopperShootAutonRed.add(new AutonEndStep());*/
 		
 
 		gearAuto = new ArrayList<AutonStep>();
@@ -68,10 +80,51 @@ public class AutonMain {
 		gearAuto.add(new AutonGearDeploy());
 		gearAuto.add(new AutonEndStep());
 		
+		
+		
+		//new auto
 		testingAuto = new ArrayList<AutonStep>();
+		
+		//step 1: reset navX
 		testingAuto.add(new AutonResetAngle());
-		testingAuto.add(new AutonFastArc());
+		
+		//step 2: briefly run the climber and drive to the hopper
+		ArrayList<AutonStep> list = new ArrayList<AutonStep>();
+		list.add(new AutonUnlatchClimber(0.75));
+		list.add(new AutonFastArc(turnPowerL_2Hopper, turnPowerR_2Hopper, turnAngle_2Hopper, xDistAxis_2Hopper, new DriveComplete(){
+			public boolean isDone(double x, double y){
+				return y > END_POINT;
+			}
+		}));
+		ParallelStep ps = new ParallelStep(list);
+		testingAuto.add(ps);
+		
+		//step 3: start priming and crashing into the hopper to get all the balls into the robot
+		list = new ArrayList<AutonStep>();
+		list.add(new AutonWaitAtHopper(3));
+		list.add(new AutonPrime());
+		ps = new ParallelStep(list);
+		testingAuto.add(ps);
+		
+		//step 4: drive away from the hopper and keep priming
+		list = new ArrayList<AutonStep>();
+		list.add(new AutonFastArc(turnPowerL_From_Hopper, turnPowerR_From_Hopper, turnAngle_From_Hopper, xDistAxis_From_Hopper, new DriveComplete(){
+			public boolean isDone(double x, double y){
+				return x < END_POINT_THE_SECOND;
+			}
+		}));
+		list.add(new AutonPrime());
+		ps = new ParallelStep(list);
+		testingAuto.add(ps);
+		
+		//step 5: run the auto shoot function for whatever time is left
+		testingAuto.add(new AutonAutoShoot(10));
+		
+		//step 6: call the end step to make sure everything stops
 		testingAuto.add(new AutonEndStep());
+		
+		
+		
 		
 		steps = new ArrayList<AutonStep>();
 		//steps.add(new AutonResetAngle());

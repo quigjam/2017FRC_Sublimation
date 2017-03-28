@@ -22,7 +22,7 @@ public class AutoShoot {
 	private static final double REVERSE_DIST = 36;
 	
 	private static double P_CONST = 0.035;
-	private static double V_CONST = 45;
+	private static double V_CONST = 45 / 50 / 50;
 	private static double SPEED_FILT = 0.4;
 	private static double RAMP_FILT = 0.1;
 
@@ -91,7 +91,7 @@ public class AutoShoot {
 				drive.originAngle.set(currentTarget.totalAngle.get()); // set our origin angel toward the target
 				
 				double dist = (drive.leftDriveEncoder + drive.rightDriveEncoder) / 2;
-				double vel = (dist - prevDist) * sense.deltaTime;
+				double vel = (dist - prevDist) / sense.deltaTime;
 				prevDist = dist;
 				prevVel += SPEED_FILT * (vel - prevVel);
 				if(vel < 0) prevVel = 0;
@@ -107,6 +107,9 @@ public class AutoShoot {
 				}
 				
 				drive.driveStraightNavX(false, power, 0); // drive toward it
+				
+				shoot.shooterPrime(true,false,SHOOT_DISTANCE);
+				
 				//when close to target
 				if (Math.abs(currentTarget.distance - SHOOT_DISTANCE) < ALLOWABLE_DISTANCE_ERROR) { 
 					timeSpentClose += sense.deltaTime;

@@ -12,16 +12,21 @@ public class AutonFastArc extends AutonStep {
 	private double prevRight;
 	private double prevLeft;
 	private static final double POWER_PER_DEGREE = 0.1;
-	private static final double[] turnPowerL = { 1, 1,    1, 0.15,  1.2,    1 };
-	private static final double[] turnPowerR = { 1, 1,    1,    1,  0.8,    1 };
-	private static final double[] turnAngle =  { 0, 0,    0,   45,   90,   90 };
-	private static final double[] xDistAxis =  { 0, 0, 31.5, 52.5, 71.5, 73.5 };
+	private double[] turnPowerL;
+	private double[] turnPowerR;
+	private double[] turnAngle;
+	private double[] xDistAxis;
 	private double prevPwr = 0;
 	private double PWR_FILT = 0.1;
 	private double MAX_PWR = 0.9;
-	
+	private DriveComplete dc;
 
-	public AutonFastArc() {
+	public AutonFastArc(double[] turnPowerL, double[] turnPowerR, double[] turnAngle, double[] xDistAxis, DriveComplete dc) {
+		this.turnPowerL = turnPowerL;
+		this.turnPowerR = turnPowerR;
+		this.turnAngle = turnAngle;
+		this.xDistAxis = xDistAxis; 
+		this.dc = dc;
 		x = 0;
 		y = 0;
 		prevRight = 0;
@@ -75,7 +80,8 @@ public class AutonFastArc extends AutonStep {
 	}
 
 	public boolean isDone() {
-		return (Math.abs(y) > 28);
-
+		//return (Math.abs(y) > 28);
+		//return (Math.abs(x) < 28);
+		return dc.isDone(x, y);
 	}
 }
