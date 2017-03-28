@@ -66,6 +66,10 @@ public class Shooter {
 	public boolean upToSpeed() { // lets us know when we get the shooter motor up to the speed we set it to
 		return out.shooterSpeedEncoder > shooterSetSpeed + jogoffset - ALLOWABLE_SHOOTER_ERROR;
 	}
+	
+	public void agitate(double pwr){
+		out.setAgitatorPower(pwr);
+	}
 
 	/*public void shooterFire(boolean fireButton) { // Moves the smaller roller, transports balls from hopper
 		if (fireButton) { // when we hit that fire button

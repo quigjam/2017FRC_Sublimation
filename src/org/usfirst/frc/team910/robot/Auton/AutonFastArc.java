@@ -18,7 +18,7 @@ public class AutonFastArc extends AutonStep {
 	private double[] xDistAxis;
 	private double prevPwr = 0;
 	private double PWR_FILT = 0.1;
-	private double MAX_PWR = 0.9;
+	private double MAX_PWR = 0.5;
 	private DriveComplete dc;
 
 	public AutonFastArc(double[] turnPowerL, double[] turnPowerR, double[] turnAngle, double[] xDistAxis, DriveComplete dc) {
@@ -54,14 +54,36 @@ public class AutonFastArc extends AutonStep {
 		x += dist * Math.cos(Math.toRadians(sense.robotAngle.get()));
 		y += dist * Math.sin(Math.toRadians(sense.robotAngle.get()));
 
-		double lPower = Util.interpolate(xDistAxis, turnPowerL, x);
-		double rPower = Util.interpolate(xDistAxis, turnPowerR, x);
-		double targetAngle = Util.interpolate(xDistAxis, turnAngle, x);
+		double lPower;
+		double rPower;
+		double targetAngle;
 
-		if (!blueAlliance)
-			targetAngle = -targetAngle;
-
+		if(dc.flipLR()){
+			lPower = Util.interpolate(xDistAxis, turnPowerL, Math.abs(x));
+			rPower = Util.interpolate(xDistAxis, turnPowerR, Math.abs(x));
+			targetAngle = Util.interpolate(xDistAxis, turnAngle, Math.abs(x));
+			
+			if(!blueAlliance){
+				targetAngle = -targetAngle;
+				
+				//double temp = lPower;
+				//lPower = rPower;
+				//rPower = temp;
+			}
+			
+		} else {
+			lPower = Util.interpolate(xDistAxis, turnPowerL, x);
+			rPower = Util.interpolate(xDistAxis, turnPowerR, x);
+			targetAngle = Util.interpolate(xDistAxis, turnAngle, x);
+			
+			if(!blueAlliance){
+				targetAngle = -targetAngle;
+			}
+		}
+	
+		
 		double anglePower = Math.max(Math.min(sense.robotAngle.subtract(targetAngle) * -POWER_PER_DEGREE, 0.5), -0.5);
+		SmartDashboard.putNumber("anglePower", anglePower);
 		lPower += anglePower;
 		
 		prevPwr += (MAX_PWR - prevPwr) * PWR_FILT; 
@@ -82,6 +104,6 @@ public class AutonFastArc extends AutonStep {
 	public boolean isDone() {
 		//return (Math.abs(y) > 28);
 		//return (Math.abs(x) < 28);
-		return dc.isDone(x, y);
+		return dc.isDone(x, y, blueAlliance);
 	}
 }

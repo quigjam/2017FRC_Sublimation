@@ -1,6 +1,8 @@
 package org.usfirst.frc.team910.robot.IO;
 
 public class Util {
+	
+	//note requires ascending values in the axis array
 	public static double interpolate(double[] axis, double[] table, double value) { //Interpolation function
 		int i;
 		for (i = 1; i < axis.length-1; i++) {
