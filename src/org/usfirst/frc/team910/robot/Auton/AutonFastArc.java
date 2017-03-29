@@ -25,20 +25,21 @@ public class AutonFastArc extends AutonStep {
 	private double r;
 	
 	private boolean flipAxis;
+	private boolean flipSides;
 
-	public AutonFastArc(boolean flipAxis, double[] turnPowerL, double[] turnPowerR, double[] turnAngle, double[] xDistAxis, DriveComplete dc) {
+	public AutonFastArc(boolean flipAxis, boolean flipSides, double pwr, double[] turnPowerL, double[] turnPowerR, double[] turnAngle, double[] xDistAxis, DriveComplete dc) {
 		this.turnPowerL = turnPowerL;
 		this.turnPowerR = turnPowerR;
 		this.turnAngle = turnAngle;
 		this.xDistAxis = xDistAxis; 
 		this.dc = dc;
 		this.flipAxis = flipAxis;
+		this.flipSides = flipSides;
+		this.MAX_PWR = pwr;
 		x = 0;
 		y = 0;
 		prevRight = 0;
 		prevLeft = 0;
-		leftInit = 0;
-		rightInit = 0;
 	}
 
 	public void setup(boolean blueAlliance) {
@@ -46,8 +47,6 @@ public class AutonFastArc extends AutonStep {
 		y = 0;
 		prevRight = drive.rightDriveEncoder;
 		prevLeft = drive.leftDriveEncoder;
-		leftInit = prevLeft;
-		rightInit = prevRight;
 		this.blueAlliance = blueAlliance;
 		prevPwr = 0;
 	}
@@ -70,7 +69,7 @@ public class AutonFastArc extends AutonStep {
 		//flip lookup axis when we flip sides or switch directions
 		double lookup;
 		int flipCount = 0;
-		if(blueAlliance) flipCount++;
+		if(blueAlliance && flipSides) flipCount++;
 		if(flipAxis) flipCount++;
 		
 		if(flipCount == 1) {

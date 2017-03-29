@@ -21,17 +21,34 @@ public class AutonMain {
 	private static final int BLUE = 1;
 	private static int DEFAULT_ALLIANCE = RED;
 	private boolean blueAlliance = false;
+	
+	//drive to hopper
 	private static final double[] turnPowerL_2Hopper = { 1, 1,  1, 0.15,  1,  1 };
 	private static final double[] turnPowerR_2Hopper = { 1, 1,  1,    1,  1,  1 };
 	private static final double[] turnAngle_2Hopper =  { 0, 0,  0,   45, 90, 90 };
 	private static final double[] xDistAxis_2Hopper =  { 0, 0, 28,   53, 77, 87 };
 	
+	//drive from hopper to boiler
 	private static final double[] turnPowerL_From_Hopper = { -1, -1, 0.5,   1,   1,   1 };
 	private static final double[] turnPowerR_From_Hopper = {  0,  0,   1,   1,   1,   1 };
 	private static final double[] turnAngle_From_Hopper =  { 90, 90, 135, 180, 135, 135 };
 	private static final double[] xDistAxis_From_Hopper =  {  0,  0,  12,  24,  36,  48 };
+	
+	//drive to gear peg left (flip for right)
+	private static final double[] turnPowerL_gearL = { 1, 1,  1,    1,   1,   1 };
+	private static final double[] turnPowerR_gearL = { 1, 1,  1, 0.15,   1,   1 };
+	private static final double[] turnAngle_gearL =  { 0, 0,  0,  -45, -60, -60 };
+	private static final double[] xDistAxis_gearL =  { 0, 0, 48,   60,  72,  80 };
+	
+	//drive to center gear
+	private static final double[] turnPowerL_gearC = { 1, 1,  1 };
+	private static final double[] turnPowerR_gearC = { 1, 1,  1 };
+	private static final double[] turnAngle_gearC =  { 0, 0,  0 };
+	private static final double[] xDistAxis_gearC =  { 0, 0, 48 };
+	
+	//hopper end points
 	private static final double END_POINT = 28;
-	private static final double END_POINT_THE_SECOND = 50;
+	private static final double END_POINT_THE_SECOND = 45;
 	
 	
 	ArrayList<AutonStep> steps;
@@ -84,6 +101,7 @@ public class AutonMain {
 		
 		
 		//new auto
+		double drivePwr = 0.5;
 		testingAuto = new ArrayList<AutonStep>();
 		
 		//step 1: reset navX
@@ -92,7 +110,7 @@ public class AutonMain {
 		//step 2: briefly run the climber and drive to the hopper
 		ArrayList<AutonStep> list = new ArrayList<AutonStep>();
 		//list.add(new AutonUnlatchClimber(0.75));
-		list.add(new AutonFastArc(false, turnPowerL_2Hopper, turnPowerR_2Hopper, turnAngle_2Hopper, xDistAxis_2Hopper, new DriveComplete(){
+		list.add(new AutonFastArc(false, true, drivePwr, turnPowerL_2Hopper, turnPowerR_2Hopper, turnAngle_2Hopper, xDistAxis_2Hopper, new DriveComplete(){
 			public boolean isDone(double x, double y, boolean blueAlliance){
 				return Math.abs(y) > END_POINT;
 			}
@@ -109,7 +127,7 @@ public class AutonMain {
 		
 		//step 4: drive away from the hopper and keep priming
 		list = new ArrayList<AutonStep>();
-		list.add(new AutonFastArc(true, turnPowerL_From_Hopper, turnPowerR_From_Hopper, turnAngle_From_Hopper, xDistAxis_From_Hopper, new DriveComplete(){
+		list.add(new AutonFastArc(true, true, drivePwr, turnPowerL_From_Hopper, turnPowerR_From_Hopper, turnAngle_From_Hopper, xDistAxis_From_Hopper, new DriveComplete(){
 			public boolean isDone(double x, double y, boolean blueAlliance){
 				return Math.abs(x) > END_POINT_THE_SECOND;
 			}
