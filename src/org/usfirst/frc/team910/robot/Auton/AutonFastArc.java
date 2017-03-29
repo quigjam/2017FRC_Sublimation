@@ -93,14 +93,10 @@ public class AutonFastArc extends AutonStep {
 		
 		//feedback
 		double anglePower = Math.max(Math.min(sense.robotAngle.subtract(targetAngle) * -POWER_PER_DEGREE, 0.5), -0.5);
-		SmartDashboard.putNumber("anglePower", anglePower);
-		
 		//flip angle when we flip sides
-		if(!blueAlliance){
-			lPower += anglePower;
-		} else {
-			rPower += anglePower;
-		}
+		if(!blueAlliance) anglePower = -anglePower;
+		SmartDashboard.putNumber("anglePower", anglePower);
+		lPower += anglePower;
 		
 		
 		//low pass filter
