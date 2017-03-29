@@ -40,6 +40,8 @@ public class AutonFastArc extends AutonStep {
 		y = 0;
 		prevRight = 0;
 		prevLeft = 0;
+		l = 0;
+		r = 0;
 	}
 
 	public void setup(boolean blueAlliance) {
@@ -49,6 +51,8 @@ public class AutonFastArc extends AutonStep {
 		prevLeft = drive.leftDriveEncoder;
 		this.blueAlliance = blueAlliance;
 		prevPwr = 0;
+		l = 0;
+		r = 0;
 	}
 
 	public void run() {
@@ -70,12 +74,12 @@ public class AutonFastArc extends AutonStep {
 		double lookup;
 		int flipCount = 0;
 		if(blueAlliance && flipSides) flipCount++;
-		if(flipAxis) flipCount++;
+		//if(flipAxis) flipCount++;
 		
 		if(flipCount == 1) {
-			lookup = l;
-		} else {
 			lookup = r;
+		} else {
+			lookup = l;
 		}
 		
 		double lPower = Util.interpolate(xDistAxis, turnPowerL, lookup);
@@ -90,7 +94,14 @@ public class AutonFastArc extends AutonStep {
 		//feedback
 		double anglePower = Math.max(Math.min(sense.robotAngle.subtract(targetAngle) * -POWER_PER_DEGREE, 0.5), -0.5);
 		SmartDashboard.putNumber("anglePower", anglePower);
-		lPower += anglePower;
+		
+		//flip angle when we flip sides
+		if(!blueAlliance){
+			lPower += anglePower;
+		} else {
+			rPower += anglePower;
+		}
+		
 		
 		//low pass filter
 		prevPwr += (MAX_PWR - prevPwr) * PWR_FILT; 
