@@ -30,6 +30,7 @@ public class AutonDriveCircle extends AutonStep {
 	public void setup(boolean blueAlliance) {
 		startDistance = (drive.leftDriveEncoder + drive.rightDriveEncoder) / 2;
 		endDistance = startDistance + distance;
+		prevDist = startDistance;
 	}
 
 	double prevDist = 0;

@@ -66,13 +66,14 @@ public class AutonMain {
 	ArrayList<AutonStep> rightGearAuto;
 	private static final int JUST_DRIVE_AUTO = 0;
 	ArrayList<AutonStep> justDrive;
-	int currentStep = 0;
+	ArrayList<AutonStep> doNothing;
+	public int currentStep = 0;
 
 	ArrayList<AutonStep> gearAuto;
 	public AutonMain() {
 		justDrive = new ArrayList<AutonStep>();
 		justDrive.add(new AutonResetAngle());
-		justDrive.add(new AutonDriveTime(0.7, 3, 0, false));
+		justDrive.add(new AutonDriveTime(0.5, 1, 0, false));
 		justDrive.add(new AutonEndStep());
 		
 		//old autons
@@ -193,12 +194,13 @@ public class AutonMain {
 		
 		
 		
-		steps = new ArrayList<AutonStep>();
+		doNothing = new ArrayList<AutonStep>();
 		//steps.add(new AutonResetAngle());
 		//steps.add(new AutonDriveStraight(192, 0.5, 0));
 		//steps.add(new AutonDriveCircle(9.5*12, 0.4, 0, 6*12, true));
-		steps.add(new AutonEndStep());
+		doNothing.add(new AutonEndStep());
 		
+		steps = doNothing;
 		//steps = hopperShootAutonRed;
 		//steps = hopperShootAuto;
 	}
@@ -210,7 +212,7 @@ public class AutonMain {
 	
 	public void setAutonProfile(){
 		
-		blueAlliance = false;
+		//blueAlliance = false;
 		
 		/*switch(AutonStep.in.autonSelection){
 		case 1:
@@ -248,8 +250,9 @@ public class AutonMain {
 		}
 		
 		
+		//blue alliance will be true when we are blue, otherwise false
 		blueAlliance = alliance == DriverStation.Alliance.Blue;
-		
+		SmartDashboard.putBoolean("blueAlliance", blueAlliance);
 		
 		switch(AUTON_PROFILE){
 		case HOPPER_SHOOT_AUTO:
@@ -266,6 +269,9 @@ public class AutonMain {
 			break;
 		case RIGHT_GEAR_AUTO:
 			steps = rightGearAuto;
+			break;
+		default:
+			steps = doNothing;
 			break;
 		}
 

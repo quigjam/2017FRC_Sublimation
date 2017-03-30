@@ -18,15 +18,17 @@ public class GearSystem {
 	private Sensors sense;
 
 	private static final double GROUND_POSITION = 200;
-	private static final double SCORE_POSITION_L = 0.624;
-	private static final double SCORE_POSITION_R = 0.36;
+	private static final double SCORE_POSITION_L = 460;
+	private static final double SCORE_POSITION_R = -850;
 	private static final double SAFE_POSITION = 800;
 	private static final double ROLLER_POWER = 0.9;
 	private static final double CURRENT_SPIKE_TIME = 0.5;
 	private static final double CURRENT_MAX = 5;
 	
-	private static final double GEAR_PANEL_POWER_UP = 0.35;
-	private static final double GEAR_PANEL_POWER_DN = 0.7;
+	private static final double GEAR_PANEL_POWER_DN = 0.5;
+	private static final double GEAR_PANEL_POWER_UP = 0.5;
+	private static final double GEAR_PANEL_HOLD_DN = 0.2;
+	private static final double GEAR_PANEL_HOLD_UP = 0.15;
 	
 	private static final double PANEL_CURRENT_PEAK = 8.5;
 	private static final double PANEL_CURRENT_TIME = 0.5;
@@ -90,9 +92,9 @@ public class GearSystem {
 					gearUpLimit = false;
 					gearUpTime = 0;
 					if(gearDnLimit){
-						out.setGearPanelPower(0);
+						out.setGearPanelPower(GEAR_PANEL_HOLD_DN);
 					} else {
-						out.setGearPanelPower(GEAR_PANEL_POWER_UP); // open gear panel
+						out.setGearPanelPower(GEAR_PANEL_POWER_DN); // open gear panel
 					}
 					if(out.gearPanel1Current + out.gearPanel2Current > PANEL_CURRENT_PEAK){
 						gearDnTime += sense.deltaTime;
@@ -107,9 +109,9 @@ public class GearSystem {
 					gearDnLimit = false;
 					gearDnTime = 0;
 					if(gearUpLimit){
-						out.setGearPanelPower(0.2);
+						out.setGearPanelPower(-GEAR_PANEL_HOLD_UP);
 					} else {
-						out.setGearPanelPower(-GEAR_PANEL_POWER_DN); // close gear panel
+						out.setGearPanelPower(-GEAR_PANEL_POWER_UP); // close gear panel
 					}
 					if(out.gearPanel1Current + out.gearPanel2Current > PANEL_CURRENT_PEAK){
 						gearUpTime += sense.deltaTime;
@@ -161,15 +163,20 @@ public class GearSystem {
 				}
 			} else {// position mode
 				
-				
+				//this is down
 				if (in.gearPanelPosition == 1) {
+					//if going down, reset up
 					gearUpLimit = false;
 					gearUpTime = 0;
+					
+					//if we have hit the down limit, stop, otherwise keep powering
 					if(gearDnLimit){
-						out.setGearPanelPower(0);
+						out.setGearPanelPower(GEAR_PANEL_HOLD_DN);
 					} else {
-						out.setGearPanelPower(GEAR_PANEL_POWER_UP); // open gear panel
+						out.setGearPanelPower(GEAR_PANEL_POWER_DN); // open gear panel
 					}
+					
+					//when current is high, that means we are hitting the ground. hold for some time then stop
 					if(out.gearPanel1Current + out.gearPanel2Current > PANEL_CURRENT_PEAK){
 						gearDnTime += sense.deltaTime;
 						if(gearDnTime > PANEL_CURRENT_TIME){
@@ -179,13 +186,14 @@ public class GearSystem {
 						gearDnTime = 0;
 					}
 					
+				//this is up
 				} else if (in.gearPanelPosition == 3) {
 					gearDnLimit = false;
 					gearDnTime = 0;
 					if(gearUpLimit){
-						out.setGearPanelPower(-0.2);
+						out.setGearPanelPower(-GEAR_PANEL_HOLD_UP);
 					} else {
-						out.setGearPanelPower(-GEAR_PANEL_POWER_DN); // close gear panel
+						out.setGearPanelPower(-GEAR_PANEL_POWER_UP); // close gear panel
 					}
 					if(out.gearPanel1Current + out.gearPanel2Current > PANEL_CURRENT_PEAK){
 						gearUpTime += sense.deltaTime;
@@ -196,6 +204,7 @@ public class GearSystem {
 						gearUpTime = 0;
 					}
 					
+				//center position (scoring)
 				} else {
 					//out.setGearPanelPower(0); // stop moving gear panel
 					gearDnLimit = false;

@@ -81,6 +81,7 @@ public class AutonFastArc extends AutonStep {
 		} else {
 			lookup = l;
 		}
+		SmartDashboard.putNumber("lookup", lookup);
 		
 		double lPower = Util.interpolate(xDistAxis, turnPowerL, lookup);
 		double rPower = Util.interpolate(xDistAxis, turnPowerR, lookup);
@@ -94,7 +95,7 @@ public class AutonFastArc extends AutonStep {
 		//feedback
 		double anglePower = Math.max(Math.min(sense.robotAngle.subtract(targetAngle) * -POWER_PER_DEGREE, 0.5), -0.5);
 		//flip angle when we flip sides
-		if(!blueAlliance) anglePower = -anglePower;
+		if(blueAlliance) anglePower = -anglePower;
 		SmartDashboard.putNumber("anglePower", anglePower);
 		lPower += anglePower;
 		

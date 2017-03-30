@@ -101,6 +101,7 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
+		autonmain.currentStep = 0;
 		in.read();
 		sense.read();
 		out.readEncoders();

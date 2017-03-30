@@ -13,7 +13,7 @@ public class AutonAutoShoot extends AutonStep {
 	}
 	
 	public void setup(boolean blueAlliance){
-		
+		endTime = 0;	//added by Mr C 3/30/17		
 	}
 	
 	public void run(){

@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class AutoShoot {
 
-	private static double DRIVE_POWER = 0.8;
+	private static double DRIVE_POWER = 0.5;
 	private static final double ALLOWABLE_ANGLE_ERROR = 1;
 	private static final double LAG_TIME = 0.1;
 	private static final double SETTLE_TIME = 0.5;
@@ -22,7 +22,7 @@ public class AutoShoot {
 	private static final double REVERSE_DIST = 36;
 	
 	private static double P_CONST = 0.035;
-	private static double V_CONST = 45 / 50 / 50;
+	private static double V_CONST = .018;
 	private static double SPEED_FILT = 0.4;
 	private static double RAMP_FILT = 0.1;
 
@@ -59,10 +59,10 @@ public class AutoShoot {
 
 	public void run() {
 		
-		//P_CONST = prefs.getDouble("P_CONST", P_CONST);
-		//V_CONST = prefs.getDouble("V_CONST", V_CONST);
-		//SPEED_FILT = prefs.getDouble("SPEED_FILT", SPEED_FILT);
-		//DRIVE_POWER = prefs.getDouble("DRIVE_POWER", DRIVE_POWER);
+		P_CONST = prefs.getDouble("P_CONST", P_CONST);
+		V_CONST = prefs.getDouble("V_CONST", V_CONST);
+		SPEED_FILT = prefs.getDouble("SPEED_FILT", SPEED_FILT);
+		DRIVE_POWER = prefs.getDouble("DRIVE_POWER", DRIVE_POWER);
 		//RAMP_FILT = prefs.getDouble("RAMP_FILT", RAMP_FILT);
 		
 		//SmartDashboard.putNumber("drivepower", DRIVE_POWER);
@@ -101,7 +101,9 @@ public class AutoShoot {
 				double power =  distPower + velPower;
 				rampFactor += RAMP_FILT * (DRIVE_POWER - rampFactor);
 				SmartDashboard.putNumber("distPower", distPower);
-				SmartDashboard.putNumber("velPower", velPower);
+				SmartDashboard.putNumber("ASvelPower", velPower);
+				SmartDashboard.putNumber("ASdist", dist);
+				SmartDashboard.putNumber("ASvel", vel);
 				if(Math.abs(power) > rampFactor){
 					power = power / Math.abs(power) * rampFactor;
 				}
