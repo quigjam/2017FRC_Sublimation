@@ -205,7 +205,7 @@ public class AutonMain {
 
 	public void init(Inputs in, Sensors sense, DriveTrain drive, GearSystem gear, Shooter shoot, Climber climb, AutoShoot as) {
 		AutonStep.setRobotReferences(in, sense, drive, gear, shoot, climb, as);
-		//SmartDashboard.putString("AutonKey", "Auton Profiles:\n0) Just Drive Forward\n1) Hopper Shoot Drive");
+		SmartDashboard.putString("AutonKey", "Auton Profiles:\n0) Just Drive Forward\n1) Hopper Shoot Drive\n2) Left Gear\n3) Center Gear\n4) Right Gear");
 	}
 	
 	public void setAutonProfile(){
