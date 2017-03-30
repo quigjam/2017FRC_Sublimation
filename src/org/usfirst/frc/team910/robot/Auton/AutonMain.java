@@ -49,7 +49,7 @@ public class AutonMain {
 	
 	//hopper end points
 	private static final double End_Point_To_Hopper = 30;
-	private static final double End_Point_From_Hopper = 8;
+	private static final double End_Point_From_Hopper = -4;
 	
 	
 	ArrayList<AutonStep> steps;
@@ -178,7 +178,7 @@ public class AutonMain {
 		list = new ArrayList<AutonStep>();
 		list.add(new AutonFastArc(true, true, drivePwr, turnPowerL_From_Hopper, turnPowerR_From_Hopper, turnAngle_From_Hopper, xDistAxis_From_Hopper, new DriveComplete(){
 			public boolean isDone(double x, double y, boolean blueAlliance){
-				return Math.abs(x) > End_Point_From_Hopper;
+				return x < End_Point_From_Hopper;
 			}
 		}));
 		//list.add(new AutonPrime());
