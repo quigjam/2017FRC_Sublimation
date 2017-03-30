@@ -46,6 +46,7 @@ public class AutonMain {
 	private static final double[] turnAngle_gearC =  { 0, 0,  0 };
 	private static final double[] xDistAxis_gearC =  { 0, 0, 48 };
 	
+	
 	//hopper end points
 	private static final double End_Point_To_Hopper = 30;
 	private static final double End_Point_From_Hopper = 8;
@@ -53,9 +54,16 @@ public class AutonMain {
 	
 	ArrayList<AutonStep> steps;
 	private static final int HOPPER_SHOOT_AUTO = 1;
-	ArrayList<AutonStep> hopperShootAutonBlue;
-	ArrayList<AutonStep> hopperShootAutonRed;
-	ArrayList<AutonStep> testingAuto;
+	//ArrayList<AutonStep> hopperShootAutonBlue;
+	//ArrayList<AutonStep> hopperShootAutonRed;
+	ArrayList<AutonStep> hopperShootAuto;
+	
+	private static final int LEFT_GEAR_AUTO = 2;
+	private static final int RIGHT_GEAR_AUTO = 4;
+	private static final int CENTER_GEAR_AUTO = 3;
+	ArrayList<AutonStep> leftGearAuto;
+	ArrayList<AutonStep> centerGearAuto;
+	ArrayList<AutonStep> rightGearAuto;
 	private static final int JUST_DRIVE_AUTO = 0;
 	ArrayList<AutonStep> justDrive;
 	int currentStep = 0;
@@ -90,22 +98,61 @@ public class AutonMain {
 		hopperShootAutonRed.add(new AutonAutoShoot(6));
 		hopperShootAutonRed.add(new AutonEndStep());*/
 		
-
+		
+		/*
 		gearAuto = new ArrayList<AutonStep>();
 		gearAuto.add(new AutonResetAngle());
 		gearAuto.add(new AutonDriveStraight(5*12 , 0.4, 0));
 		gearAuto.add(new AutonDriveTime(0.5, 2.5, -45, false));
 		gearAuto.add(new AutonGearDeploy());
 		gearAuto.add(new AutonEndStep());
+		*/
 		
 		
+		//GEAR AUTOS -----------------------------------------------------------------------------------------------//
+		double gearDrivePwr = 0.5;
+
+		leftGearAuto = new ArrayList<AutonStep>();
+		leftGearAuto.add(new AutonResetAngle());
+		leftGearAuto.add(new AutonDriveStraight(5*12 , gearDrivePwr, 0));
+		leftGearAuto.add(new AutonDriveTime(gearDrivePwr, 2, -60, false));
+		leftGearAuto.add(new AutonGearDeploy());
+		leftGearAuto.add(new AutonDriveTime(-gearDrivePwr, 2, -60, false));
+		leftGearAuto.add(new AutonAllianceDrive(new AutonDriveTime(gearDrivePwr, 2, 150, true), new AutonDriveCircle(Math.PI*6*12*4/6, 1, 30, 6*12, 180, true)));
+		leftGearAuto.add(new AutonAutoShoot(6));
+		leftGearAuto.add(new AutonEndStep());
+		
+		rightGearAuto = new ArrayList<AutonStep>();
+		rightGearAuto.add(new AutonResetAngle());
+		rightGearAuto.add(new AutonDriveStraight(5*12 , gearDrivePwr, 0));
+		rightGearAuto.add(new AutonDriveTime(gearDrivePwr, 2, 60, false));
+		rightGearAuto.add(new AutonGearDeploy());
+		rightGearAuto.add(new AutonDriveTime(-gearDrivePwr, 2, 60, false));
+		rightGearAuto.add(new AutonAllianceDrive(new AutonDriveCircle(Math.PI*6*12*4/6, 1, -30, 6*12, 180, false), new AutonDriveTime(gearDrivePwr, 2, -150, true)));
+		rightGearAuto.add(new AutonAutoShoot(6));
+		rightGearAuto.add(new AutonEndStep());
+		
+		centerGearAuto = new ArrayList<AutonStep>();
+		centerGearAuto.add(new AutonResetAngle());
+		centerGearAuto.add(new AutonDriveTime(gearDrivePwr, 3, 0, false));
+		centerGearAuto.add(new AutonGearDeploy());
+		centerGearAuto.add(new AutonDriveTime(-gearDrivePwr, 2, 60, false));
+		centerGearAuto.add(new AutonAllianceDrive(new AutonDriveTime(gearDrivePwr, 2, 90, true), new AutonDriveTime(gearDrivePwr, 2, -90, true)));
+		centerGearAuto.add(new AutonAutoShoot(6));
+		centerGearAuto.add(new AutonEndStep());
+		
+		
+		
+		
+		
+		//HOPPER AUTO ----------------------------------------------------------------------------------------------//
 		
 		//new auto
 		double drivePwr = 0.9;
-		testingAuto = new ArrayList<AutonStep>();
+		hopperShootAuto = new ArrayList<AutonStep>();
 		
 		//step 1: reset navX
-		testingAuto.add(new AutonResetAngle());
+		hopperShootAuto.add(new AutonResetAngle());
 		
 		//step 2: briefly run the climber and drive to the hopper
 		ArrayList<AutonStep> list = new ArrayList<AutonStep>();
@@ -116,7 +163,7 @@ public class AutonMain {
 			}
 		}));
 		ParallelStep ps = new ParallelStep(list);
-		testingAuto.add(ps);
+		hopperShootAuto.add(ps);
 		
 		//step 3: start priming and crashing into the hopper to get all the balls into the robot
 		list = new ArrayList<AutonStep>();
@@ -124,7 +171,7 @@ public class AutonMain {
 		list.add(new AutonWait(3)); //replace this for competition
 		//list.add(new AutonPrime());
 		ps = new ParallelStep(list);
-		testingAuto.add(ps);
+		hopperShootAuto.add(ps);
 		
 		//step 4: drive away from the hopper and keep priming
 		list = new ArrayList<AutonStep>();
@@ -135,13 +182,13 @@ public class AutonMain {
 		}));
 		//list.add(new AutonPrime());
 		ps = new ParallelStep(list);
-		testingAuto.add(ps);
+		hopperShootAuto.add(ps);
 		
 		//step 5: run the auto shoot function for whatever time is left
-		testingAuto.add(new AutonAutoShoot(10));
+		hopperShootAuto.add(new AutonAutoShoot(10));
 		
 		//step 6: call the end step to make sure everything stops
-		testingAuto.add(new AutonEndStep());
+		hopperShootAuto.add(new AutonEndStep());
 		
 		
 		
@@ -153,7 +200,7 @@ public class AutonMain {
 		steps.add(new AutonEndStep());
 		
 		//steps = hopperShootAutonRed;
-		steps = testingAuto;
+		//steps = hopperShootAuto;
 	}
 
 	public void init(Inputs in, Sensors sense, DriveTrain drive, GearSystem gear, Shooter shoot, Climber climb, AutoShoot as) {
@@ -181,7 +228,7 @@ public class AutonMain {
 		*/
 		
 		
-		/*
+		
 		DriverStation ds = DriverStation.getInstance();
 		AUTON_PROFILE = Preferences.getInstance().getInt("AUTON_PROFILE", AUTON_PROFILE);
 		SmartDashboard.putNumber("AutonProfile", AUTON_PROFILE);
@@ -200,29 +247,28 @@ public class AutonMain {
 			}
 		}
 		
-		if(alliance == DriverStation.Alliance.Blue){
-			switch(AUTON_PROFILE){
-			case HOPPER_SHOOT_AUTO:
-				steps = hopperShootAutonBlue;
-				break;
-			case JUST_DRIVE_AUTO:
-				steps = justDrive;
-				break;
-			}
-		} else if (alliance == DriverStation.Alliance.Red){
-			switch(AUTON_PROFILE){
-			case HOPPER_SHOOT_AUTO:
-				steps = hopperShootAutonRed;
-				break;
-			case JUST_DRIVE_AUTO:
-				steps = justDrive;
-				break;
-			}
-		} else {
-			//be sad because no auton
-		}
-		*/
 		
+		blueAlliance = alliance == DriverStation.Alliance.Blue;
+		
+		
+		switch(AUTON_PROFILE){
+		case HOPPER_SHOOT_AUTO:
+			steps = hopperShootAuto;
+			break;
+		case JUST_DRIVE_AUTO:
+			steps = justDrive;
+			break;
+		case LEFT_GEAR_AUTO:
+			steps = leftGearAuto;
+			break;
+		case CENTER_GEAR_AUTO:
+			steps = centerGearAuto;
+			break;
+		case RIGHT_GEAR_AUTO:
+			steps = rightGearAuto;
+			break;
+		}
+
 		
 	}
 

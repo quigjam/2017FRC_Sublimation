@@ -6,7 +6,7 @@ public class AutonWaitAtHopper extends AutonStep{
 
 	private double time;
 	private double endTime;
-	private double AGI_PWR = -0.3;
+	private double AGI_PWR = 0.4;
 	
 	AutonWaitAtHopper(double time){
 		this.time = time;
@@ -20,7 +20,7 @@ public class AutonWaitAtHopper extends AutonStep{
 	public void run(){
 		boolean applyPower = Math.floor(Timer.getFPGATimestamp() * 1.5) % 2 == 0;
 		if(applyPower) { 
-			//drive.tankDrive(0.7, 0.7, 0.7);
+			drive.tankDrive(0.7, 0.7, 0.7);
 		} else {
 			drive.tankDrive(0, 0, 1);
 		}
@@ -33,7 +33,7 @@ public class AutonWaitAtHopper extends AutonStep{
 	}
 	
 	public boolean isDone(){
-		if(Timer.getFPGATimestamp() > endTime){
+		if(Timer.getFPGATimestamp() > endTime) {
 			drive.tankDrive(0, 0, 1);
 			return true;
 		} else {
