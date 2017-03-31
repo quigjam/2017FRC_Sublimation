@@ -29,10 +29,10 @@ public class AutonMain {
 	private static final double[] xDistAxis_2Hopper =  { 0, 0, 32,   76, 90, 103,  123 }; //end dist is ~121
 	
 	//drive from hopper to boiler
-	private static final double[] turnPowerL_From_Hopper = { -1, -1, -1, 0.5,   1,  0.25,   0 };
-	private static final double[] turnPowerR_From_Hopper = { -1, -1,  0,   1,   1,  0.25,   0 };
+	private static final double[] turnPowerL_From_Hopper = { -1, -1, -1, 0.5,   1,  0.75, -1 };
+	private static final double[] turnPowerR_From_Hopper = { -1, -1,  0,   1,   1,  0.75, -1 };
 	private static final double[] turnAngle_From_Hopper =  { 90, 90, 90, 160, 160,  160, 160 };
-	private static final double[] xDistAxis_From_Hopper =  {  0,  0, 20,  35,  45,   60,  65 };//end dist is ~58
+	private static final double[] xDistAxis_From_Hopper =  {  0,  0, 20,  35,  45,   65,  78 };//end dist is ~75
 	
 	//drive to gear peg left (flip for right)
 	private static final double[] turnPowerL_gearL = { 1, 1,  1,    1,   1,   1 };
@@ -49,7 +49,7 @@ public class AutonMain {
 	
 	//hopper end points
 	private static final double End_Point_To_Hopper = 30;
-	private static final double End_Point_From_Hopper = -4;
+	private static final double End_Point_From_Hopper = -26;
 	
 	
 	ArrayList<AutonStep> steps;
