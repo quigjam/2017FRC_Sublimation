@@ -48,8 +48,8 @@ public class AutonMain {
 	
 	
 	//hopper end points
-	private static final double End_Point_To_Hopper = 30;
-	private static final double End_Point_From_Hopper = -26;
+	private static final double End_Point_To_Hopper = 30; //how far on the y axis to travel into the hopper
+	private static final double End_Point_From_Hopper = -26; //how far on the x axis to drive to the boiler
 	
 	
 	ArrayList<AutonStep> steps;

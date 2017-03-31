@@ -18,8 +18,10 @@ public class GearSystem {
 	private Sensors sense;
 
 	private static final double GROUND_POSITION = 200;
-	private static final double SCORE_POSITION_L = 460;
+	
+	private static final double SCORE_POSITION_L = 460; //pot values
 	private static final double SCORE_POSITION_R = -850;
+	
 	private static final double SAFE_POSITION = 800;
 	private static final double ROLLER_POWER = 0.9;
 	private static final double CURRENT_SPIKE_TIME = 0.5;
