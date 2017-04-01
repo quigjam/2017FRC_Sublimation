@@ -18,12 +18,13 @@ public class AutonGearDeploy extends AutonStep {
 		if(startTime + 1 < Timer.getFPGATimestamp()){
 			in.gearOuttake = true;
 			in.gearPanelPosition = 1;
+			in.manualMode = false;
 			gear.run();
 			drive.driveStraightNavX(true, 0, 0); //capture the current angle
 		} else if (startTime + 1.5 < Timer.getFPGATimestamp()){
 			drive.driveStraightNavX(false, -0.35, 0); //backup
 		} else if(startTime + 2 < Timer.getFPGATimestamp()){
-			drive.driveStraightNavX(false, 0.5, 0); //drive forward to put the gear on
+			drive.driveStraightNavX(false, 0.35, 0); //drive forward to put the gear on
 			in.gearPanelPosition = 2;
 			gear.run();
 		} else if(startTime + 2.5 < Timer.getFPGATimestamp()){

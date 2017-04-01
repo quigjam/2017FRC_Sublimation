@@ -29,9 +29,9 @@ public class Angle { //math to create angles throughout NavX-related and Auto fu
 		double diff = angle - other.get(); //target minus actual
 		
 		if(diff > 180) {
-			diff = 360 - diff;
-			errorCount++;
-			SmartDashboard.putNumber("AngleErrorCount", errorCount);
+			diff = diff - 360;
+			//errorCount++;
+			//SmartDashboard.putNumber("AngleErrorCount", errorCount);
 		} else if(diff < -180) {
 			diff = 360 + diff;
 		}

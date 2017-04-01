@@ -19,11 +19,11 @@ public class GearSystem {
 
 	private static final double GROUND_POSITION = 200;
 	
-	private static final double SCORE_POSITION_L = 602; //460; //pot values
-	private static final double SCORE_POSITION_R = -351; //-850;
+	private static final double SCORE_POSITION_L = 581;  //581 //596 //578 //460; //pot values
+	private static final double SCORE_POSITION_R = -364; //364 //-342 //-368 //-850;
 	
-	private static final double AUTON_POSITION_L = SCORE_POSITION_L + 50;
-	private static final double AUTON_POSITION_R = SCORE_POSITION_R - 50;
+	private static final double AUTON_POSITION_L = SCORE_POSITION_L -77;  //was  525 actual
+	private static final double AUTON_POSITION_R = SCORE_POSITION_R -71;  //was -422 actual
 	
 	private static final double SAFE_POSITION = 800;
 	private static final double ROLLER_POWER = 0.9;
@@ -201,10 +201,14 @@ public class GearSystem {
 				} else if (in.gearPanelPosition == 3) {
 					gearDnLimit = false;
 					gearDnTime = 0;
+					
+					//TODO: get rid of the current limits stuff we dont need anymore
 					if(gearUpLimit){
-						out.setGearPanelPower(-GEAR_PANEL_HOLD_UP);
+						//out.setGearPanelPower(-GEAR_PANEL_HOLD_UP);
+						out.setGearPanelPosition(AUTON_POSITION_L, AUTON_POSITION_R);
 					} else {
-						out.setGearPanelPower(-GEAR_PANEL_POWER_UP); // close gear panel
+						//out.setGearPanelPower(-GEAR_PANEL_POWER_UP); // close gear panel
+						out.setGearPanelPosition(AUTON_POSITION_L, AUTON_POSITION_R);
 					}
 					if(out.gearPanel1Current + out.gearPanel2Current > PANEL_CURRENT_PEAK){
 						gearUpTime += sense.deltaTime;
@@ -223,7 +227,7 @@ public class GearSystem {
 					gearDnTime = 0;
 					gearUpTime = 0;
 					
-					out.setGearPanelPosition(SCORE_POSITION_L,SCORE_POSITION_R);
+					out.setGearPanelPosition(AUTON_POSITION_L,AUTON_POSITION_R);
 				
 				//center position (scoring)
 				} else {
@@ -233,7 +237,8 @@ public class GearSystem {
 					gearDnTime = 0;
 					gearUpTime = 0;
 					
-					out.setGearPanelPosition(AUTON_POSITION_L,AUTON_POSITION_R);
+					out.setGearPanelPosition(SCORE_POSITION_L,SCORE_POSITION_R);
+					//out.setGearPanelPosition(AUTON_POSITION_L,AUTON_POSITION_R);   //WHY THIS? WHY 
 				}
 				
 				//roller

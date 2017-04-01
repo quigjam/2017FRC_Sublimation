@@ -13,8 +13,10 @@ public class Shooter {
 	private static final double JOG_AMOUNT = 10;
 	private static final double ALLOWABLE_SHOOTER_ERROR = 70;
 	
+	private static final double AGI_FILT = 0.2;
+	
 	private static final double[] SHOOTER_PWR_AXIS = {12, 18, 36, 48, 60};
-	private static final double[] SHOOTER_PWR_TABLE = {1650, 1680, 1900, 1920, 1950};
+	private static final double[] SHOOTER_PWR_TABLE = {1640, 1670, 1890, 1910, 1940}; // took 10 off all 4/1/17 11:21
 
 	private Outputs out;
 	private Inputs in;
@@ -57,7 +59,7 @@ public class Shooter {
 				out.setTransportPower(-0.2);
 				out.setAgitatorPower(0);
 				
-			} else{
+			} else{	//firing
 				out.setTransportSpeed(3500);
 				
 				//track the agitator time
@@ -73,19 +75,19 @@ public class Shooter {
 				}
 				
 				//if we have been agitating for 3 seconds, pause
-				if(agiTime > 3 && !pauseAgi) {
+				if(agiTime > 1.5 && !pauseAgi) {
 					pauseAgi = true;
 					agiTime = 0;
 				
 				//if we have been paused for 0.5 seconds, agitate again
-				} else if(agiTime > 0.5 && pauseAgi){
+				} else if(agiTime > 1.0 && pauseAgi){
 					pauseAgi = false;
 					agiTime = 0;
 				}
 				
 				//either pause the agi or dont
 				if(pauseAgi){
-					out.setAgitatorPower(0);
+					out.setAgitatorPower(1);
 				} else {
 					out.setAgitatorPower(1);
 				}

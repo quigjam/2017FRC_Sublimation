@@ -99,6 +99,7 @@ public class Outputs {
 		
 		agitatorMotor = new CANTalon(ElectroPaul.AGITATOR_MOTOR);
 		agitatorMotor.enableBrakeMode(false);
+		agitatorMotor.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
 		//agitatorMotor.setVoltageRampRate(12);
 		
 		climbMotor1 = new CANTalon(ElectroPaul.CLIMB_MOTOR_1);

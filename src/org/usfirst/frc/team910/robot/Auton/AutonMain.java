@@ -27,7 +27,8 @@ public class AutonMain {
 	private static final double[] turnPowerL_2Hopper = { 1, 1,  1,    0,  1, 1.1,  1 };
 	private static final double[] turnPowerR_2Hopper = { 1, 1,  1,    1,  1,   1, -0.65 };
 	private static final double[] turnAngle_2Hopper =  { 0, 0,  0,   45, 80,  90,   90 };
-	private static final double[] xDistAxis_2Hopper =  { 0, 0, 30,   74, 88, 101,  125 }; //end dist is ~121 //plus 1 in . 11:37 3/31 -Steven
+	//private static final double[] xDistAxis_2Hopper =  { 0, 0, 29,   73, 87, 100,  124 }; // subtracted 1 inch 10:50 4/1/17 //end dist is ~121 //plus 1 in . 11:37 3/31 -Steven
+	private static final double[] xDistAxis_2Hopper =  { 0, 0, 27,   71, 85,  98,  122 }; //switch to this when blue
 	
 	//drive from hopper to boiler
 	private static final double[] turnPowerL_From_Hopper = { -1, -1, -1, 0.5,   1,  0.75, -1 };
@@ -84,8 +85,9 @@ public class AutonMain {
 	// PIVIT SHOT AUTO ----------------------------------------------------------------------------------------------------------------//
 		pivitShot = new ArrayList<AutonStep>();
 		pivitShot.add(new AutonResetAngle());
-		pivitShot.add(new AutonDriveTime(-0.5, 1.5, -45, true));
-		pivitShot.add(new AutonPrime());
+		pivitShot.add(new AutonAllianceDrive(new AutonDriveTime(-0.5, 1.5, -35, true), new AutonDriveTime(-0.5, 1.5, 35, true)));
+		pivitShot.add(new AutonAllianceDrive(new AutonDriveTime(0.5, 1.0, -60, true), new AutonDriveTime(0.5, 1.0, 60, true)));
+		//pivitShot.add(new AutonPrime());
 		pivitShot.add(new AutonAutoShoot(13));
 		pivitShot.add(new AutonEndStep());
 		
@@ -125,7 +127,7 @@ public class AutonMain {
 		
 		
 		//GEAR AUTOS -----------------------------------------------------------------------------------------------//
-		double gearDrivePwr = 0.5;
+		double gearDrivePwr = 0.3;
 
 		leftGearAuto = new ArrayList<AutonStep>();
 		leftGearAuto.add(new AutonResetAngle());
@@ -147,12 +149,28 @@ public class AutonMain {
 		rightGearAuto.add(new AutonAutoShoot(6));
 		rightGearAuto.add(new AutonEndStep());
 		
+		//Center Gear Auto
+		//start
 		centerGearAuto = new ArrayList<AutonStep>();
 		centerGearAuto.add(new AutonResetAngle());
-		centerGearAuto.add(new AutonDriveTime(gearDrivePwr, 3, 0, false));
+		
+		//drive and relase climber/gear
+		ArrayList<AutonStep> list = new ArrayList<AutonStep>();
+		list.add(new AutonUnlatchClimber(0.75));
+		list.add(new AutonDriveTime(gearDrivePwr, 2.5, 0, false));
+		ParallelStep ps = new ParallelStep(list);
+		centerGearAuto.add(ps);
+		
+		//deliver gear
 		centerGearAuto.add(new AutonGearDeploy());
-		centerGearAuto.add(new AutonDriveTime(-gearDrivePwr, 2, 60, false));
-		centerGearAuto.add(new AutonAllianceDrive(new AutonDriveTime(gearDrivePwr, 2, 90, true), new AutonDriveTime(gearDrivePwr, 2, -90, true)));
+		
+		//reverse
+		centerGearAuto.add(new AutonDriveTime(-gearDrivePwr, 1, 0, false));
+		
+		//drive towards boiler
+		centerGearAuto.add(new AutonAllianceDrive(new AutonDriveTime(gearDrivePwr, 3, 90, true), new AutonDriveTime(gearDrivePwr, 3, -90, true)));
+		
+		//shoot
 		centerGearAuto.add(new AutonAutoShoot(6));
 		centerGearAuto.add(new AutonEndStep());
 		
@@ -170,14 +188,14 @@ public class AutonMain {
 		hopperShootAuto.add(new AutonResetAngle());
 		
 		//step 2: briefly run the climber and drive to the hopper
-		ArrayList<AutonStep> list = new ArrayList<AutonStep>();
+		list = new ArrayList<AutonStep>();
 		list.add(new AutonUnlatchClimber(0.75));//was.75
 		list.add(new AutonFastArc(false, true, drivePwr, turnPowerL_2Hopper, turnPowerR_2Hopper, turnAngle_2Hopper, xDistAxis_2Hopper, new DriveComplete(){
 			public boolean isDone(double x, double y, boolean blueAlliance){
 				return Math.abs(y) > End_Point_To_Hopper;
 			}
 		}));
-		ParallelStep ps = new ParallelStep(list);
+		ps = new ParallelStep(list);
 		hopperShootAuto.add(ps);
 		
 		//step 3: start priming and crashing into the hopper to get all the balls into the robot
@@ -302,6 +320,7 @@ public class AutonMain {
 			break;
 		case PIVIT_SHOT_AUTO:
 			steps = pivitShot;
+			break;
 		default:
 			steps = doNothing;
 			break;
