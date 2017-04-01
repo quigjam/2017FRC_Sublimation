@@ -19,13 +19,16 @@ public class GearSystem {
 
 	private static final double GROUND_POSITION = 200;
 	
-	private static final double SCORE_POSITION_L = 460; //pot values
-	private static final double SCORE_POSITION_R = -850;
+	private static final double SCORE_POSITION_L = 602; //460; //pot values
+	private static final double SCORE_POSITION_R = -351; //-850;
+	
+	private static final double AUTON_POSITION_L = SCORE_POSITION_L + 50;
+	private static final double AUTON_POSITION_R = SCORE_POSITION_R - 50;
 	
 	private static final double SAFE_POSITION = 800;
 	private static final double ROLLER_POWER = 0.9;
 	private static final double CURRENT_SPIKE_TIME = 0.5;
-	private static final double CURRENT_MAX = 5;
+	private static final double CURRENT_MAX = 9;//5
 	
 	private static final double GEAR_PANEL_POWER_DN = 0.5;
 	private static final double GEAR_PANEL_POWER_UP = 0.5;
@@ -78,15 +81,21 @@ public class GearSystem {
 	private double gearDnTime = 0;
 	
 	
-	
+	public void setPanel(){
+		out.setGearPanelPower(0.5);
+	}
 	
 	public void run() {
 
 		SmartDashboard.putBoolean("HasGear", currentTripped);
 		
-		if (in.autoClimb || in.autoGear || in.autoShoot || in.autoHopper) { // if doing any of these
-		} // functions dont do gearintake
-		else {
+		SmartDashboard.putBoolean("GSmanMode", in.manualMode);
+		SmartDashboard.putNumber("GSpanelPostion", in.gearPanelPosition);
+		
+		
+	//	if (in.autoClimb || in.autoGear || in.autoShoot || in.autoHopper) { // if doing any of these
+		//} // functions dont do gearintake
+		//else {
 
 			if (in.manualMode) { //if in manual mode
 				//arm
@@ -206,6 +215,16 @@ public class GearSystem {
 						gearUpTime = 0;
 					}
 					
+				//center position (auton)
+				} else if(in.gearPanelPosition == 4){
+					//out.setGearPanelPower(0); // stop moving gear panel
+					gearDnLimit = false;
+					gearUpLimit = false;
+					gearDnTime = 0;
+					gearUpTime = 0;
+					
+					out.setGearPanelPosition(SCORE_POSITION_L,SCORE_POSITION_R);
+				
 				//center position (scoring)
 				} else {
 					//out.setGearPanelPower(0); // stop moving gear panel
@@ -214,7 +233,7 @@ public class GearSystem {
 					gearDnTime = 0;
 					gearUpTime = 0;
 					
-					out.setGearPanelPosition(SCORE_POSITION_L,SCORE_POSITION_R);
+					out.setGearPanelPosition(AUTON_POSITION_L,AUTON_POSITION_R);
 				}
 				
 				//roller
@@ -311,7 +330,7 @@ public class GearSystem {
 				}
 				*/
 			}
-		}
+		//}
 	}
 
 	public void gearRoller(double power) { // when called set the GearRoller to some power

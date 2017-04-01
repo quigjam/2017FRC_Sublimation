@@ -2,6 +2,7 @@ package org.usfirst.frc.team910.robot.Subsystems;
 
 import org.usfirst.frc.team910.robot.IO.Inputs;
 import org.usfirst.frc.team910.robot.IO.Outputs;
+import org.usfirst.frc.team910.robot.IO.Sensors;
 import org.usfirst.frc.team910.robot.IO.Util;
 
 import edu.wpi.first.wpilibj.Timer;
@@ -40,6 +41,10 @@ public class Shooter {
 
 	private double shooterSetSpeed = 0;
 	
+	private double prevTime = 0;
+	private double agiTime = 0;
+	private boolean pauseAgi = false;
+	
 	public void shooterPrime(boolean primeButton, boolean fire, double dist) { // Moves the big roller
 		if (primeButton) { // if we hit the prime button
 			
@@ -54,7 +59,39 @@ public class Shooter {
 				
 			} else{
 				out.setTransportSpeed(3500);
-				out.setAgitatorPower(1);
+				
+				//track the agitator time
+				double time = Timer.getFPGATimestamp();
+				double deltaTime = time - prevTime;
+				
+				//if we have been shooting, increment the agitator time
+				if(deltaTime < 0.5){
+					agiTime += deltaTime;
+				} else { //otherwise reset the clock
+					agiTime = 0;
+					pauseAgi = false;
+				}
+				
+				//if we have been agitating for 3 seconds, pause
+				if(agiTime > 3 && !pauseAgi) {
+					pauseAgi = true;
+					agiTime = 0;
+				
+				//if we have been paused for 0.5 seconds, agitate again
+				} else if(agiTime > 0.5 && pauseAgi){
+					pauseAgi = false;
+					agiTime = 0;
+				}
+				
+				//either pause the agi or dont
+				if(pauseAgi){
+					out.setAgitatorPower(0);
+				} else {
+					out.setAgitatorPower(1);
+				}
+				
+				//record the last time for the next loop
+				prevTime = time;
 			}
 		} else { // if anything else happens make sure the shooter motor doesn't move
 			out.setShooterPower(0);

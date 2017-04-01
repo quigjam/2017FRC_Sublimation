@@ -15,7 +15,8 @@ public class Camera implements PixyEvent {
 	private static final int PIXY_CAM_ID_1 = 122557792;
 	private static final int PIXY_CAM_ID_2 = -324215471;
 	private static final int PIXY_CAM_ID_3 = -250941110;
-	private static final int PIXY_CAM_ID_4 = 10081618;
+	//private static final int PIXY_CAM_ID_4 = 10081618;
+	private static final int PIXY_CAM_ID_4 = -832359086;
 	private static final int PIXY_CAM_ID_5 = -657885874;
 	private static final int PIXY_CAM_ID_6 = -1028254399;
 	private static final int PIXY_CAM_ID_7 = -893772473;

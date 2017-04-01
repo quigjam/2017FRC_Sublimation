@@ -83,8 +83,8 @@ public class AutonFastArc extends AutonStep {
 		}
 		SmartDashboard.putNumber("lookup", lookup);
 		
-		double lPower = Util.interpolate(xDistAxis, turnPowerL, lookup);
-		double rPower = Util.interpolate(xDistAxis, turnPowerR, lookup);
+		double insidePower = Util.interpolate(xDistAxis, turnPowerL, lookup);
+		double outstidePower = Util.interpolate(xDistAxis, turnPowerR, lookup);
 		double targetAngle = Util.interpolate(xDistAxis, turnAngle, lookup);
 		
 		//flip angle when we flip sides
@@ -97,7 +97,7 @@ public class AutonFastArc extends AutonStep {
 		//flip angle when we flip sides
 		if(blueAlliance) anglePower = -anglePower;
 		SmartDashboard.putNumber("anglePower", anglePower);
-		lPower += anglePower;
+		insidePower += anglePower;
 		
 		
 		//low pass filter
@@ -105,9 +105,9 @@ public class AutonFastArc extends AutonStep {
 		
 		//switch left and right powers when we are on the other side
 		if (blueAlliance) {
-			drive.tankDrive(lPower, rPower, prevPwr);
+			drive.tankDrive(insidePower, outstidePower, prevPwr);
 		} else {
-			drive.tankDrive(rPower, lPower, prevPwr);
+			drive.tankDrive(outstidePower, insidePower, prevPwr);
 		}
 		
 		prevLeft = leftEnc;
@@ -117,7 +117,9 @@ public class AutonFastArc extends AutonStep {
 		SmartDashboard.putNumber("r", r);
 		SmartDashboard.putNumber("x", x);
 		SmartDashboard.putNumber("y", y);
-		SmartDashboard.putNumber("LeftPower", lPower);
+		SmartDashboard.putNumber("botAngle", sense.robotAngle.get());
+		SmartDashboard.putNumber("insidePower", insidePower);
+		SmartDashboard.putNumber("outsidePower", outstidePower);
 		SmartDashboard.putNumber("TargetAngle", targetAngle);
 	}
 

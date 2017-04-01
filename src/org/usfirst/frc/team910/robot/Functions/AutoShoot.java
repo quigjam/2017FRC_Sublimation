@@ -22,7 +22,7 @@ public class AutoShoot {
 	private static final double REVERSE_DIST = 36;
 	
 	private static double P_CONST = 0.035;
-	private static double V_CONST = .018;
+	private static double V_CONST = 0.018;
 	private static double SPEED_FILT = 0.4;
 	private static double RAMP_FILT = 0.1;
 
@@ -59,10 +59,10 @@ public class AutoShoot {
 
 	public void run() {
 		
-		P_CONST = prefs.getDouble("P_CONST", P_CONST);
-		V_CONST = prefs.getDouble("V_CONST", V_CONST);
-		SPEED_FILT = prefs.getDouble("SPEED_FILT", SPEED_FILT);
-		DRIVE_POWER = prefs.getDouble("DRIVE_POWER", DRIVE_POWER);
+		//P_CONST = prefs.getDouble("P_CONST", P_CONST);
+		//V_CONST = prefs.getDouble("V_CONST", V_CONST);
+		//SPEED_FILT = prefs.getDouble("SPEED_FILT", SPEED_FILT);
+		//DRIVE_POWER = prefs.getDouble("DRIVE_POWER", DRIVE_POWER);
 		//RAMP_FILT = prefs.getDouble("RAMP_FILT", RAMP_FILT);
 		
 		//SmartDashboard.putNumber("drivepower", DRIVE_POWER);
@@ -147,7 +147,7 @@ public class AutoShoot {
 			
 			case REVERSE:
 				shoot.shooterPrime(true,false,REVERSE_DIST);
-				drive.driveStraightNavX(false, 0.4, 0);
+				drive.driveStraightNavX(false, -0.4, 0);
 				if((drive.leftDriveEncoder + drive.rightDriveEncoder) / 2 > stopDist){
 					drive.tankDrive(0, 0, 1);
 					shootState = ShootState.PRIME;

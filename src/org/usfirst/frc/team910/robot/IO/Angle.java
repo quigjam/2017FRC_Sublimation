@@ -5,6 +5,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Angle { //math to create angles throughout NavX-related and Auto functions
 	private double angle;
 	
+	private static int errorCount = 0;
+	
 	public Angle(double angle) {
 		this.angle = mod(angle);
 		
@@ -28,6 +30,8 @@ public class Angle { //math to create angles throughout NavX-related and Auto fu
 		
 		if(diff > 180) {
 			diff = 360 - diff;
+			errorCount++;
+			SmartDashboard.putNumber("AngleErrorCount", errorCount);
 		} else if(diff < -180) {
 			diff = 360 + diff;
 		}
@@ -41,7 +45,8 @@ public class Angle { //math to create angles throughout NavX-related and Auto fu
 		double diff = angle - mod(other); //target minus actual
 		
 		if(diff > 180) {
-			diff = 360 - diff;
+			//diff = 360 - diff; // problem child  
+			diff = diff - 360;
 		} else if(diff < -180) {
 			diff = 360 + diff;
 		}
