@@ -32,9 +32,9 @@ public class AutonDriveTime extends AutonStep {
 		drive.driveStraightNavX(false, prevPower, 0);
 		
 		if(prime){
-			shoot.shooterPrime(true, false, 36);
+			shoot.shooterPrime(true, false, 36, false);
 		} else {
-			shoot.shooterPrime(false, false, 36);
+			shoot.shooterPrime(false, false, 36, false);
 		}
 	}
 	

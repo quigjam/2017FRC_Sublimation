@@ -88,14 +88,14 @@ public class AutonFastArc extends AutonStep {
 		double targetAngle = Util.interpolate(xDistAxis, turnAngle, lookup);
 		
 		//flip angle when we flip sides
-		if(!blueAlliance){
+		if(!blueAlliance && flipSides){
 			targetAngle = -targetAngle;
 		}
 		
 		//feedback
 		double anglePower = Math.max(Math.min(sense.robotAngle.subtract(targetAngle) * -POWER_PER_DEGREE, 0.5), -0.5);
 		//flip angle when we flip sides
-		if(blueAlliance) anglePower = -anglePower;
+		if(blueAlliance && flipSides) anglePower = -anglePower;
 		SmartDashboard.putNumber("anglePower", anglePower);
 		insidePower += anglePower;
 		
@@ -104,7 +104,7 @@ public class AutonFastArc extends AutonStep {
 		prevPwr += (MAX_PWR - prevPwr) * PWR_FILT; 
 		
 		//switch left and right powers when we are on the other side
-		if (blueAlliance) {
+		if (blueAlliance && flipSides) {
 			drive.tankDrive(insidePower, outstidePower, prevPwr);
 		} else {
 			drive.tankDrive(outstidePower, insidePower, prevPwr);
@@ -128,6 +128,6 @@ public class AutonFastArc extends AutonStep {
 		//return (Math.abs(x) < 28);
 		//double l = drive.leftDriveEncoder - leftInit;
 		//double r= drive.rightDriveEncoder - rightInit;
-		return dc.isDone(x, y, blueAlliance);
+		return dc.isDone(l,r,x, y, blueAlliance);
 	}
 }

@@ -74,7 +74,7 @@ public class AutoShoot {
 			currentTarget = sense.camera.boiler.getCurrentTarget(); // set our current target to the boiler
 			switch (shootState) {
 			case CAM_CHECK:
-				shoot.shooterPrime(false,false,0);
+				shoot.shooterPrime(false,false,0,false);
 				timeSpentClose = 0;
 				prevDist = (drive.leftDriveEncoder + drive.rightDriveEncoder) / 2;
 				drive.setBrakes(false);
@@ -118,7 +118,7 @@ public class AutoShoot {
 				
 				drive.driveStraightNavX(false, power, 0); // drive toward it
 				
-				shoot.shooterPrime(true,false,SHOOT_DISTANCE);
+				shoot.shooterPrime(true,false,SHOOT_DISTANCE, false);
 				
 				//when close to target
 				if (Math.abs(currentTarget.distance - SHOOT_DISTANCE) < ALLOWABLE_DISTANCE_ERROR) { 
@@ -134,7 +134,8 @@ public class AutoShoot {
 			case ALIGN:
 				drive.setBrakes(true);
 				drive.rotate(currentTarget.totalAngle); // face the target
-				shoot.shooterPrime(true,false,currentTarget.distance);
+				filteredDist += (currentTarget.distance - filteredDist) * CAM_DIST_FILT;
+				shoot.shooterPrime(true,false,filteredDist, false);
 				if (Math.abs(currentTarget.cameraAngle) < ALLOWABLE_ANGLE_ERROR) { // when we are lined up
 					shootState = ShootState.PRIME; // go to the next step
 					drive.tankDrive(0, 0, 1);
@@ -142,7 +143,8 @@ public class AutoShoot {
 				break;
 
 			case PRIME:
-				shoot.shooterPrime(true,false,currentTarget.distance); // prime
+				filteredDist += (currentTarget.distance - filteredDist) * CAM_DIST_FILT;
+				shoot.shooterPrime(true,false,filteredDist, false); // prime
 				if (shoot.upToSpeed() || in.fireButton) { // when we get up to speed
 					shootState = ShootState.FIRE; // go to next state
 
@@ -150,11 +152,12 @@ public class AutoShoot {
 				break;
 				
 			case FIRE:
-				shoot.shooterPrime(true,true,currentTarget.distance);
+				filteredDist += (currentTarget.distance - filteredDist) * CAM_DIST_FILT;
+				shoot.shooterPrime(true,true,filteredDist,false);
 				break;
 			
 			case REVERSE:
-				shoot.shooterPrime(true,false,REVERSE_DIST);
+				shoot.shooterPrime(true,false,REVERSE_DIST,false);
 				drive.driveStraightNavX(false, -0.4, 0);
 				if((drive.leftDriveEncoder + drive.rightDriveEncoder) / 2 > stopDist){
 					drive.tankDrive(0, 0, 1);
@@ -170,11 +173,11 @@ public class AutoShoot {
 		SmartDashboard.putString("ShootState", shootState.toString());
 	}
 	
-	public boolean isShooting(){
+	public boolean isShooting() {
 		return shootState == ShootState.FIRE;
 	}
 	
-	public boolean isCamAlign(){
+	public boolean isCamAlign() {
 		return shootState == ShootState.CAM_CHECK;
 	}
 }

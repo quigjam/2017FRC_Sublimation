@@ -34,7 +34,7 @@ public class Shooter {
 
 		} else { // if we do anything else
 
-			shooterPrime(in.primeButton, in.fireButton, 37); // call prime with the prime button
+			shooterPrime(in.primeButton, in.fireButton, 37, in.reverseButton); // call prime with the prime button
 
 			//shooterFire(in.fireButton); // and shooter with the fire button
 
@@ -47,7 +47,7 @@ public class Shooter {
 	private double agiTime = 0;
 	private boolean pauseAgi = false;
 	
-	public void shooterPrime(boolean primeButton, boolean fire, double dist) { // Moves the big roller
+	public void shooterPrime(boolean primeButton, boolean fire, double dist, boolean reverse) { // Moves the big roller
 		if (primeButton) { // if we hit the prime button
 			
 			shooterSetSpeed = Util.interpolate(SHOOTER_PWR_AXIS, SHOOTER_PWR_TABLE, dist);
@@ -96,8 +96,20 @@ public class Shooter {
 				prevTime = time;
 			}
 		} else { // if anything else happens make sure the shooter motor doesn't move
+			
+			if(fire) {//if fire pressed and not prime, just spin the agitator
+				
+				if(reverse){ //if reverse is pressed, spin it backwards
+					out.setAgitatorPower(-1);
+				} else {
+					out.setAgitatorPower(1);					
+				}
+
+			} else {
+				out.setAgitatorPower(0);
+			}
+			
 			out.setShooterPower(0);
-			out.setAgitatorPower(0);
 			out.setTransportPower(0);
 		}
 	}
