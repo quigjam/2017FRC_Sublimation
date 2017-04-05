@@ -44,8 +44,9 @@ public class AutoDelivererer {
 			case RELEASE:
 				in.gearOuttake = true;
 				//gear.run();
-				if (Timer.getFPGATimestamp() >= startTime + 0.5) {
+				if (Timer.getFPGATimestamp() >= startTime + 0.1) {
 					deliverState = DeliverererState.DROP;
+					startTime = Timer.getFPGATimestamp();
 				}
 				break;
 				
@@ -53,9 +54,10 @@ public class AutoDelivererer {
 				in.gearPanelPosition = 1;
 				in.gearOuttake = true;
 				//gear.run();
-				if(Timer.getFPGATimestamp() >= startTime + 1.5) {
+				if(Timer.getFPGATimestamp() >= startTime + 0.1) {
 					deliverState = DeliverererState.REVERSE;
 					drive.driveStraightNavX(true, 0, 0);
+					startTime = Timer.getFPGATimestamp();
 				}
 				break;
 				
@@ -64,7 +66,7 @@ public class AutoDelivererer {
 				in.gearOuttake = false;
 				//gear.run();
 				drive.driveStraightNavX(false, -0.5, 0);
-				if(Timer.getFPGATimestamp() >= startTime + 1.75) {
+				if(Timer.getFPGATimestamp() >= startTime + 0.15) {
 					deliverState = DeliverererState.RESET;
 				}
 				break;

@@ -177,7 +177,8 @@ public class GearSystem {
 			} else {// auto position mode
 				
 				//this is down
-				if (in.gearPanelPosition == 1 && !currentTripped) {
+				//we go to this position when its selected, or the intake is on, and we have not collected a gear
+				if ((in.gearPanelPosition == 1 && !currentTripped) || (in.gearIntake && !currentTripped)) {
 					//if going down, reset up
 					gearUpLimit = false;
 					gearUpTime = 0;
@@ -201,7 +202,6 @@ public class GearSystem {
 					
 				//this is up
 				} else if (in.gearPanelPosition == 3) {
-					currentTripped = false;
 					gearDnLimit = false;
 					gearDnTime = 0;
 					
@@ -224,7 +224,6 @@ public class GearSystem {
 					
 				//center position (auton)
 				} else if(in.gearPanelPosition == 4){
-					currentTripped = false;
 					//out.setGearPanelPower(0); // stop moving gear panel
 					gearDnLimit = false;
 					gearUpLimit = false;
@@ -274,6 +273,7 @@ public class GearSystem {
 					currentTime = 0;
 					currentTripped = false;
 				} else {
+					currentTripped = false;
 					gearRoller(ROLLER_POWER * 0.15);
 				}
 				
