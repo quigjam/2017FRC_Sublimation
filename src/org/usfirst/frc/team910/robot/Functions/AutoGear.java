@@ -31,6 +31,7 @@ public class AutoGear {
 		this.gear = gear;
 	}
 
+	
 	private enum GearState {
 		CAM_CHECK, CALCULATE, DRIVE_STRAIGHT1, ARC, DRIVE_STRAIGHT2, DELIVER_GEAR, REVERSE, DONE; // constructing all the states for auto gear
 	};

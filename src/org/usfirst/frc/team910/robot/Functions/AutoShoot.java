@@ -20,6 +20,7 @@ public class AutoShoot {
 	private static final double SHOOT_DISTANCE = 36;
 	private static final double ALLOWABLE_DISTANCE_ERROR = 8;
 	private static final double REVERSE_DIST = 36;
+	private static final double CAM_DIST_FILT = 0.25;	
 	
 	private static double P_CONST = 0.035;
 	private static double V_CONST = 0.018;
@@ -56,7 +57,9 @@ public class AutoShoot {
 	Preferences prefs;
 	
 	private double stopDist = 0;
-
+	
+	private double filteredDist = 0;
+	
 	public void run() {
 		
 		//P_CONST = prefs.getDouble("P_CONST", P_CONST);
@@ -76,6 +79,7 @@ public class AutoShoot {
 				prevDist = (drive.leftDriveEncoder + drive.rightDriveEncoder) / 2;
 				drive.setBrakes(false);
 				rampFactor = currentTarget.distance;
+				filteredDist = currentTarget.distance;
 				if (Timer.getFPGATimestamp() - currentTarget.time < LAG_TIME && !in.autoShootNoCam) { // check to see if we see the target within an allowable time
 					shootState = ShootState.DRIVE; // go to next state
 				} else if (in.autoShootNoCam){
@@ -95,7 +99,11 @@ public class AutoShoot {
 				prevDist = dist;
 				prevVel += SPEED_FILT * (vel - prevVel);
 				if(vel < 0) prevVel = 0;
-				double distPower = P_CONST * (currentTarget.distance - SHOOT_DISTANCE);
+				
+				//filter dist
+				filteredDist += (currentTarget.distance - filteredDist) * CAM_DIST_FILT;
+				
+				double distPower = P_CONST * (prevDist - SHOOT_DISTANCE);
 				//double velPower = -vel * V_CONST;
 				double velPower = -prevVel * V_CONST;   //Changed by Mr C.
 				double power =  distPower + velPower;

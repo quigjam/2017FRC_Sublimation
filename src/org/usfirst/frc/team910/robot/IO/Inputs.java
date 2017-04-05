@@ -15,36 +15,37 @@ public class Inputs {
 	private Joystick driverGamepad;
 
 	// driver functions
-	public double leftJoyStickY;
-	public double rightJoyStickY;
-	public double leftJoyStickX;
-	public double rightJoyStickX;
-	public boolean dynamicBrake;
-	public boolean driveStraight;
-	public boolean autoGear;
-	public boolean autoShoot;
-	public boolean autoShootNoCam;
-	public boolean autoClimb;
-	public boolean autoHopper;//4 left Work in progress
-	public boolean autoStraight;
+	public double leftJoyStickY = 0;
+	public double rightJoyStickY = 0;
+	public double leftJoyStickX = 0;
+	public double rightJoyStickX = 0;
+	public boolean dynamicBrake = false;
+	public boolean driveStraight = false;
+	public boolean autoGear = false;
+	public boolean autoShoot = false;
+	public boolean autoShootNoCam = false;
+	public boolean autoClimb = false;
+	public boolean autoHopper = false;//4 left Work in progress
+	public boolean autoStraight = false;
+	public boolean autoDeliverer = false;
 
 	// operator functions
-	public boolean primeButton;
-	public boolean fireButton;
-	public boolean fireOverride;
-	public boolean climbButton;
-	public boolean cameraEnable;
-	public boolean reverseButton;
-	public int gearPanelPosition;
-	public boolean jogShooterUp;
-	public boolean jogShooterDown;
-	public int targetGearPost;
-	public boolean gearIntake;
-	public boolean gearOuttake;
-	public boolean autoMode;
-	public boolean manualMode;
-	public boolean shift;
-	public int autonSelection;
+	public boolean primeButton = false;
+	public boolean fireButton = false;
+	public boolean fireOverride = false;
+	public boolean climbButton = false;
+	public boolean cameraEnable = false;
+	public boolean reverseButton = false;
+	public int gearPanelPosition = 0;
+	public boolean jogShooterUp = false;
+	public boolean jogShooterDown = false;
+	public int targetGearPost = 0;
+	public boolean gearIntake = false;
+	public boolean gearOuttake = false;
+	public boolean autoMode = false;
+	public boolean manualMode = false;
+	public boolean shift = false;
+	public int autonSelection = 0;
 
 	public Inputs() { //creates joysticks that are plugged into the port specified in ElectroPaul
 		leftStick = new Joystick(ElectroPaul.LEFT_JOYSTICK_PORT);
@@ -66,11 +67,12 @@ public class Inputs {
 		rightJoyStickX = deadband(DEADBAND, rightStick.getX());
 		dynamicBrake = leftStick.getTrigger();
 		driveStraight = rightStick.getTrigger();
-		autoGear = rightStick.getRawButton(4);
+		//autoGear = rightStick.getRawButton(4);
 		autoShoot = rightStick.getRawButton(5) || rightStick.getRawButton(6);
 		autoShootNoCam = rightStick.getRawButton(6);
-		autoClimb = leftStick.getRawButton(5);
-		autoStraight = rightStick.getRawButton(3); //TODO Make autoStraight toggle
+		//autoClimb = leftStick.getRawButton(5);
+		//autoStraight = rightStick.getRawButton(3); //TODO Make autoStraight toggle
+		autoDeliverer= leftStick.getRawButton(4);
 		
 		//if the xbox controller is active, override with drive straight and drive with it
 		/*if(xboxLY > 0|| xboxRX > 0){

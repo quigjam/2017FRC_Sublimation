@@ -8,9 +8,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class GearSystem {
 
-	// if parameter is met which we are using to tell we're close enough to the peg to initiate the procedure
+	// if parameter is met which we are using to tell we're close enough to the
+	// peg to initiate the procedure
 	// set gear motor to some constant power to eject gear
-	// when the gear is fully ejected from the robot, back the robot up from the peg
+	// when the gear is fully ejected from the robot, back the robot up from the
+	// peg
 	// set flapmoter to a negative power and close it
 
 	private Inputs in;
@@ -18,29 +20,34 @@ public class GearSystem {
 	private Sensors sense;
 
 	private static final double GROUND_POSITION = 200;
-	
-	private static final double SCORE_POSITION_L = 581;  //581 //596 //578 //460; //pot values
-	private static final double SCORE_POSITION_R = -364; //364 //-342 //-368 //-850;
-	
-	private static final double AUTON_POSITION_L = SCORE_POSITION_L -77;  //was  525 actual
-	private static final double AUTON_POSITION_R = SCORE_POSITION_R -71;  //was -422 actual
-	
+
+	private static final double SCORE_POSITION_L = 581; // 581 //596 //578
+														// //460; //pot values
+	private static final double SCORE_POSITION_R = -364; // 364 //-342 //-368
+															// //-850;
+
+	private static final double AUTON_POSITION_L = SCORE_POSITION_L - 77; // was
+																			// 525
+																			// actual
+	private static final double AUTON_POSITION_R = SCORE_POSITION_R - 71; // was
+																			// -422
+																			// actual
+
 	private static final double SAFE_POSITION = 800;
 	private static final double ROLLER_POWER = 0.9;
 	private static final double CURRENT_SPIKE_TIME = 0.5;
-	private static final double CURRENT_MAX = 9;//5
-	
+	private static final double CURRENT_MAX = 9;// 5
+
 	private static final double GEAR_PANEL_POWER_DN = 0.5;
 	private static final double GEAR_PANEL_POWER_UP = 0.5;
 	private static final double GEAR_PANEL_HOLD_DN = 0.2;
 	private static final double GEAR_PANEL_HOLD_UP = 0.15;
-	
+
 	private static final double PANEL_CURRENT_PEAK = 8.5;
 	private static final double PANEL_CURRENT_TIME = 0.5;
-	
+
 	private static final double GEAR_DN_TIME = 1.5;
-	
-	
+
 	public GearSystem(Inputs in, Outputs out, Sensors sense) {
 
 		this.in = in;
@@ -48,30 +55,23 @@ public class GearSystem {
 		this.sense = sense;
 	}
 
-	/*public void gearposition(int gearPanelPosition) { // Shows where a gear is on the panel
-
-		switch (gearPanelPosition) {
-
-		case 0: // startposition
-			out.setGearPanelPower(START_POSITION);
-			break;
-		case 1: // hopperposition
-			// if(ultrasonicDistance >= 0){
-			out.setGearPanelPower(HOPPER_POSITION);
-			// }
-			break;
-
-		case 2: // gearposition
-			// if(ultrasonicDistance <= 0){
-			out.setGearPanelPower(NATURAL_GEAR_POSITION);
-			// }
-			// if(ultrasonicDistance >= 0){
-			out.setGearPanelPower(EXTENDED_GEAR_POSITION);
-			// }
-			break;
-		}
-
-	}*/
+	/*
+	 * public void gearposition(int gearPanelPosition) { // Shows where a gear
+	 * is on the panel
+	 * 
+	 * switch (gearPanelPosition) {
+	 * 
+	 * case 0: // startposition out.setGearPanelPower(START_POSITION); break;
+	 * case 1: // hopperposition // if(ultrasonicDistance >= 0){
+	 * out.setGearPanelPower(HOPPER_POSITION); // } break;
+	 * 
+	 * case 2: // gearposition // if(ultrasonicDistance <= 0){
+	 * out.setGearPanelPower(NATURAL_GEAR_POSITION); // } //
+	 * if(ultrasonicDistance >= 0){
+	 * out.setGearPanelPower(EXTENDED_GEAR_POSITION); // } break; }
+	 * 
+	 * }
+	 */
 
 	private boolean currentTripped = false;
 	private double currentTime = 0;
@@ -79,12 +79,11 @@ public class GearSystem {
 	private boolean gearDnLimit = false;
 	private double gearUpTime = 0;
 	private double gearDnTime = 0;
-	
-	
-	public void setPanel(){
+
+	public void setPanel() {
 		out.setGearPanelPower(0.5);
 	}
-	
+
 	public void run() {
 
 		SmartDashboard.putBoolean("HasGear", currentTripped);
@@ -93,9 +92,9 @@ public class GearSystem {
 		SmartDashboard.putNumber("GSpanelPostion", in.gearPanelPosition);
 		
 		
-	//	if (in.autoClimb || in.autoGear || in.autoShoot || in.autoHopper) { // if doing any of these
-		//} // functions dont do gearintake
-		//else {
+		if (in.autoClimb || in.autoGear || in.autoShoot || in.autoHopper) { // if doing any of these
+		} // functions dont do gearintake
+		else {
 
 			if (in.manualMode) { //if in manual mode
 				//arm
@@ -172,10 +171,13 @@ public class GearSystem {
 				} else {
 					gearRoller(ROLLER_POWER * 0.15);
 				}
-			} else {// position mode
+				
+				
+		//------------------AUTO MODE-------------------------------------------------------------------------------------		
+			} else {// auto position mode
 				
 				//this is down
-				if (in.gearPanelPosition == 1) {
+				if (in.gearPanelPosition == 1 && !currentTripped) {
 					//if going down, reset up
 					gearUpLimit = false;
 					gearUpTime = 0;
@@ -199,6 +201,7 @@ public class GearSystem {
 					
 				//this is up
 				} else if (in.gearPanelPosition == 3) {
+					currentTripped = false;
 					gearDnLimit = false;
 					gearDnTime = 0;
 					
@@ -221,6 +224,7 @@ public class GearSystem {
 					
 				//center position (auton)
 				} else if(in.gearPanelPosition == 4){
+					currentTripped = false;
 					//out.setGearPanelPower(0); // stop moving gear panel
 					gearDnLimit = false;
 					gearUpLimit = false;
@@ -230,7 +234,7 @@ public class GearSystem {
 					out.setGearPanelPosition(AUTON_POSITION_L,AUTON_POSITION_R);
 				
 				//center position (scoring)
-				} else {
+				} else { // in.gearPanelPosition == 2 || currentTripped
 					//out.setGearPanelPower(0); // stop moving gear panel
 					gearDnLimit = false;
 					gearUpLimit = false;
@@ -335,10 +339,11 @@ public class GearSystem {
 				}
 				*/
 			}
-		//}
+		}
 	}
 
-	public void gearRoller(double power) { // when called set the GearRoller to some power
+	public void gearRoller(double power) { // when called set the GearRoller to
+											// some power
 		out.setGearRoller(power);
 
 	}
