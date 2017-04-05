@@ -21,9 +21,9 @@ public class GearSystem {
 
 	private static final double GROUND_POSITION = 200;
 
-	private static final double SCORE_POSITION_L = 581; // 581 //596 //578
+	private static final double SCORE_POSITION_L = 469; // 581 //596 //578 //TODO change the pot values back to the comp bot pot values
 														// //460; //pot values
-	private static final double SCORE_POSITION_R = -364; // 364 //-342 //-368
+	private static final double SCORE_POSITION_R = -398; // 364 //-342 //-368
 															// //-850;
 
 	private static final double AUTON_POSITION_L = SCORE_POSITION_L - 77; // was
@@ -35,7 +35,7 @@ public class GearSystem {
 
 	private static final double SAFE_POSITION = 800;
 	private static final double ROLLER_POWER = 0.9;
-	private static final double CURRENT_SPIKE_TIME = 0.5;
+	private static final double CURRENT_SPIKE_TIME = 0.1;
 	private static final double CURRENT_MAX = 9;// 5
 
 	private static final double GEAR_PANEL_POWER_DN = 0.5;
