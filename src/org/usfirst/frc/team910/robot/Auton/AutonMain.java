@@ -26,15 +26,17 @@ public class AutonMain {
 	//drive to hopper
 	private static final double r = 39;//red start turn distance
 	private static final double b = 37;//blue start turn distance
-	private static final double[] turnPowerL_2Hopper = 	   { 1, 1, 1, -0.5, -0.2,    1,    1,   0.5 };
-	private static final double[] turnPowerR_2Hopper = 	   { 1, 1, 1,    1,    1,    1,    1, -0.65 };
-	private static final double[] turnAngle_2Hopper =  	   { 0, 0, 0,    0,   45,   80,   90,    90 };
+	private static final double[] turnPowerL_2Hopper = 	   { 1, 1, 1, -0.5, -0.2,    1,    1,   0.5 }; //Inside
+	private static final double[] turnPowerR_2Hopper = 	   { 1, 1, 1,    1,    1,    1,    1, -0.65 }; //Outside
 	private static final double[] xDistAxis_2Hopper_Red =  { 0, 0, r, r+23, r+44, r+58, r+71,  r+95 }; // subtracted 1 inch 10:50 4/1/17 //end dist is ~121 //plus 1 in . 11:37 3/31 -Steven
 	private static final double[] xDistAxis_2Hopper_Blue = { 0, 0, b, b+23, b+44, b+58, b+71,  b+95 }; //switch to this when blue
+		
+	//Next line NOT USED
+	private static final double[] turnAngle_2Hopper =  	   { 0, 0, 0,    0,   45,   80,   90,    90 };
 	
 	//drive from hopper to boiler
-	private static final double[] turnPowerL_From_Hopper = { -1, -1,   -1, 0.75,   1,  0.75, -1 };
-	private static final double[] turnPowerR_From_Hopper = { -1, -1, -0.1,    1,   1,  0.75, -1 };
+	private static final double[] turnPowerL_From_Hopper = { -1, -1,   -1, 0.75,   1,  0.75, -1 }; //Outside of backup then Inside of Forward
+	private static final double[] turnPowerR_From_Hopper = { -1, -1, -0.1,    1,   1,  0.75, -1 }; //Inside of backup  then Outside of Forward
 	private static final double[] turnAngle_From_Hopper =  { 90, 90,   90,  160, 160,  160, 160 };
 	private static final double[] xDistAxis_From_Hopper =  {  0,  0,   20,   30,  40,   55,  65 };//end dist is ~67
 	
