@@ -24,11 +24,11 @@ public class AutonMain {
 	private boolean blueAlliance = false;
 	
 	//drive to hopper
-	private static final double[] turnPowerL_2Hopper = { 1, 1,  1,    0,  1, 1.1,  1 };
-	private static final double[] turnPowerR_2Hopper = { 1, 1,  1,    1,  1,   1, -0.65 };
-	private static final double[] turnAngle_2Hopper =  { 0, 0,  0,   45, 80,  90,   90 };
-	private static final double[] xDistAxis_2Hopper_Red =  { 0, 0, 29,   73, 87, 100,  124 }; // subtracted 1 inch 10:50 4/1/17 //end dist is ~121 //plus 1 in . 11:37 3/31 -Steven
-	private static final double[] xDistAxis_2Hopper_Blue =  { 0, 0, 27,   71, 85,  98,  122 }; //switch to this when blue
+	private static final double[] turnPowerL_2Hopper = 	   { 1, 1,  1,  0,  1, 1.1,     1 };
+	private static final double[] turnPowerR_2Hopper = 	   { 1, 1,  1,  1,  1,   1, -0.65 };
+	private static final double[] turnAngle_2Hopper =  	   { 0, 0,  0, 45, 80,  90,    90 };
+	private static final double[] xDistAxis_2Hopper_Red =  { 0, 0, 29, 73, 87, 100,   124 }; // subtracted 1 inch 10:50 4/1/17 //end dist is ~121 //plus 1 in . 11:37 3/31 -Steven
+	private static final double[] xDistAxis_2Hopper_Blue = { 0, 0, 27, 71, 85,  98,   122 }; //switch to this when blue
 	
 	//drive from hopper to boiler
 	private static final double[] turnPowerL_From_Hopper = { -1, -1, -1, 0.5,   1,  0.75, -1 };
@@ -36,11 +36,17 @@ public class AutonMain {
 	private static final double[] turnAngle_From_Hopper =  { 90, 90, 90, 160, 160,  160, 160 };
 	private static final double[] xDistAxis_From_Hopper =  {  0,  0, 20,  35,  45,   60,  70 };//end dist is ~67
 	
-	//drive to gear peg left (flip for right)
-	private static final double[] turnPowerL_gearL = { 1, 1,  1,    1,   1,  -1 };
-	private static final double[] turnPowerR_gearL = { 1, 1,  1, 0.15,   1,  -1 };
-	private static final double[] turnAngle_gearL =  { 0, 0,  0,  -45, -60, -60 };
-	private static final double[] xDistAxis_gearL =  { 0, 0, 90,  115, 140, 150 };
+	//drive to gear peg left 
+	private static final double[] turnPowerL_gearL = { -1, -1, -1,    -1,   -1,  -1,   1 };
+	private static final double[] turnPowerR_gearL = { -1, -1, -1, -0.15,   -1,  -1,   1 };
+	private static final double[] turnAngle_gearL =  {  0,  0,  0,   -45,  -60, -60, -60 };
+	private static final double[] xDistAxis_gearL =  {  0,  0, 90,   115,  140, 150, 160 };
+	
+	//drive to gear peg left 
+	private static final double[] turnPowerL_gearR = { -1, -1, -1,    -1,   -1,  -1,   1 };
+	private static final double[] turnPowerR_gearR = { -1, -1, -1, -0.15,   -1,  -1,   1 };
+	private static final double[] turnAngle_gearR =  {  0,  0,  0,   -45,  -60, -60, -60 };
+	private static final double[] xDistAxis_gearR =  {  0,  0, 90,   115,  140, 150, 160 };
 	
 	//drive to center gear
 	private static final double[] turnPowerL_gearC = { -1, -1, -1,   1 };
@@ -53,6 +59,8 @@ public class AutonMain {
 	private static final double End_Point_To_Hopper = 30; //how far on the y axis to travel into the hopper
 	private static final double End_Point_From_Hopper = -26; //how far on the x axis to drive to the boiler
 	private static final double End_Point_To_Center_Gear = 104; //104 inches on both encoders
+	private static final double End_Point_To_Side_Gear_L = 154;
+	private static final double End_Point_To_Side_Gear_R = 154;
 	
 	
 	
@@ -179,10 +187,10 @@ public class AutonMain {
 		centerGearAuto.add(new AutonDriveTime(gearDrivePwr, 0.3, 0, false));
 		
 		//drive towards boiler
-		centerGearAuto.add(new AutonAllianceDrive(new AutonDriveTime(gearDrivePwr, 3, 90, true), new AutonDriveTime(gearDrivePwr, 3, -90, true)));
+		centerGearAuto.add(new AutonAllianceDrive(new AutonDriveTime(gearDrivePwr, 3, -90, true), new AutonDriveTime(gearDrivePwr, 3, 90, true)));
 		
 		//shoot
-		centerGearAuto.add(new AutonAutoShoot(6));
+		centerGearAuto.add(new AutonAutoShoot(10));
 		centerGearAuto.add(new AutonEndStep());
 		
 		

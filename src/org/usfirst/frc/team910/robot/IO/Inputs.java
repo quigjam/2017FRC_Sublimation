@@ -72,7 +72,7 @@ public class Inputs {
 		autoShootNoCam = rightStick.getRawButton(6);
 		//autoClimb = leftStick.getRawButton(5);
 		//autoStraight = rightStick.getRawButton(3); //TODO Make autoStraight toggle
-		autoDeliverer= leftStick.getRawButton(4);
+		autoDeliverer= rightStick.getRawButton(2);
 		
 		//if the xbox controller is active, override with drive straight and drive with it
 		/*if(xboxLY > 0|| xboxRX > 0){

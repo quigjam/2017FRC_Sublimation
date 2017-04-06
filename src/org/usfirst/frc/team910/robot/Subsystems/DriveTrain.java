@@ -46,7 +46,7 @@ public class DriveTrain {
 		leftDriveEncoder = out.leftDriveEncoder;
 		rightDriveEncoder = out.rightDriveEncoder;
 
-		if (in.autoDeliverer || in.autoClimb || in.autoGear || in.autoShoot || in.autoHopper || auton) {
+		if (in.autoClimb || in.autoGear || in.autoShoot || in.autoHopper || auton) {
 			
 		} else if (in.dynamicBrake) {	
 			setBrakes(false);

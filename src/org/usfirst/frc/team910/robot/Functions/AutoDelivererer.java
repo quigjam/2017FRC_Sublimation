@@ -55,13 +55,13 @@ public class AutoDelivererer {
 				in.gearOuttake = true;
 				//gear.run();
 				if(Timer.getFPGATimestamp() >= startTime + 0.1) {
-					deliverState = DeliverererState.REVERSE;
+					deliverState = DeliverererState.RESET;
 					drive.driveStraightNavX(true, 0, 0);
 					startTime = Timer.getFPGATimestamp();
 				}
 				break;
 				
-			case REVERSE:
+			/*case REVERSE:
 				in.gearPanelPosition = 1;
 				in.gearOuttake = false;
 				//gear.run();
@@ -70,11 +70,12 @@ public class AutoDelivererer {
 					deliverState = DeliverererState.RESET;
 				}
 				break;
+			*/
 				
 			case RESET:
-				in.gearPanelPosition = 2;
+				in.gearPanelPosition = 1;
 				//gear.run();
-				drive.tankDrive(0, 0, 1);
+				//drive.tankDrive(0, 0, 1);
 			}
 
 		}
