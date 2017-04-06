@@ -1,5 +1,10 @@
 package org.usfirst.frc.team910.robot.Auton;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+
 import org.usfirst.frc.team910.robot.IO.Util;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -11,7 +16,7 @@ public class AutonFastArc extends AutonStep {
 	private double y;
 	private double prevRight;
 	private double prevLeft;
-	private static final double POWER_PER_DEGREE = 0.1;
+	private static final double POWER_PER_DEGREE = 0.0;
 	private double[] turnPowerL;
 	private double[] turnPowerR;
 	private double[] turnAngle;
@@ -20,6 +25,9 @@ public class AutonFastArc extends AutonStep {
 	private double PWR_FILT = 0.1;
 	private double MAX_PWR = 0.5;
 	private DriveComplete dc;
+	
+	private BufferedWriter fos; 
+	private static int fileCount = 1;
 	
 	private double l;
 	private double r;
@@ -42,6 +50,17 @@ public class AutonFastArc extends AutonStep {
 		prevLeft = 0;
 		l = 0;
 		r = 0;
+		
+		/*
+		try{
+			fos = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("/home/lvusr/out" + fileCount + ".txt"))));
+			fileCount++;
+		
+			fos.write("l,r,x,y,inPwr,outPwr,setangle,lookup,botangle;");
+		} catch(Exception e){
+			e.getMessage();
+		}
+		*/
 	}
 
 	public void setup(boolean blueAlliance) {
@@ -84,7 +103,7 @@ public class AutonFastArc extends AutonStep {
 		SmartDashboard.putNumber("lookup", lookup);
 		
 		double insidePower = Util.interpolate(xDistAxis, turnPowerL, lookup);
-		double outstidePower = Util.interpolate(xDistAxis, turnPowerR, lookup);
+		double outsidePower = Util.interpolate(xDistAxis, turnPowerR, lookup);
 		double targetAngle = Util.interpolate(xDistAxis, turnAngle, lookup);
 		
 		//flip angle when we flip sides
@@ -105,9 +124,9 @@ public class AutonFastArc extends AutonStep {
 		
 		//switch left and right powers when we are on the other side
 		if (blueAlliance && flipSides) {
-			drive.tankDrive(insidePower, outstidePower, prevPwr);
+			drive.tankDrive(insidePower, outsidePower, prevPwr);
 		} else {
-			drive.tankDrive(outstidePower, insidePower, prevPwr);
+			drive.tankDrive(outsidePower, insidePower, prevPwr);
 		}
 		
 		prevLeft = leftEnc;
@@ -119,8 +138,17 @@ public class AutonFastArc extends AutonStep {
 		SmartDashboard.putNumber("y", y);
 		SmartDashboard.putNumber("botAngle", sense.robotAngle.get());
 		SmartDashboard.putNumber("insidePower", insidePower);
-		SmartDashboard.putNumber("outsidePower", outstidePower);
+		SmartDashboard.putNumber("outsidePower", outsidePower);
 		SmartDashboard.putNumber("TargetAngle", targetAngle);
+		
+		/*
+		//fos.write("l,r,x,y,lPwr,rPwr,setangle,lookup,botangle");
+		try{
+			fos.write(l + "," + r + "," + x + "," + y + "," + insidePower + "," + outsidePower + "," + targetAngle + "," + lookup + "," + sense.robotAngle.get() + ";");
+		} catch(Exception e){
+			e.getMessage();
+		}
+		*/
 	}
 
 	public boolean isDone() {
@@ -128,6 +156,17 @@ public class AutonFastArc extends AutonStep {
 		//return (Math.abs(x) < 28);
 		//double l = drive.leftDriveEncoder - leftInit;
 		//double r= drive.rightDriveEncoder - rightInit;
-		return dc.isDone(l,r,x, y, blueAlliance);
+		if(dc.isDone(l,r,x, y, blueAlliance)){
+			/*
+			try{
+				fos.flush();
+				fos.close();
+			} catch  (Exception e){
+				e.getMessage();
+			}
+			*/
+			return true;
+		}
+		return false;
 	}
 }

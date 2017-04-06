@@ -150,6 +150,8 @@ public class Outputs {
 	}
 	
 	public void setDriveBrake(boolean brake){
+		//disabled brake mode
+		//brake = false;
 		leftDriveCan1.enableBrakeMode(brake);
 		leftDriveCan2.enableBrakeMode(brake);
 		leftDriveCan3.enableBrakeMode(brake);

@@ -24,17 +24,19 @@ public class AutonMain {
 	private boolean blueAlliance = false;
 	
 	//drive to hopper
-	private static final double[] turnPowerL_2Hopper = 	   { 1, 1,  1,  0,  1, 1.1,     1 };
-	private static final double[] turnPowerR_2Hopper = 	   { 1, 1,  1,  1,  1,   1, -0.65 };
-	private static final double[] turnAngle_2Hopper =  	   { 0, 0,  0, 45, 80,  90,    90 };
-	private static final double[] xDistAxis_2Hopper_Red =  { 0, 0, 29, 73, 87, 100,   124 }; // subtracted 1 inch 10:50 4/1/17 //end dist is ~121 //plus 1 in . 11:37 3/31 -Steven
-	private static final double[] xDistAxis_2Hopper_Blue = { 0, 0, 27, 71, 85,  98,   122 }; //switch to this when blue
+	private static final double r = 39;//red start turn distance
+	private static final double b = 37;//blue start turn distance
+	private static final double[] turnPowerL_2Hopper = 	   { 1, 1, 1, -0.5, -0.2,    1,    1,   0.5 };
+	private static final double[] turnPowerR_2Hopper = 	   { 1, 1, 1,    1,    1,    1,    1, -0.65 };
+	private static final double[] turnAngle_2Hopper =  	   { 0, 0, 0,    0,   45,   80,   90,    90 };
+	private static final double[] xDistAxis_2Hopper_Red =  { 0, 0, r, r+23, r+44, r+58, r+71,  r+95 }; // subtracted 1 inch 10:50 4/1/17 //end dist is ~121 //plus 1 in . 11:37 3/31 -Steven
+	private static final double[] xDistAxis_2Hopper_Blue = { 0, 0, b, b+23, b+44, b+58, b+71,  b+95 }; //switch to this when blue
 	
 	//drive from hopper to boiler
-	private static final double[] turnPowerL_From_Hopper = { -1, -1, -1, 0.5,   1,  0.75, -1 };
-	private static final double[] turnPowerR_From_Hopper = { -1, -1,  0,   1,   1,  0.75, -1 };
-	private static final double[] turnAngle_From_Hopper =  { 90, 90, 90, 160, 160,  160, 160 };
-	private static final double[] xDistAxis_From_Hopper =  {  0,  0, 20,  35,  45,   60,  70 };//end dist is ~67
+	private static final double[] turnPowerL_From_Hopper = { -1, -1,   -1, 0.75,   1,  0.75, -1 };
+	private static final double[] turnPowerR_From_Hopper = { -1, -1, -0.1,    1,   1,  0.75, -1 };
+	private static final double[] turnAngle_From_Hopper =  { 90, 90,   90,  160, 160,  160, 160 };
+	private static final double[] xDistAxis_From_Hopper =  {  0,  0,   20,   30,  40,   55,  65 };//end dist is ~67
 	
 	//drive to gear peg left 
 	private static final double[] turnPowerL_gearL = { -1, -1, -1,    -1,   -1,  -1,   1 };
@@ -42,7 +44,7 @@ public class AutonMain {
 	private static final double[] turnAngle_gearL =  {  0,  0,  0,   -45,  -60, -60, -60 };
 	private static final double[] xDistAxis_gearL =  {  0,  0, 90,   115,  140, 150, 160 };
 	
-	//drive to gear peg left 
+	//drive to gear peg left
 	private static final double[] turnPowerL_gearR = { -1, -1, -1,    -1,   -1,  -1,   1 };
 	private static final double[] turnPowerR_gearR = { -1, -1, -1, -0.15,   -1,  -1,   1 };
 	private static final double[] turnAngle_gearR =  {  0,  0,  0,   -45,  -60, -60, -60 };
@@ -56,7 +58,7 @@ public class AutonMain {
 	
 	
 	//hopper end points
-	private static final double End_Point_To_Hopper = 30; //how far on the y axis to travel into the hopper
+	private static final double End_Point_To_Hopper = 34; //how far on the y axis to travel into the hopper
 	private static final double End_Point_From_Hopper = -26; //how far on the x axis to drive to the boiler
 	private static final double End_Point_To_Center_Gear = 104; //104 inches on both encoders
 	private static final double End_Point_To_Side_Gear_L = 154;
@@ -89,7 +91,14 @@ public class AutonMain {
 	// JUST DRIVE AUTO -----------------------------------------------------------------------------------------------------------------//
 		justDrive = new ArrayList<AutonStep>();
 		justDrive.add(new AutonResetAngle());
-		justDrive.add(new AutonDriveTime(0.5, 1, 0, false));
+		justDrive.add(new AutonDriveTime(0.5, 1.5, 0, false));
+		/*justDrive.add(new AutonFastArc(false, true, 0.9, turnPowerL_2Hopper, turnPowerR_2Hopper, turnAngle_2Hopper, xDistAxis_2Hopper_Blue, new DriveComplete(){
+			public boolean isDone(double l, double r, double x, double y, boolean blueAlliance){
+				return Math.abs(y) > End_Point_To_Side_Gear_R
+						|| l > xDistAxis_2Hopper_Red[xDistAxis_2Hopper_Red.length-1] && blueAlliance
+						|| r > xDistAxis_2Hopper_Blue[xDistAxis_2Hopper_Blue.length-1] && !blueAlliance;
+			}
+		}));*/
 		justDrive.add(new AutonEndStep());
 		
 	// PIVIT SHOT AUTO ----------------------------------------------------------------------------------------------------------------//
@@ -211,12 +220,16 @@ public class AutonMain {
 		list.add(new AutonUnlatchClimber(0.75));//was.75
 		AutonFastArc afaBlue = new AutonFastArc(false, true, drivePwr, turnPowerL_2Hopper, turnPowerR_2Hopper, turnAngle_2Hopper, xDistAxis_2Hopper_Blue, new DriveComplete(){
 			public boolean isDone(double l, double r, double x, double y, boolean blueAlliance){
-				return Math.abs(y) > End_Point_To_Hopper;
+				return Math.abs(y) > End_Point_To_Hopper
+						|| r > xDistAxis_2Hopper_Red[xDistAxis_2Hopper_Red.length-1] && blueAlliance
+						|| l > xDistAxis_2Hopper_Blue[xDistAxis_2Hopper_Blue.length-1] && !blueAlliance;
 			}
 		});
 		AutonFastArc afaRed = new AutonFastArc(false, true, drivePwr, turnPowerL_2Hopper, turnPowerR_2Hopper, turnAngle_2Hopper, xDistAxis_2Hopper_Red, new DriveComplete(){
 			public boolean isDone(double l, double r, double x, double y, boolean blueAlliance){
-				return Math.abs(y) > End_Point_To_Hopper;
+				return Math.abs(y) > End_Point_To_Hopper
+						|| r > xDistAxis_2Hopper_Red[xDistAxis_2Hopper_Red.length-1] && blueAlliance
+						|| l > xDistAxis_2Hopper_Blue[xDistAxis_2Hopper_Blue.length-1] && !blueAlliance;
 			}
 		}); 
 		list.add(new AutonAllianceDrive(afaBlue, afaRed));
@@ -235,7 +248,9 @@ public class AutonMain {
 		list = new ArrayList<AutonStep>();
 		list.add(new AutonFastArc(true, true, drivePwr, turnPowerL_From_Hopper, turnPowerR_From_Hopper, turnAngle_From_Hopper, xDistAxis_From_Hopper, new DriveComplete(){
 			public boolean isDone(double l, double r, double x, double y, boolean blueAlliance){
-				return x < End_Point_From_Hopper;
+				return x < End_Point_From_Hopper
+						|| r > xDistAxis_From_Hopper[xDistAxis_From_Hopper.length - 1] && blueAlliance
+						|| l > xDistAxis_From_Hopper[xDistAxis_From_Hopper.length - 1] && !blueAlliance;
 			}
 		}));
 		list.add(new AutonPrime());
