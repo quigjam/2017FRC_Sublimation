@@ -92,10 +92,15 @@ public class GearSystem {
 		SmartDashboard.putNumber("GSpanelPostion", in.gearPanelPosition);
 		
 		
-		if (in.autoClimb || in.autoGear || in.autoShoot || in.autoHopper) { // if doing any of these
-		} // functions dont do gearintake
-		else {
+		
+		//COMMENTED OUT 4-5-2017 (Next 3 lines)
+		//if (in.autoClimb || in.autoGear || in.autoShoot || in.autoHopper) { // if doing any of these
+		//} // functions dont do gearintake
+		//else {
 
+		
+		
+		
 			if (in.manualMode) { //if in manual mode
 				//arm
 				if (in.gearPanelPosition == 1) { //this is down
@@ -339,7 +344,7 @@ public class GearSystem {
 				}
 				*/
 			}
-		}
+		//}  //COMMENTED OUT 4-5-2017
 	}
 
 	public void gearRoller(double power) { // when called set the GearRoller to
