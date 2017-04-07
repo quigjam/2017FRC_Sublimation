@@ -24,8 +24,8 @@ public class AutonMain {
 	private boolean blueAlliance = false;
 	
 	//drive to hopper
-	private static final double r = 39;//red start turn distance
-	private static final double b = 37;//blue start turn distance
+	private static final double r = 32; //was 39;//red start turn distance
+	private static final double b = 30; //was 37;//blue start turn distance
 	private static final double[] turnPowerL_2Hopper = 	   { 1, 1, 1, -0.5, -0.2,    1,    1,   0.5 }; //Inside
 	private static final double[] turnPowerR_2Hopper = 	   { 1, 1, 1,    1,    1,    1,    1, -0.65 }; //Outside
 	private static final double[] xDistAxis_2Hopper_Red =  { 0, 0, r, r+23, r+44, r+58, r+71,  r+95 }; // subtracted 1 inch 10:50 4/1/17 //end dist is ~121 //plus 1 in . 11:37 3/31 -Steven
