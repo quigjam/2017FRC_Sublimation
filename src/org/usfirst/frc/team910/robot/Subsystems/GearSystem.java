@@ -21,9 +21,9 @@ public class GearSystem {
 
 	private static final double GROUND_POSITION = 200;
 
-	private static final double SCORE_POSITION_L = 469; // 581 //596 //578 //TODO change the pot values back to the comp bot pot values
+	private static final double SCORE_POSITION_L = 581; //prac bot:469; // 581 //596 //578 //TODO change the pot values back to the comp bot pot values
 														// //460; //pot values
-	private static final double SCORE_POSITION_R = -398; // 364 //-342 //-368
+	private static final double SCORE_POSITION_R = -364;//prac bot:-398; // 364 //-342 //-368
 															// //-850;
 
 	private static final double AUTON_POSITION_L = SCORE_POSITION_L - 77; // was
@@ -208,10 +208,10 @@ public class GearSystem {
 					//TODO: get rid of the current limits stuff we dont need anymore
 					if(gearUpLimit){
 						//out.setGearPanelPower(-GEAR_PANEL_HOLD_UP);
-						out.setGearPanelPosition(AUTON_POSITION_L, AUTON_POSITION_R);
+						out.setGearPanelPosition(SCORE_POSITION_L, SCORE_POSITION_R);
 					} else {
 						//out.setGearPanelPower(-GEAR_PANEL_POWER_UP); // close gear panel
-						out.setGearPanelPosition(AUTON_POSITION_L, AUTON_POSITION_R);
+						out.setGearPanelPosition(SCORE_POSITION_L, SCORE_POSITION_R);
 					}
 					if(out.gearPanel1Current + out.gearPanel2Current > PANEL_CURRENT_PEAK){
 						gearUpTime += sense.deltaTime;
