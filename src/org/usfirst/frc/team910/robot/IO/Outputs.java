@@ -86,7 +86,7 @@ public class Outputs {
 		shooterMotor.reverseSensor(true); 
 		//shooterMotor.setCloseLoopRampRate(7);//7V per sec done below
 		//shooterMotor.setPID(0.65, 0, 1.15, 0.062, 0, 28, 0);
-		shooterMotor.setPID(1, 0, 1.15, 0.062, 0, 28, 0);
+		shooterMotor.setPID(1, 0, 1.15, 0.062, 0, 40, 0);
 
 		transporterMotor = new CANTalon(ElectroPaul.TRANSPORTER_MOTOR);
 		transporterMotor.enableBrakeMode(true);

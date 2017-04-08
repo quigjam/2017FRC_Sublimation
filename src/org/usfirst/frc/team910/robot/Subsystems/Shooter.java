@@ -16,8 +16,9 @@ public class Shooter {
 	private static final double AGI_FILT = 0.2;
 	
 	private static final double[] SHOOTER_PWR_AXIS = {12, 18, 36, 48, 60};
-	private static final double[] SHOOTER_PWR_TABLE = {1640, 1670, 1890, 1910, 1940}; // took 10 off all 4/1/17 11:21
-
+	//private static final double[] SHOOTER_PWR_TABLE = {1630, 1660, 1880, 1900, 1930}; // took 10 off all 4/7/17 11:21
+	private static final double[] SHOOTER_PWR_TABLE = {1615, 1645, 1865, 1885, 1915}; // took 15 off all 4/7/17 4:31
+	
 	private Outputs out;
 	private Inputs in;
 
@@ -111,6 +112,16 @@ public class Shooter {
 			
 			out.setShooterPower(0);
 			out.setTransportPower(0);
+		}
+	}
+	
+	public void justPrime(boolean prime){
+		if(prime){
+			out.setTransportPower(-0.2);
+			out.setShooterSpeed(SHOOTER_SPEED + jogoffset);
+		} else {
+			out.setTransportPower(0);
+			out.setShooterPower(0);
 		}
 	}
 

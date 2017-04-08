@@ -23,6 +23,7 @@ public class AutonMain {
 	private static int DEFAULT_ALLIANCE = RED;
 	private static boolean OVERRIDE_ALLIANCE = false;
 	private boolean blueAlliance = false;
+	private static double CLIMBER_RUN_TIME = 0.35;
 	
 	//drive to hopper
 	private static final double r = 21;//red start turn distance
@@ -30,7 +31,7 @@ public class AutonMain {
 	//was private static final double[] turnPowerL_2Hopper = 	   { 1, 1, 1, -0.5,  -0.2,    1,    1,   0.5 }; //Inside
 	      private static final double[] turnPowerL_2Hopper = 	   { 1, 1, 1, -0.53, -0.2,    1,    1,   0.5 }; //Inside
 	//was private static final double[] turnPowerR_2Hopper = 	   { 1, 1, 1,    1,    1,    1,    1, -0.65 }; //Outside
-		  private static final double[] turnPowerR_2Hopper = 	   { 1, 1, 1,    1,    1,    1,    1, -0.55 }; //Outside
+		  private static final double[] turnPowerR_2Hopper = 	   { 1, 1, 1,    1,    1,    1,    1, -0.45 }; //Outside
 	private static final double[] xDistAxis_2Hopper_Red =  { 0, 0, r, r+23, r+44, r+58, r+71,  r+95 }; //end dist is ~121
 	private static final double[] xDistAxis_2Hopper_Blue = { 0, 0, b, b+23, b+44, b+58, b+71,  b+95 }; //switch to this when blue
 		
@@ -38,10 +39,10 @@ public class AutonMain {
 	private static final double[] turnAngle_2Hopper =  	   { 0, 0, 0,    0,   45,   80,   90,    90 };
 	
 	//drive from hopper to boiler
-	private static final double[] turnPowerL_From_Hopper = { -1, -1,   -1, 0.75,   1,  0.75, -1 }; //Outside of backup then Inside of Forward
-	private static final double[] turnPowerR_From_Hopper = { -1, -1, 0.1,    1,   1,  0.75, -1 }; //Inside of backup  then Outside of Forward
+	private static final double[] turnPowerL_From_Hopper = { -1, -1,   -1, 0.75,   1,  0.55, -1 }; //Outside of backup then Inside of Forward
+	private static final double[] turnPowerR_From_Hopper = { -1, -1, 0.1,    1,   1,  0.55, -1 }; //Inside of backup  then Outside of Forward
 	private static final double[] turnAngle_From_Hopper =  { 90, 90,   90,  160, 160,  160, 160 };
-	private static final double[] xDistAxis_From_Hopper =  {  0,  0,   20,   30,  40,   55,  65 };//end dist is ~67
+	private static final double[] xDistAxis_From_Hopper =  {  0,  0,   20,   30,  40,   55,  64 };//end dist is ~63
 	
 	//drive to gear peg left 
 	private static final double[] turnPowerL_gearL = { -1, -1, -1,    -1,   -1,  -1,   1 };
@@ -58,16 +59,16 @@ public class AutonMain {
 	//drive to center gear
 	//private static final double[] turnPowerL_gearC = { -1, -1, -1,  1,    1 }; //use these if you want to drive straight
 	//private static final double[] turnPowerR_gearC = { -1, -1, -1,  1,    1 };
-	private static final double[] turnPowerL_gearC = { -1, -1, -1,  1,   1, -0.4 }; //use these to turn on the way out
-	private static final double[] turnPowerR_gearC = { -1, -1, -1,  1, 0.1,  0.2 };
+	private static final double[] turnPowerL_gearC = { -1, -1, -1,  1,   1,  0.5 }; //use these to turn on the way out
+	private static final double[] turnPowerR_gearC = { -1, -1, -1,  1, 0.1,  0.5 };
 	private static final double[] turnAngle_gearC =  {  0,  0,  0,  0,   0,    0 };
-	private static final double[] xDistAxis_gearC =  {  0,  0, 56, 76,  85,   95 };
+	private static final double[] xDistAxis_gearC =  {  0,  0, 56, 76,  90,  165 };
 	
 	
 	//hopper end points
-	private static final double End_Point_To_Hopper = 34; //how far on the y axis to travel into the hopper
-	private static final double End_Point_From_Hopper = -26; //how far on the x axis to drive to the boiler
-	private static final double End_Point_To_Center_Gear = 90; //was 104 inches on both encoders
+	private static final double End_Point_To_Hopper = 36; //how far on the y axis to travel into the hopper
+	private static final double End_Point_From_Hopper = -22; //was26 //how far on the x axis to drive to the boiler
+	private static final double End_Point_To_Center_Gear = 160; //was 104 inches on both encoders
 	private static final double End_Point_To_Side_Gear_L = 154;
 	private static final double End_Point_To_Side_Gear_R = 154;
 	
@@ -98,7 +99,12 @@ public class AutonMain {
 	// JUST DRIVE AUTO -----------------------------------------------------------------------------------------------------------------//
 		justDrive = new ArrayList<AutonStep>();
 		justDrive.add(new AutonResetAngle());
-		justDrive.add(new AutonDriveTime(0.5, 1.5, 0, false));
+		//justDrive.add(new AutonUnlatchClimber(CLIMBER_RUN_TIME)); //remove later
+		justDrive.add(new AutonDriveTime(0.5, 1.5, 0, false)); //make positive power again
+		//justDrive.add(new AutonWait(1.5)); //remove later
+		//justDrive.add(new AutonAllianceDrive(new AutonDriveTime(0.3,1.75,-30,false), new AutonDriveTime(0.3,1.75,30,false)));//remove later
+		//justDrive.add(new AutonWait(1));//remove later
+		//justDrive.add(new AutonAutoShoot(10)); //remove later
 		/*justDrive.add(new AutonFastArc(false, true, 0.9, turnPowerL_2Hopper, turnPowerR_2Hopper, turnAngle_2Hopper, xDistAxis_2Hopper_Blue, new DriveComplete(){
 			public boolean isDone(double l, double r, double x, double y, boolean blueAlliance){
 				return Math.abs(y) > End_Point_To_Side_Gear_R
@@ -111,11 +117,31 @@ public class AutonMain {
 	// PIVIT SHOT AUTO ----------------------------------------------------------------------------------------------------------------//
 		pivitShot = new ArrayList<AutonStep>();
 		pivitShot.add(new AutonResetAngle());
+		pivitShot.add(new AutonUnlatchClimber(CLIMBER_RUN_TIME)); //remove later
+		pivitShot.add(new AutonDriveTime(-0.5, 1.5, 0, false)); //make positive power again
+		pivitShot.add(new AutonWait(1.5)); //remove later
+		pivitShot.add(new AutonAllianceDrive(new AutonDriveTime(0.3,1.75,-30,false), new AutonDriveTime(0.3,1.75,30,false)));//remove later
+		pivitShot.add(new AutonWait(1));//remove later
+		pivitShot.add(new AutonAutoShoot(10)); //remove later
+		/*justDrive.add(new AutonFastArc(false, true, 0.9, turnPowerL_2Hopper, turnPowerR_2Hopper, turnAngle_2Hopper, xDistAxis_2Hopper_Blue, new DriveComplete(){
+			public boolean isDone(double l, double r, double x, double y, boolean blueAlliance){
+				return Math.abs(y) > End_Point_To_Side_Gear_R
+						|| l > xDistAxis_2Hopper_Red[xDistAxis_2Hopper_Red.length-1] && blueAlliance
+						|| r > xDistAxis_2Hopper_Blue[xDistAxis_2Hopper_Blue.length-1] && !blueAlliance;
+			}
+		}));*/
+		pivitShot.add(new AutonEndStep());
+		
+		//old pivot shot 
+		/*
+		pivitShot = new ArrayList<AutonStep>();
+		pivitShot.add(new AutonResetAngle());
 		pivitShot.add(new AutonAllianceDrive(new AutonDriveTime(-0.5, 1.5, -35, true), new AutonDriveTime(-0.5, 1.5, 35, true)));
 		pivitShot.add(new AutonAllianceDrive(new AutonDriveTime(0.5, 1.0, -60, true), new AutonDriveTime(0.5, 1.0, 60, true)));
 		//pivitShot.add(new AutonPrime());
 		pivitShot.add(new AutonAutoShoot(13));
 		pivitShot.add(new AutonEndStep());
+		*/
 		
 		
 		//old autons
@@ -185,7 +211,7 @@ public class AutonMain {
 		
 		//drive and relase climber/gear
 		ArrayList<AutonStep> list = new ArrayList<AutonStep>();
-		list.add(new AutonUnlatchClimber(0.75));
+		list.add(new AutonUnlatchClimber(CLIMBER_RUN_TIME));
 		//list.add(new AutonDriveTime(gearDrivePwr, 2.5, 0, false));
 		list.add( new AutonFastArc(false,true,gearDrivePwr,turnPowerL_gearC,turnPowerR_gearC,turnAngle_gearC,xDistAxis_gearC,new DriveComplete(){
 			public boolean isDone(double l, double r, double x, double y, boolean blueAlliance){
@@ -232,7 +258,7 @@ public class AutonMain {
 		
 		//step 2: briefly run the climber and drive to the hopper
 		list = new ArrayList<AutonStep>();
-		list.add(new AutonUnlatchClimber(0.75));//was.75
+		list.add(new AutonUnlatchClimber(CLIMBER_RUN_TIME));//was.75
 		AutonFastArc afaBlue = new AutonFastArc(false, true, drivePwr, turnPowerL_2Hopper, turnPowerR_2Hopper, turnAngle_2Hopper, xDistAxis_2Hopper_Blue, new DriveComplete(){
 			public boolean isDone(double l, double r, double x, double y, boolean blueAlliance){
 				return Math.abs(y) > End_Point_To_Hopper
@@ -294,7 +320,7 @@ public class AutonMain {
 
 	public void init(Inputs in, Sensors sense, DriveTrain drive, GearSystem gear, Shooter shoot, Climber climb, AutoShoot as) {
 		AutonStep.setRobotReferences(in, sense, drive, gear, shoot, climb, as);
-		SmartDashboard.putString("AutonKey", "Auton Profiles:\n0) Just Drive Forward\n1) Hopper Shoot Drive\n2) Left Gear\n3) Center Gear\n4) Right Gear");
+		SmartDashboard.putString("AutonKey", "Auton Profiles:\n0) Just Drive Forward\n1) Hopper Shoot Drive\n2) Left Gear\n3) Center Gear\n4) Right Gear\n5) Pivot Shot");
 	}
 	
 	public void setAutonProfile(){

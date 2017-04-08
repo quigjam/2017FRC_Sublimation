@@ -11,8 +11,8 @@ public class AutonPrime extends AutonStep{
 	}
 	
 	public void run(){
-		in.primeButton = true;
-		shoot.run();
+		//in.primeButton = true;
+		shoot.justPrime(true);
 	}
 	
 	public boolean isDone(){

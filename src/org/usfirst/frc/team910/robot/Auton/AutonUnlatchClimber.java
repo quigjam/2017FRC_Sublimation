@@ -11,8 +11,9 @@ public class AutonUnlatchClimber extends AutonStep {
 		this.runTime = runTime;
 	}
 	
-	public void setup(){
+	public void setup(boolean blueAlliance){
 		endTime = Timer.getFPGATimestamp() + runTime;
+		//climb.climb(0.6);
 	}
 	
 	public void run(){
@@ -28,7 +29,7 @@ public class AutonUnlatchClimber extends AutonStep {
 			//in.climbButton = true;
 			//climb.climb(0.6);
 		}
-		climb.climb(0.6);
+		//climb.climb(0.6);
 		//climb.run();
 	}
 	
@@ -36,8 +37,12 @@ public class AutonUnlatchClimber extends AutonStep {
 	public boolean isDone(){
 		if (Timer.getFPGATimestamp() > endTime) {
 		    climb.climb(0);//climb.run();
+		    return true;
+		} else {
+			climb.climb(0.6);
+			return false;
 		}
-		return Timer.getFPGATimestamp() > endTime;
+		///return Timer.getFPGATimestamp() > endTime;
 	}
 	
 }

@@ -20,6 +20,7 @@ public class TargetLocaterHigh extends TargetLocater implements Runnable {
 	private static final Limit top_boiler_aspectratio_limit = new TargetLocater.Limit(1.5, 1);
 	private static final Limit bottom_boiler_aspectratio_limit = new TargetLocater.Limit(1.5, 1);
 	private static final int TOP_BOILER_X_ALIGN = 15;
+	private static final int MAX_BOILER_Y = 170;
 
 	private static final Limit rope_area_limit = new TargetLocater.Limit(0, 0);
 	private static final Limit rope_aspectratio_limit = new TargetLocater.Limit(0, 0);
@@ -105,7 +106,8 @@ public class TargetLocaterHigh extends TargetLocater implements Runnable {
 		SmartDashboard.putNumber("boiler xval", currentblock.xcord);
 		
 		if (topBoiler == null && checkLimit(top_boiler_area_limit, (double) currentblock.width * (double) currentblock.height)
-				&& checkLimit(top_boiler_aspectratio_limit, (double) currentblock.width / (double) currentblock.height)) {
+				&& checkLimit(top_boiler_aspectratio_limit, (double) currentblock.width / (double) currentblock.height)
+				&& MAX_BOILER_Y > currentblock.ycord) {
 			topBoiler = currentblock;
 			SmartDashboard.putNumber("settingtopboiler", Timer.getFPGATimestamp());
 		}
@@ -113,7 +115,8 @@ public class TargetLocaterHigh extends TargetLocater implements Runnable {
 		else if (topBoiler != null && checkLimit(bottom_boiler_area_limit, (double) currentblock.height * (double) currentblock.width)
 				&& checkLimit(bottom_boiler_aspectratio_limit, (double) currentblock.width / (double) currentblock.height)
 				&& topBoiler.xcord - TOP_BOILER_X_ALIGN < currentblock.xcord
-				&& topBoiler.xcord + TOP_BOILER_X_ALIGN > currentblock.xcord) {
+				&& topBoiler.xcord + TOP_BOILER_X_ALIGN > currentblock.xcord
+				&& MAX_BOILER_Y > currentblock.ycord) {
 			Target thisBoiler = boiler.getNextTarget();
 			thisBoiler.cameraAngle = (currentblock.xcord - (X_RES / 2)) * X_DEG_PER_PIXEL + physcamangle;
 			thisBoiler.distance = Util.interpolate(BOILER_DIST_AXIS, BOILER_DIST_TABLE, currentblock.width);

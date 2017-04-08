@@ -50,7 +50,7 @@ public class Inputs {
 	public Inputs() { //creates joysticks that are plugged into the port specified in ElectroPaul
 		leftStick = new Joystick(ElectroPaul.LEFT_JOYSTICK_PORT);
 		rightStick = new Joystick(ElectroPaul.RIGHT_JOYSTICK_PORT);
-		//gamepad = new Joystick(ElectroPaul.GAME_PAD_JOYSTICK_PORT);
+		gamepad = new Joystick(ElectroPaul.GAME_PAD_JOYSTICK_PORT);
 		controlBoard = new Joystick(ElectroPaul.CONTROL_BOARD_JOYSTICK_PORT);
 		//driverGamepad = new Joystick(ElectroPaul.DRIVER_GAME_PAD_PORT);
 	}
@@ -65,14 +65,14 @@ public class Inputs {
 		rightJoyStickY = deadband(DEADBAND, -rightStick.getY());
 		leftJoyStickX = deadband(DEADBAND, leftStick.getX());
 		rightJoyStickX = deadband(DEADBAND, rightStick.getX());
-		dynamicBrake = leftStick.getTrigger();
+		dynamicBrake = false; //leftStick.getTrigger();
 		driveStraight = rightStick.getTrigger();
 		//autoGear = rightStick.getRawButton(4);
 		autoShoot = rightStick.getRawButton(5) || rightStick.getRawButton(6);
 		autoShootNoCam = rightStick.getRawButton(6);
 		//autoClimb = leftStick.getRawButton(5);
 		//autoStraight = rightStick.getRawButton(3); //TODO Make autoStraight toggle
-		autoDeliverer= rightStick.getRawButton(2);
+		autoDeliverer= leftStick.getRawButton(1);
 		
 		//if the xbox controller is active, override with drive straight and drive with it
 		/*if(xboxLY > 0|| xboxRX > 0){
@@ -97,9 +97,9 @@ public class Inputs {
 		autoMode = !manualMode;
 		shift = controlBoard.getRawButton(3);
 		
-		if(controlBoard.getRawButton(15)){
+		if(controlBoard.getRawButton(15) || gamepad.getRawButton(1)){
 			gearPanelPosition = 1;
-		} else if (controlBoard.getRawButton(16)){
+		} else if (controlBoard.getRawButton(16) || gamepad.getRawButton(4)){
 			gearPanelPosition = 3;
 		} else {
 			gearPanelPosition = 2;
