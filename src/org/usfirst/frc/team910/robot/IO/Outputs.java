@@ -114,14 +114,14 @@ public class Outputs {
 		gearPanelMotor1.enableBrakeMode(false);
 		gearPanelMotor1.setFeedbackDevice(FeedbackDevice.AnalogEncoder);
 		gearPanelMotor1.configPeakOutputVoltage(10, -10);
-		gearPanelMotor1.setPID(7, 0, 30);
+		gearPanelMotor1.setPID(7,0,30);//(7, 0, 30);
 		//gearPanelMotor1.reverseOutput(true);
 		//gearPanelMotor1.reverseSensor(true);
 		gearPanelMotor2 = new CANTalon(ElectroPaul.GEAR_PANEL_MOTOR_2);
 		gearPanelMotor2.enableBrakeMode(false);
 		gearPanelMotor2.setFeedbackDevice(FeedbackDevice.AnalogEncoder);
 		gearPanelMotor2.configPeakOutputVoltage(10, -10);
-		gearPanelMotor2.setPID(7, 0, 30);
+		gearPanelMotor2.setPID(7,0,30);//(7, 0, 30);
 		//gearPanelMotor2.reverseOutput(true);
 		gearPanelMotor2.reverseSensor(true);
 		

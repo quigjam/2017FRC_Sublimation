@@ -20,7 +20,7 @@ public class AutoShoot {
 	private static final double SHOOT_DISTANCE = 36;
 	private static final double ALLOWABLE_DISTANCE_ERROR = 8;
 	private static final double REVERSE_DIST = 36;
-	private static final double CAM_DIST_FILT = 0.25;	
+	private static final double CAM_DIST_FILT = 1; //SHEP Was  0.25;	
 	
 	private static double P_CONST = 0.035;
 	private static double V_CONST = 0.018;
@@ -103,7 +103,7 @@ public class AutoShoot {
 				//filter dist
 				filteredDist += (currentTarget.distance - filteredDist) * CAM_DIST_FILT;
 				
-				double distPower = P_CONST * (prevDist - SHOOT_DISTANCE);
+				double distPower = P_CONST * (currentTarget.distance - SHOOT_DISTANCE);  //CurrentTargetDistance WAS prevDist
 				//double velPower = -vel * V_CONST;
 				double velPower = -prevVel * V_CONST;   //Changed by Mr C.
 				double power =  distPower + velPower;

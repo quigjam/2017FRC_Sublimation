@@ -213,10 +213,10 @@ public class GearSystem {
 					//TODO: get rid of the current limits stuff we dont need anymore
 					if(gearUpLimit){
 						//out.setGearPanelPower(-GEAR_PANEL_HOLD_UP);
-						out.setGearPanelPosition(SCORE_POSITION_L, SCORE_POSITION_R);
+						out.setGearPanelPosition(AUTON_POSITION_L, AUTON_POSITION_R);
 					} else {
 						//out.setGearPanelPower(-GEAR_PANEL_POWER_UP); // close gear panel
-						out.setGearPanelPosition(SCORE_POSITION_L, SCORE_POSITION_R);
+						out.setGearPanelPosition(AUTON_POSITION_L, AUTON_POSITION_R);
 					}
 					if(out.gearPanel1Current + out.gearPanel2Current > PANEL_CURRENT_PEAK){
 						gearUpTime += sense.deltaTime;
