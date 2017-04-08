@@ -158,9 +158,10 @@ public class AutoShoot {
 			
 			case REVERSE:
 				shoot.shooterPrime(true,false,REVERSE_DIST,false);
-				drive.driveStraightNavX(false, -0.4, 0);
+				drive.driveStraightNavX(false, -0.3, 0);
 				if((drive.leftDriveEncoder + drive.rightDriveEncoder) / 2 > stopDist){
 					drive.tankDrive(0, 0, 1);
+					drive.setBrakes(true);
 					shootState = ShootState.PRIME;
 				}
 				break;
