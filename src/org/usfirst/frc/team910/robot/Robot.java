@@ -16,6 +16,7 @@ import org.usfirst.frc.team910.robot.Subsystems.Shooter;
 
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -119,6 +120,8 @@ public class Robot extends IterativeRobot {
 		
 		light.set(in.cameraEnable);
 		light2.set(in.cameraEnable);
+		
+		SmartDashboard.putNumber("RemainingMatchTime", DriverStation.getInstance().getMatchTime());
 	}
 
 	/**

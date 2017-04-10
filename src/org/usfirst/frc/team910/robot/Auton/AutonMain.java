@@ -11,6 +11,7 @@ import org.usfirst.frc.team910.robot.Subsystems.DriveTrain;
 import org.usfirst.frc.team910.robot.Subsystems.GearSystem;
 import org.usfirst.frc.team910.robot.Subsystems.Shooter;
 
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -28,10 +29,10 @@ public class AutonMain {
 	//drive to hopper
 	private static final double r = 21;//red start turn distance
 	private static final double b = 23;//blue start turn distance
-	//was private static final double[] turnPowerL_2Hopper = 	   { 1, 1, 1, -0.5,  -0.2,    1,    1,   0.5 }; //Inside
-	      private static final double[] turnPowerL_2Hopper = 	   { 1, 1, 1, -0.53, -0.2,    1,    1,   0.5 }; //Inside
-	//was private static final double[] turnPowerR_2Hopper = 	   { 1, 1, 1,    1,    1,    1,    1, -0.65 }; //Outside
-		  private static final double[] turnPowerR_2Hopper = 	   { 1, 1, 1,    1,    1,    1,    1, -0.45 }; //Outside
+  //private static final double[] turnPowerL_2Hopper = 	   { 1, 1, 1, -0.5,  -0.2,    1,    1,  0.5 }; //Inside
+	private static final double[] turnPowerL_2Hopper = 	   { 1, 1, 1, -0.53, -0.2,    1,    1,  0.5 }; //Inside
+  //private static final double[] turnPowerR_2Hopper = 	   { 1, 1, 1,    1,    1,    1,    1, -0.65 }; //Outside
+	private static final double[] turnPowerR_2Hopper = 	   { 1, 1, 1,    1,    1,    1,    1, -0.45 }; //Outside
 	private static final double[] xDistAxis_2Hopper_Red =  { 0, 0, r, r+23, r+44, r+58, r+71,  r+95 }; //end dist is ~121
 	private static final double[] xDistAxis_2Hopper_Blue = { 0, 0, b, b+23, b+44, b+58, b+71,  b+95 }; //switch to this when blue
 		
@@ -96,6 +97,18 @@ public class AutonMain {
 	ArrayList<AutonStep> gearAuto;
 	
 	public AutonMain() {
+	// MOTION PROFILE INPUTS ----------------------------------------------------------------------------------------------------------//
+		MotionProfileInputs mi = new MotionProfileInputs();
+		
+		mi.leftSegments = new double[3]; mi.rightSegments = new double[1];
+		mi.leftSegments[0] = 46; mi.rightSegments[0] = 46;
+		//mi.leftSegments[1] = 60; mi.rightSegments[1] = 36;
+		//mi.leftSegments[2] = 12; mi.rightSegments[2] = 12;
+		mi.leftBrakeDist = mi.leftSegments[0] /*+mi.leftSegments[1] + mi.rightSegments[2]*/ - 4; //start brake 4in into last segment
+		mi.rightBrakeDist = mi.rightSegments[0] /*+ mi.rightSegments[1] + mi.rightSegments[2]*/ - 4; //start brake 4in into last segment
+		
+		
+		
 	// JUST DRIVE AUTO -----------------------------------------------------------------------------------------------------------------//
 		justDrive = new ArrayList<AutonStep>();
 		justDrive.add(new AutonResetAngle());
