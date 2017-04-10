@@ -9,7 +9,8 @@ public class AutonMotionProfiler extends AutonStep {
 	private static final double[] ACCEL_AXIS =  {   0,   60,  180}; //in in/sec
 	
 	
-	private double Ka_MAX;  // max allowed accel power 
+	
+	private static final double Ka_MAX_PCT = 0.9;  
 	private static final double Kv = 0; 	  // power / in/sec
 	private static final double KdistP = 0.1; // power/in of error
 	private static final double dt = 0.02; //time delta between runs
@@ -17,7 +18,7 @@ public class AutonMotionProfiler extends AutonStep {
 	
 	MotionProfileInputs inputs;
 	
-	private int segmentIndex = 0;
+	private int segmentIndex;
 	
 	private double targetL;
 	private double targetR;
@@ -29,9 +30,11 @@ public class AutonMotionProfiler extends AutonStep {
 	private double startL;
 	private double startR;
 	
+	private double Ka_MAX;  // max allowed accel power
+	
 	public AutonMotionProfiler(MotionProfileInputs inputs){
 		this.inputs = inputs;
-		Ka_MAX = inputs.powerLimit * 0.9;
+		Ka_MAX = inputs.powerLimit * Ka_MAX_PCT;
 	}
 	
 	public void setup(boolean blueAlliance){
@@ -93,9 +96,9 @@ public class AutonMotionProfiler extends AutonStep {
 			//calc the leader
 			//calc left side
 			if(brake){
-				accelL = Util.interpolate(ACCEL_AXIS, DECEL_TABLE, Math.abs(targetVelL));
+				accelL = Util.interpolate(ACCEL_AXIS, DECEL_TABLE, Math.abs(targetVelL)) * inputs.powerLimit;
 			} else {
-				accelL = Util.interpolate(ACCEL_AXIS, ACCEL_TABLE, Math.abs(targetVelL));
+				accelL = Util.interpolate(ACCEL_AXIS, ACCEL_TABLE, Math.abs(targetVelL)) * inputs.powerLimit;
 			}	
 			
 			//handle segments that require backing up
@@ -118,9 +121,9 @@ public class AutonMotionProfiler extends AutonStep {
 			//if the signs match, we are accelerating
 			double maxAccel;
 			if(Math.signum(requiredAccelR) == Math.signum(requiredVelR)){
-				maxAccel = Util.interpolate(ACCEL_AXIS, ACCEL_TABLE, Math.abs(targetVelR));
+				maxAccel = Util.interpolate(ACCEL_AXIS, ACCEL_TABLE, Math.abs(targetVelR)) * inputs.powerLimit;
 			} else {
-				maxAccel = Util.interpolate(ACCEL_AXIS, DECEL_TABLE, Math.abs(targetVelR));
+				maxAccel = Util.interpolate(ACCEL_AXIS, DECEL_TABLE, Math.abs(targetVelR)) * inputs.powerLimit;
 			}
 			
 			//if accel is larger than the max, than we need to limit it
@@ -134,7 +137,7 @@ public class AutonMotionProfiler extends AutonStep {
 				accelR = requiredAccelR;
 				targetVelR = requiredVelR;
 				targetR = newTargetR;
-				KaR = requiredAccelR / Math.abs(maxAccel);
+				KaR = requiredAccelR / Math.abs(maxAccel) * Ka_MAX_PCT;
 			}
 			
 			
@@ -143,9 +146,9 @@ public class AutonMotionProfiler extends AutonStep {
 			//calc the leader
 			//calc right side
 			if(brake){
-				accelR = Util.interpolate(ACCEL_AXIS, DECEL_TABLE, Math.abs(targetVelR));
+				accelR = Util.interpolate(ACCEL_AXIS, DECEL_TABLE, Math.abs(targetVelR)) * inputs.powerLimit;
 			} else {
-				accelR = Util.interpolate(ACCEL_AXIS, ACCEL_TABLE, Math.abs(targetVelR));
+				accelR = Util.interpolate(ACCEL_AXIS, ACCEL_TABLE, Math.abs(targetVelR)) * inputs.powerLimit;
 			}	
 			
 			//handle segments that require backing up
@@ -168,9 +171,9 @@ public class AutonMotionProfiler extends AutonStep {
 			//if the signs match, we are accelerating
 			double maxAccel;
 			if(Math.signum(requiredAccelL) == Math.signum(requiredVelL)){
-				maxAccel = Util.interpolate(ACCEL_AXIS, ACCEL_TABLE, Math.abs(targetVelL));
+				maxAccel = Util.interpolate(ACCEL_AXIS, ACCEL_TABLE, Math.abs(targetVelL)) * inputs.powerLimit;
 			} else {
-				maxAccel = Util.interpolate(ACCEL_AXIS, DECEL_TABLE, Math.abs(targetVelL));
+				maxAccel = Util.interpolate(ACCEL_AXIS, DECEL_TABLE, Math.abs(targetVelL)) * inputs.powerLimit;
 			}
 			
 			//if accel is larger than the max, than we need to limit it
@@ -184,7 +187,7 @@ public class AutonMotionProfiler extends AutonStep {
 				accelL = requiredAccelL;
 				targetVelL = requiredVelL;
 				targetL = newTargetL;
-				KaL = requiredAccelL / Math.abs(maxAccel);
+				KaL = requiredAccelL / Math.abs(maxAccel) * Ka_MAX_PCT;
 			}
 		}
 
