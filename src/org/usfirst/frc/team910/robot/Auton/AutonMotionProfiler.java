@@ -2,6 +2,8 @@ package org.usfirst.frc.team910.robot.Auton;
 
 import org.usfirst.frc.team910.robot.IO.Util;
 
+import edu.wpi.first.wpilibj.Timer;
+
 public class AutonMotionProfiler extends AutonStep {
 	
 	private static final double[] ACCEL_TABLE = { 170,  170,  170}; //in in/sec/sec
@@ -30,6 +32,14 @@ public class AutonMotionProfiler extends AutonStep {
 	private double startL;
 	private double startR;
 	
+	private double totalL;
+	private double totalR;
+	
+	private double leftSum;
+	private double rightSum;
+	
+	private double startTime;
+	
 	private double Ka_MAX;  // max allowed accel power
 	
 	public AutonMotionProfiler(MotionProfileInputs inputs){
@@ -49,6 +59,15 @@ public class AutonMotionProfiler extends AutonStep {
 		targetVelR = 0;
 		targetL = 0;
 		targetR = 0;
+		
+		startTime = 0;
+		
+		leftSum = 0;
+		rightSum = 0;
+		for(int i=0;i<inputs.leftSegments.length;i++){
+			leftSum += inputs.leftSegments[i];
+			rightSum += inputs.rightSegments[i];
+		}
 	}
 	
 	public void run(){
@@ -59,8 +78,8 @@ public class AutonMotionProfiler extends AutonStep {
 		double deltaL = currL - prevDistL;
 		double deltaR = currR - prevDistR;
 		
-		double totalL = currL - startL;
-		double totalR = currR - startR;
+		totalL = currL - startL;
+		totalR = currR - startR;
 		
 		//is this the first part of a new segment?
 		boolean newSegment = !(segmentIndex == inputs.leftSegments.length - 1);
@@ -200,9 +219,14 @@ public class AutonMotionProfiler extends AutonStep {
 		drive.tankDrive(leftPower, rightPower, inputs.powerLimit);
 		
 	}
-	
+	//segments 
 	public boolean isDone(){
-		return true;
+		
+		return totalL > inputs.endL 
+			|| totalR > inputs.endR
+			|| Timer.getFPGATimestamp() > startTime + inputs.endTime
+			|| sense.getAccel() > inputs.endAccel
+			|| (totalL > leftSum && totalR > rightSum);		
 	}
 	
 }

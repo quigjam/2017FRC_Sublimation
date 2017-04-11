@@ -41,6 +41,10 @@ public class Sensors {
 		//navx.zeroYaw();
 		zeroYaw = navx.getYaw();
 	}
+	
+	public double getAccel() {
+		return navx.getRawAccelX() + navx.getRawAccelY();
+ 	}
 
 	public void read() {
 

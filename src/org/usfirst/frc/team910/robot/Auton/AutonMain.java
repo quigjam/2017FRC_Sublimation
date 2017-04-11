@@ -106,8 +106,12 @@ public class AutonMain {
 		//mi.leftSegments[2] = 12; mi.rightSegments[2] = 12;
 		mi.leftBrakeDist = mi.leftSegments[0] /*+mi.leftSegments[1] + mi.rightSegments[2]*/ - 4; //start brake 4in into last segment
 		mi.rightBrakeDist = mi.rightSegments[0] /*+ mi.rightSegments[1] + mi.rightSegments[2]*/ - 4; //start brake 4in into last segment
+		mi.endL = 46;
+		mi.endR = 46;
+		mi.endTime = 1.5;
+		mi.endAccel = 999;
 		
-		
+		new AutonMotionProfiler(mi);
 		
 	// JUST DRIVE AUTO -----------------------------------------------------------------------------------------------------------------//
 		justDrive = new ArrayList<AutonStep>();
