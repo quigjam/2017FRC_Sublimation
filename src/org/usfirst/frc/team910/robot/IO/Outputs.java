@@ -15,6 +15,8 @@ public class Outputs {
 	private static final double AMP_SEC_LIMIT = 70; //in amp*sec 
 	private static final double MIN_REST_TIME = 5;// in seconds
 	private static final double DRIVE_INCH_PER_REV = 4*Math.PI;
+	
+	private static final double SHOOTER_SPEED_LIMIT = 200; //when to ramp to full power
 
 	// private CANTalon leftMotor1;
 	// private CANTalon leftMotor2;
@@ -86,7 +88,9 @@ public class Outputs {
 		shooterMotor.reverseSensor(true); 
 		//shooterMotor.setCloseLoopRampRate(7);//7V per sec done below
 		//shooterMotor.setPID(0.65, 0, 1.15, 0.062, 0, 28, 0);
-		shooterMotor.setPID(1, 0, 1.15, 0.062, 0, 40, 0);
+		//shooterMotor.setPID(1, 0, 1.15, 0.062, 0, 40, 0);
+		shooterMotor.setPID(99999, 0, 0, 0, 0, 0, 0); //bang bang PID settings
+		shooterMotor.configPeakOutputVoltage(0, -6); //half power to start bang bang
 
 		transporterMotor = new CANTalon(ElectroPaul.TRANSPORTER_MOTOR);
 		transporterMotor.enableBrakeMode(true);
@@ -178,6 +182,14 @@ public class Outputs {
 			shooterMotor.changeControlMode(TalonControlMode.Speed);
 			//shooterMotor.changeControlMode(TalonControlMode.PercentVbus);
 			shooterMotor.set(speed);
+			
+			//bang bang
+			if(shooterMotor.getSpeed() > SHOOTER_SPEED_LIMIT){
+				shooterMotor.configPeakOutputVoltage(0, -12);
+			} else {
+				shooterMotor.configPeakOutputVoltage(0, -6); //half power
+			}
+			
 		}
 	}
 
