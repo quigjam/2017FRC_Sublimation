@@ -16,7 +16,7 @@ public class AutoShoot {
 	private static double DRIVE_POWER = 0.5;
 	private static final double ALLOWABLE_ANGLE_ERROR = 1;
 	private static final double LAG_TIME = 0.1;
-	private static final double SETTLE_TIME = 0.5;
+	private static final double SETTLE_TIME = 0.25; //was .5 consider increasing if we coast into or away from the boiler
 	private static final double SHOOT_DISTANCE = 36;
 	private static final double ALLOWABLE_DISTANCE_ERROR = 8;
 	private static final double REVERSE_DIST = 36;

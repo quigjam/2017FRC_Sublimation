@@ -43,8 +43,10 @@ public class AutonMain {
 	private static final double[] turnPowerL_From_Hopper = { -1, -1,   -1, 0.75,   1,  0.55, -1 }; //Outside of backup then Inside of Forward
 	private static final double[] turnPowerR_From_Hopper = { -1, -1, 0.1,    1,   1,  0.55, -1 }; //Inside of backup  then Outside of Forward
 	private static final double[] turnAngle_From_Hopper =  { 90, 90,   90,  160, 160,  160, 160 };
-	private static final double[] xDistAxis_From_Hopper =  {  0,  0,   20,   30,  40,   55,  64 };//end dist is ~63
-	
+	//private static final double[] xDistAxis_From_Hopper =  {  0,  0,   20,   30,  40,   55,  64 };//end dist is ~63
+
+	private static final double[] xDistAxis_From_Hopper =  {  0,  0,   20,   30,  40,   55,  64 };//TAKE 3 OFF LAST 2 VALUES? end dist is ~63
+		
 	//drive to gear peg left 
 	private static final double[] turnPowerL_gearL = { -1, -1, -1,    -1,   -1,  -1,   1 };
 	private static final double[] turnPowerR_gearL = { -1, -1, -1, -0.15,   -1,  -1,   1 };
@@ -67,8 +69,8 @@ public class AutonMain {
 	
 	
 	//hopper end points
-	private static final double End_Point_To_Hopper = 36; //how far on the y axis to travel into the hopper
-	private static final double End_Point_From_Hopper = -22; //was26 //how far on the x axis to drive to the boiler
+	private static final double End_Point_To_Hopper = 36; //COULD be a tiny bit more! //how far on the y axis to travel into the hopper
+	private static final double End_Point_From_Hopper = -18; // LOWER IF POSS! WAS -22; //was26 //how far on the x axis to drive to the boiler
 	private static final double End_Point_To_Center_Gear = 80; //use if only driving straight
 	//private static final double End_Point_To_Center_Gear = 160; //use for the turning part
 	private static final double End_Point_To_Side_Gear_L = 154;
