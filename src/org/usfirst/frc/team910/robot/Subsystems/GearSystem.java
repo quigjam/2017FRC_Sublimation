@@ -21,9 +21,9 @@ public class GearSystem {
 
 	private static final double GROUND_POSITION = 200;
 
-	private static final double SCORE_POSITION_L = 581; //prac bot:469; // 581 //596 //578 //TODO change the pot values back to the comp bot pot values
+	private static final double SCORE_POSITION_L =469; //END OF SHEPARD 581; //prac bot:469; // 581 //596 //578 //TODO change the pot values back to the comp bot pot values
 														// //460; //pot values
-	private static final double SCORE_POSITION_R = -364;//prac bot:-398; // 364 //-342 //-368
+	private static final double SCORE_POSITION_R = -394; // END OF SHEPARD -364;//prac bot:-398; // 364 //-342 //-368
 															// //-850;
 
 	private static final double AUTON_POSITION_L = SCORE_POSITION_L - 77; // was

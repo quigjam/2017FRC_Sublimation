@@ -41,10 +41,12 @@ public class DriveTrain {
 	};
 
 	private DriveFunction prevTask = DriveFunction.TANK_DRIVE;
-
+	
 	public void run(boolean auton) {
 		leftDriveEncoder = out.leftDriveEncoder;
 		rightDriveEncoder = out.rightDriveEncoder;
+
+		
 
 		if (in.autoClimb || in.autoGear || in.autoShoot || in.autoHopper || auton) {
 			

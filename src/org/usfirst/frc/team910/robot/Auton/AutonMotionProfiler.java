@@ -3,19 +3,22 @@ package org.usfirst.frc.team910.robot.Auton;
 import org.usfirst.frc.team910.robot.IO.Util;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class AutonMotionProfiler extends AutonStep {
 	
-	private static final double[] ACCEL_TABLE = { 170,  170,  170}; //in in/sec/sec
-	private static final double[] DECEL_TABLE = {-170, -170, -170};
-	private static final double[] ACCEL_AXIS =  {   0,   60,  180}; //in in/sec
+	private static final double[] ACCEL_TABLE = { 170,  100,   30,    0}; //in in/sec/sec
+	private static final double[] DECEL_TABLE = {-180, -130,  -80,  -60};
+	private static final double[] ACCEL_AXIS =  {   0,  120,  200,  210}; //in in/sec
 	
 	
-	
-	private static final double Ka_MAX_PCT = 0.9;  
+	private static final double Ka_MAX_PCT = 0.6;  
 	private static final double Kv = 0; 	  // power / in/sec
-	private static final double KdistP = 0.1; // power/in of error
+	private static final double KdistP = 0.45; // power/in of error
 	private static final double dt = 0.02; //time delta between runs
+	
+	private static int profileCount = 1;
+	private int driveNum = 0;
 	
 	
 	MotionProfileInputs inputs;
@@ -38,29 +41,41 @@ public class AutonMotionProfiler extends AutonStep {
 	private double leftSum;
 	private double rightSum;
 	
-	private double startTime;
+	private double endTime;
 	
 	private double Ka_MAX;  // max allowed accel power
+	
+	private boolean forwardsL;
+	private boolean forwardsR;
 	
 	public AutonMotionProfiler(MotionProfileInputs inputs){
 		this.inputs = inputs;
 		Ka_MAX = inputs.powerLimit * Ka_MAX_PCT;
+		
+		forwardsL = inputs.leftSegments[0] > 0;
+		forwardsR = inputs.rightSegments[0] > 0;
 	}
 	
 	public void setup(boolean blueAlliance){
+		driveNum = profileCount;
+		profileCount++;
+		
 		segmentIndex = 0;
 		
-		prevDistL = drive.leftDriveEncoder;
-		prevDistR = drive.rightDriveEncoder;
-		startL = prevDistL;
-		startR = prevDistR;
+		startL = drive.leftDriveEncoder;
+		startR = drive.rightDriveEncoder;
+		prevDistL = 0;
+		prevDistR = 0;
 		
 		targetVelL = 0;
 		targetVelR = 0;
 		targetL = 0;
 		targetR = 0;
 		
-		startTime = 0;
+		totalL = 0;
+		totalR = 0;
+		
+		endTime = inputs.endTime + Timer.getFPGATimestamp();
 		
 		leftSum = 0;
 		rightSum = 0;
@@ -72,14 +87,14 @@ public class AutonMotionProfiler extends AutonStep {
 	
 	public void run(){
 		
-		double currL = drive.leftDriveEncoder;
-		double currR = drive.rightDriveEncoder;
+		double currL = drive.leftDriveEncoder - startL;
+		double currR = drive.rightDriveEncoder - startR;
 		
 		double deltaL = currL - prevDistL;
 		double deltaR = currR - prevDistR;
 		
-		totalL = currL - startL;
-		totalR = currR - startR;
+		totalL += deltaL;
+		totalR += deltaR;
 		
 		//is this the first part of a new segment?
 		boolean newSegment = !(segmentIndex == inputs.leftSegments.length - 1);
@@ -90,11 +105,16 @@ public class AutonMotionProfiler extends AutonStep {
 			//setup new segment
 			targetL -= inputs.leftSegments[segmentIndex];
 			targetR -= inputs.rightSegments[segmentIndex];
-			
+			currL -= inputs.leftSegments[segmentIndex];
+			currR -= inputs.rightSegments[segmentIndex];
+			startL += inputs.leftSegments[segmentIndex];
+			startR += inputs.rightSegments[segmentIndex];
 			
 			segmentIndex++;
 		}
 		
+		prevDistL = currL;
+		prevDistR = currR;
 			
 		// run this segment
 		
@@ -116,6 +136,7 @@ public class AutonMotionProfiler extends AutonStep {
 			//calc left side
 			if(brake){
 				accelL = Util.interpolate(ACCEL_AXIS, DECEL_TABLE, Math.abs(targetVelL)) * inputs.powerLimit;
+				KaL = -KaL;
 			} else {
 				accelL = Util.interpolate(ACCEL_AXIS, ACCEL_TABLE, Math.abs(targetVelL)) * inputs.powerLimit;
 			}	
@@ -123,6 +144,7 @@ public class AutonMotionProfiler extends AutonStep {
 			//handle segments that require backing up
 			if(inputs.leftSegments[segmentIndex] < 0){
 				accelL = -accelL;
+				KaL = -KaL;
 			}
 			
 			targetL += 0.5 * accelL * dt * dt + targetVelL * dt;
@@ -150,6 +172,7 @@ public class AutonMotionProfiler extends AutonStep {
 			//else use the ones we already calculated
 			if(Math.abs(requiredAccelR) > Math.abs(maxAccel)){
 				accelR = Math.abs(maxAccel) * Math.signum(requiredAccelR);
+				KaR = KaR * Math.signum(requiredAccelR);
 				targetR += 0.5 * accelR * dt * dt + targetVelR * dt;
 				targetVelR += accelR * dt;
 			} else {
@@ -166,6 +189,7 @@ public class AutonMotionProfiler extends AutonStep {
 			//calc right side
 			if(brake){
 				accelR = Util.interpolate(ACCEL_AXIS, DECEL_TABLE, Math.abs(targetVelR)) * inputs.powerLimit;
+				KaR = -KaR;
 			} else {
 				accelR = Util.interpolate(ACCEL_AXIS, ACCEL_TABLE, Math.abs(targetVelR)) * inputs.powerLimit;
 			}	
@@ -173,6 +197,7 @@ public class AutonMotionProfiler extends AutonStep {
 			//handle segments that require backing up
 			if(inputs.rightSegments[segmentIndex] < 0){
 				accelR = -accelR;
+				KaR = -KaR;
 			}
 			
 			targetR += 0.5 * accelR * dt * dt + targetVelR * dt;
@@ -200,6 +225,7 @@ public class AutonMotionProfiler extends AutonStep {
 			//else use the ones we already calculated
 			if(Math.abs(requiredAccelL) > Math.abs(maxAccel)){
 				accelL = Math.abs(maxAccel) * Math.signum(requiredAccelL);
+				KaL = KaL * Math.signum(requiredAccelL);
 				targetL += 0.5 * accelL * dt * dt + targetVelL * dt;
 				targetVelL += accelL * dt;
 			} else {
@@ -218,15 +244,48 @@ public class AutonMotionProfiler extends AutonStep {
 		
 		drive.tankDrive(leftPower, rightPower, inputs.powerLimit);
 		
+		SmartDashboard.putNumber("autonPowerL", leftPower);
+		SmartDashboard.putNumber("autonPowerR", rightPower);
+		SmartDashboard.putNumber("autonTargetVelL", targetVelL);
+		SmartDashboard.putNumber("autonTargetVelR", targetVelR);
+		SmartDashboard.putNumber("targetL", targetL);
+		SmartDashboard.putNumber("targetR", targetR);
+		SmartDashboard.putNumber("totalL", totalL);
+		SmartDashboard.putNumber("totalR", totalR);
+		SmartDashboard.putNumber("KaL", KaL);
+		SmartDashboard.putNumber("KaR", KaR);
+		SmartDashboard.putNumber("lErr", targetL - currL);
+		SmartDashboard.putNumber("rErr", targetR - currR);
+		
+		
 	}
 	//segments 
 	public boolean isDone(){
 		
-		return totalL > inputs.endL 
-			|| totalR > inputs.endR
-			|| Timer.getFPGATimestamp() > startTime + inputs.endTime
-			|| sense.getAccel() > inputs.endAccel
-			|| (totalL > leftSum && totalR > rightSum);		
+		if(Math.abs(totalL) > Math.abs(inputs.endL)){
+			SmartDashboard.putString("MotionProfileEnd" + driveNum, "totalL");
+			return true;
+		} else if(Math.abs(totalR) > Math.abs(inputs.endR)){
+			SmartDashboard.putString("MotionProfileEnd" + driveNum, "totalR");
+			return true;
+		} else if(Timer.getFPGATimestamp() > endTime){
+			SmartDashboard.putString("MotionProfileEnd" + driveNum, "time");
+			return true;
+		} else if(Math.abs(sense.getAccel()) > Math.abs(inputs.endAccel)){
+			SmartDashboard.putString("MotionProfileEnd" + driveNum, "accel");
+			return true;
+		} else if(Math.abs(totalL) > Math.abs(leftSum) && Math.abs(totalR) > Math.abs(rightSum)){
+			SmartDashboard.putString("MotionProfileEnd" + driveNum, "pathComplete");
+			return true;
+		} else if((forwardsL && targetVelL < 0 || !forwardsL && targetVelR > 0) || 
+				  (forwardsR && targetVelR < 0 || !forwardsR && targetVelR > 0)) {
+  		    SmartDashboard.putString("MotionProfileEnd" + driveNum, "speedZero");
+			return true;	 
+		} else {
+			SmartDashboard.putString("MotionProfileEnd" + driveNum, "");
+			return false;
+		}
+				
 	}
 	
 }

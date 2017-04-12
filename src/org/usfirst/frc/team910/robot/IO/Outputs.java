@@ -42,6 +42,8 @@ public class Outputs {
 
 	public double leftDriveEncoder;
 	public double rightDriveEncoder;
+	public double leftDriveSpeed;
+	public double rightDriveSpeed;
 	public double shooterSpeedEncoder;
 	public double transporterSpeedEncoder;
 	public double agitatorSpeedEncoder;
@@ -88,8 +90,12 @@ public class Outputs {
 		shooterMotor.reverseSensor(true); 
 		//shooterMotor.setCloseLoopRampRate(7);//7V per sec done below
 		//shooterMotor.setPID(0.65, 0, 1.15, 0.062, 0, 28, 0);
-		//shooterMotor.setPID(1, 0, 1.15, 0.062, 0, 40, 0);
-		shooterMotor.setPID(99999, 0, 0, 0, 0, 0, 0); //bang bang PID settings
+		//shooterMotor.setPID(1, 0, 1.15, 0.062, 0, 40, 0); //OLD PID with Shepherd with 9:1 Shooter Trans!  
+		//shooterMotor.setPID(2.5, 0, 2, 0.0318, 0, 0, 0); //PID, FFwd set for 1800rpm, 4:1 Trans  
+		shooterMotor.setPID(2.4, 0, 2.1, 0.0318, 0, 0, 0); //PID, FFwd set for 1740rpm, 4:1 Trans    1785 actual rpm at 37" hit 26/30
+	
+	//shooterMotor.setPID(99999, 0, 0, 0, 0, 0, 0); //bang bang PID settings
+	
 		shooterMotor.configPeakOutputVoltage(0, -6); //half power to start bang bang
 
 		transporterMotor = new CANTalon(ElectroPaul.TRANSPORTER_MOTOR);
@@ -100,6 +106,7 @@ public class Outputs {
 		transporterMotor.configPeakOutputVoltage(0, -12);
 		transporterMotor.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
 		transporterMotor.setPID(0.025, 0, 0.03, 0.04, 0, 0, 0);
+		
 		
 		agitatorMotor = new CANTalon(ElectroPaul.AGITATOR_MOTOR);
 		agitatorMotor.enableBrakeMode(false);
@@ -155,7 +162,7 @@ public class Outputs {
 	
 	public void setDriveBrake(boolean brake){
 		//disabled brake mode
-		//brake = false;
+		brake = false;
 		leftDriveCan1.enableBrakeMode(brake);
 		leftDriveCan2.enableBrakeMode(brake);
 		leftDriveCan3.enableBrakeMode(brake);
@@ -288,9 +295,21 @@ public class Outputs {
 	}
 
 	double maxTransporterSpeed = 0;
+	
+	private double lastLeft;
+	private double lastRight;
+	private double lastTime;
+	
 	public void readEncoders() {
+		double time = Timer.getFPGATimestamp();
 		leftDriveEncoder = leftDriveCan1.getPosition() * DRIVE_INCH_PER_REV;
 		rightDriveEncoder = rightDriveCan1.getPosition()*DRIVE_INCH_PER_REV;
+		leftDriveSpeed = (leftDriveEncoder - lastLeft) / (time - lastTime);
+		lastLeft = leftDriveEncoder;
+		rightDriveSpeed = (rightDriveEncoder - lastRight) / (time - lastTime);
+		lastRight = rightDriveEncoder;
+		lastTime = time;
+		
 		shooterSpeedEncoder = shooterMotor.getSpeed();
 		transporterSpeedEncoder = transporterMotor.getSpeed();
 		agitatorSpeedEncoder = agitatorMotor.getSpeed();
@@ -317,6 +336,9 @@ public class Outputs {
 		SmartDashboard.putNumber("MaxTransporterSpeed", maxTransporterSpeed);
 		SmartDashboard.putNumber("leftDriveEncoder", leftDriveEncoder);
 		SmartDashboard.putNumber("rightDriveEncoder", rightDriveEncoder);
+		SmartDashboard.putNumber("leftDriveSpeed", leftDriveSpeed);
+		SmartDashboard.putNumber("rightDriveSpeed", rightDriveSpeed);
+		if(shooterSpeedEncoder > 1725)
 		SmartDashboard.putNumber("shooterSpeedEncoder", shooterSpeedEncoder);
 		SmartDashboard.putNumber("transporterSpeedEncoder", transporterSpeedEncoder);
 		SmartDashboard.putNumber("agitatorSpeedEncoder", agitatorSpeedEncoder);
@@ -324,5 +346,7 @@ public class Outputs {
 		SmartDashboard.putNumber("gearPanelPositionPotR", gearPanelPositionPotR);
 		SmartDashboard.putNumber("GearIntakeCurrent", gearIntakeCurrent);
 
+		SmartDashboard.putDouble("shooterpower", shooterMotor.getOutputVoltage());
+		
 	}
 }

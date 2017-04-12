@@ -9,16 +9,17 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Shooter {
-	private static final double SHOOTER_SPEED = 1820; //1830; //1850;
+	private static final double SHOOTER_SPEED = 1865;// 1740; //1820; //1830; //1850;
 	private static final double JOG_AMOUNT = 10;
 	private static final double ALLOWABLE_SHOOTER_ERROR = 70;
 	
 	private static final double AGI_FILT = 0.2;
 	
-	private static final double[] SHOOTER_PWR_AXIS = {12, 18, 36, 48, 60};
+	//private static final double[] SHOOTER_PWR_AXIS = {12, 18, 36, 48, 60};
+	private static final double[] SHOOTER_PWR_AXIS = {24, 30, 36, 42, 48, 54};
 	//private static final double[] SHOOTER_PWR_TABLE = {1630, 1660, 1880, 1900, 1930}; // took 10 off all 4/7/17 11:21
-	private static final double[] SHOOTER_PWR_TABLE = {1615, 1645, 1865, 1885, 1915}; // took 15 off all 4/7/17 4:31
-	
+	//private static final double[] SHOOTER_PWR_TABLE = {1615, 1645, 1865, 1885, 1915}; // took 15 off all 4/7/17 4:31
+	private static final double[] SHOOTER_PWR_TABLE = {1695, 1725, 1775, 1825, 1865, 1895}; 
 	private Outputs out;
 	private Inputs in;
 
