@@ -29,25 +29,25 @@ public class AutonMain {
 	//drive to hopper
 //b4msc was	private static final double r = 21;//was 21//red start turn distance
 //b4msc was	private static final double b = 21; //was21//b4 msc: 23;//blue start turn distance
-	private static final double r = 36; //45;//was 21//red start turn distance
-	private static final double b = 36;//Add 3? //was21//b4 msc: 23;//blue start turn distance
-  //private static final double[] turnPowerL_2Hopper = 	   { 1, 1, 1, -0.5,  -0.2,    1,    1,  0.5 }; //Inside
+	private static final double r = 29; //was 36 in match32  //45;//was 21//red start turn distance
+	private static final double b = 29; //was 36 in match32  //Add 3? //was21//b4 msc: 23;//blue start turn distance
+  private static final double[] turnPowerL_2Hopper = 	   { 1, 1, 1, -0.5,  -0.2,    1,    1,  0.5 }; //Inside
 //b4msc was	private static final double[] turnPowerL_2Hopper = 	   { 1, 1, 1, -1, -.4,    1,    1,  0.5 }; //Inside
    
 //BLUE   
-	private static final double[] turnPowerL_2Hopper = 	   { 1, 1, 1, -1, 0.2,    .3,    .5,  0.1 }; //Inside   //BLUE 
-    private static final double[] turnPowerR_2Hopper = 	   { 1, 1, 1,  1,   1,    1,    1, -0.15 }; //Outside  BLUE
+	//private static final double[] turnPowerL_2Hopper = 	   { 1, 1, 1, -1, 0.2,    .3,    .5,  0.1 }; //Inside   //BLUE 
+    //private static final double[] turnPowerR_2Hopper = 	   { 1, 1, 1,  1,   1,    1,    1, -0.15 }; //Outside  BLUE
          
   //private static final double[] turnPowerR_2Hopper = 	   { 1, 1, 1,  1,    1,    1,    1, -0.65 }; //Outside 
-	//private static final double[] turnPowerR_2Hopper = 	   { 1, 1, 1,  1,   1,    1,    1, -0.45 }; //Outside  B4 MSC
+	private static final double[] turnPowerR_2Hopper = 	   { 1, 1, 1,  1,   1,    1,    1, -0.45 }; //Outside  B4 MSC
 
   /*       //RED
        private static final double[] turnPowerL_2Hopper = 	   { 1, 1, 1, -1, .2,    .3,    .6,  0.1 }; //Inside   //RED
        private static final double[] turnPowerR_2Hopper = 	   { 1, 1, 1,  1,   1,    1,    1, -0.15 }; //Outside  RED
 
     */     
-	private static final double[] xDistAxis_2Hopper_Red =  { 0, 0, r, r+23, r+44, r+58, r+71,  r+95 }; //B4 MSC was 95 on last one, end dist is ~121
-	private static final double[] xDistAxis_2Hopper_Blue = { 0, 0, b, b+23, b+44, b+58, b+71,  b+95 }; //B4 MSC was 95 on last one, switch to this when blue
+	private static final double[] xDistAxis_2Hopper_Red =  { 0, 0, r, r+23, r+44, r+58, r+71,  r+93 }; //B4 MSC was 95 on last one, end dist is ~121
+	private static final double[] xDistAxis_2Hopper_Blue = { 0, 0, b, b+23, b+44, b+58, b+71,  b+93 }; //B4 MSC was 95 on last one, switch to this when blue
 
 /*	B4 MSC:	
 	private static final double[] xDistAxis_2Hopper_Red =  { 0, 0, r, r+23, r+44, r+58, r+71,  r+95 }; //end dist is ~121
@@ -80,7 +80,7 @@ public class AutonMain {
 	//private static final double[] turnAngle_From_Hopper =  { 90, 90,   90,  160, 160,  160, 160 };
 	//private static final double[] xDistAxis_From_Hopper =  {  0,  0,   20,   30,  40,   55,  64 };//end dist is ~63
 */
-	private static final double[] xDistAxis_From_Hopper =  {  0,  0,   20,   30,  40,   55,  64 };//TAKE 3 OFF LAST 2 VALUES? end dist is ~63
+	private static final double[] xDistAxis_From_Hopper =  {  0,  0,   20,   30,  40,   52,  61 };//TAKE 3 OFF LAST 2 VALUES? end dist is ~63
 		
 	//drive to gear peg left 
 	private static final double[] turnPowerL_gearL = { -1, -1, -1,    -1,   -1,  -1,   1 };
@@ -267,17 +267,14 @@ public class AutonMain {
 		centerGearAuto.add(new AutonResetAngle());
 		
 		//drive and relase climber/gear
-		ArrayList<AutonStep> list = new ArrayList<AutonStep>();
-		//list.add(new AutonUnlatchClimber(CLIMBER_RUN_TIME));
-		list.add(new AutonDriveTime(-gearDrivePwr, 1.5, 0, false));
+		centerGearAuto.add(new AutonDriveTime(-gearDrivePwr, 1.6, 0, false));
 		/*list.add( new AutonFastArc(false,true,gearDrivePwr,turnPowerL_gearC,turnPowerR_gearC,turnAngle_gearC,xDistAxis_gearC,new DriveComplete(){
 			public boolean isDone(double l, double r, double x, double y, boolean blueAlliance){
 				return Math.abs(l) > End_Point_To_Center_Gear;
 			}
 		}));*/
 		
-		ParallelStep ps = new ParallelStep(list);
-		centerGearAuto.add(ps);
+		
 		
 		
 		/*
@@ -294,7 +291,11 @@ public class AutonMain {
 		centerGearAuto.add(new AutonDriveTime(gearDrivePwr, 0.75, 0, false));
 		
 		//drive towards boiler (not needed when we are using the table with the turn at the end -- 4/7)
-		centerGearAuto.add(new AutonAllianceDrive(new AutonDriveTime(gearDrivePwr, 1.5, -60, false), new AutonDriveTime(gearDrivePwr, 1.5, 60, false)));
+		ArrayList<AutonStep> list = new ArrayList<AutonStep>();
+		list.add(new AutonUnlatchClimber(CLIMBER_RUN_TIME));
+		list.add(new AutonAllianceDrive(new AutonDriveTime(gearDrivePwr, 2.2, -75, false), new AutonDriveTime(gearDrivePwr, 2.2, 75, false)));
+		ParallelStep ps = new ParallelStep(list);
+		centerGearAuto.add(ps);
 		
 		//shoot
 		centerGearAuto.add(new AutonAutoShoot(10));

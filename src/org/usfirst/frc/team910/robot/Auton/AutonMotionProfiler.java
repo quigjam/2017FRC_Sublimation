@@ -11,11 +11,12 @@ public class AutonMotionProfiler extends AutonStep {
 	private static final double[] DECEL_TABLE = {-180, -130,  -80,  -60};
 	private static final double[] ACCEL_AXIS =  {   0,  120,  200,  210}; //in in/sec
 	
-	
 	private static final double Ka_MAX_PCT = 0.6;  
 	private static final double Kv = 0; 	  // power / in/sec
 	private static final double KdistP = 0.45; // power/in of error
 	private static final double dt = 0.02; //time delta between runs
+	
+	private static final double MAX_ERROR = 3; //max error before slowing down
 	
 	private static int profileCount = 1;
 	private int driveNum = 0;
@@ -150,6 +151,12 @@ public class AutonMotionProfiler extends AutonStep {
 			targetL += 0.5 * accelL * dt * dt + targetVelL * dt;
 			targetVelL += accelL * dt;
 			
+			//slow down if target is too far ahead of the current position
+			if(Math.abs(targetL) > Math.abs(currL + MAX_ERROR)){
+				targetL = currL + MAX_ERROR * Math.signum(targetL);
+				targetVelL = deltaL / dt;
+			}
+			
 			//calc the follower distance setpoint
 			//calc the right side
 			double newTargetR = targetL / inputs.leftSegments[segmentIndex] * inputs.rightSegments[segmentIndex]; 
@@ -202,6 +209,12 @@ public class AutonMotionProfiler extends AutonStep {
 			
 			targetR += 0.5 * accelR * dt * dt + targetVelR * dt;
 			targetVelR += accelR * dt;
+			
+			//slow down if target is too far ahead of the current position
+			if(Math.abs(targetR) > Math.abs(currR + MAX_ERROR)){
+				targetR = currR + MAX_ERROR * Math.signum(targetR);
+				targetVelR = deltaR / dt;
+			}
 			
 			//calc the follower distance setpoint
 			//calc the left side

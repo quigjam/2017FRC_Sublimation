@@ -15,7 +15,7 @@ public class Shooter {
 	
 	private static final double AGI_FILT = 0.2;
 	
-	private static final double SHOOTER_ADJ = 15;	//Added at MSC because all shooting was SHORT!
+	private static final double SHOOTER_ADJ = 70;	//Added at MSC because all shooting was SHORT!
 	
 	//private static final double[] SHOOTER_PWR_AXIS = {12, 18, 36, 48, 60};
 	private static final double[] SHOOTER_PWR_AXIS = {24, 30, 36, 42, 48, 54};

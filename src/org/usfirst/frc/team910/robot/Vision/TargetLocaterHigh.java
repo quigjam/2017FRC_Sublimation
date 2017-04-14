@@ -96,6 +96,7 @@ public class TargetLocaterHigh extends TargetLocater implements Runnable {
 		thisBoiler.time = Timer.getFPGATimestamp();
 		thisBoiler.totalAngle.set(thisBoiler.robotAngle + thisBoiler.cameraAngle);
 		boiler.setNextTargetAsCurrent();
+		SmartDashboard.putNumber("boilerY", topBoiler.ycord);
 		return;
 	}
 	
@@ -119,13 +120,14 @@ public class TargetLocaterHigh extends TargetLocater implements Runnable {
 				&& MAX_BOILER_Y > currentblock.ycord) {
 			Target thisBoiler = boiler.getNextTarget();
 			thisBoiler.cameraAngle = (currentblock.xcord - (X_RES / 2)) * X_DEG_PER_PIXEL + physcamangle;
-			thisBoiler.distance = Util.interpolate(BOILER_DIST_AXIS, BOILER_DIST_TABLE, currentblock.width);
+			thisBoiler.distance = Util.interpolate(BOILER_DIST_AXIS, BOILER_DIST_TABLE, currentblock.ycord);
 			thisBoiler.robotAngle = currentblock.robotAngle;
 			thisBoiler.time = Timer.getFPGATimestamp();
 			thisBoiler.totalAngle.set(thisBoiler.cameraAngle + thisBoiler.robotAngle);
 			boiler.setNextTargetAsCurrent();
 			foundBot = true;
 			SmartDashboard.putNumber("settingboiler", Timer.getFPGATimestamp());
+			SmartDashboard.putNumber("boilerY", currentblock.ycord);
 		}
 	}
 
@@ -135,7 +137,7 @@ public class TargetLocaterHigh extends TargetLocater implements Runnable {
 				&& checkLimit(rope_area_limit, currentblock.width * currentblock.height)) {
 			Target thisRope = rope.getNextTarget();
 			thisRope.cameraAngle = (currentblock.xcord - (X_RES / 2)) * X_DEG_PER_PIXEL + physcamangle;
-			thisRope.distance = Util.interpolate(ROPE_DIST_AXIS, ROPE_DIST_TABLE, currentblock.width);
+			thisRope.distance = Util.interpolate(ROPE_DIST_AXIS, ROPE_DIST_TABLE, currentblock.ycord);
 			thisRope.robotAngle = sense.robotAngle.get();
 			thisRope.time = Timer.getFPGATimestamp();
 			thisRope.totalAngle.set(thisRope.cameraAngle + thisRope.robotAngle);
