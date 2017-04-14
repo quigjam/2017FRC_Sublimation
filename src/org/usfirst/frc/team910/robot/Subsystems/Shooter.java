@@ -15,11 +15,14 @@ public class Shooter {
 	
 	private static final double AGI_FILT = 0.2;
 	
+	private static final double SHOOTER_ADJ = 15;	//Added at MSC because all shooting was SHORT!
+	
 	//private static final double[] SHOOTER_PWR_AXIS = {12, 18, 36, 48, 60};
 	private static final double[] SHOOTER_PWR_AXIS = {24, 30, 36, 42, 48, 54};
 	//private static final double[] SHOOTER_PWR_TABLE = {1630, 1660, 1880, 1900, 1930}; // took 10 off all 4/7/17 11:21
 	//private static final double[] SHOOTER_PWR_TABLE = {1615, 1645, 1865, 1885, 1915}; // took 15 off all 4/7/17 4:31
-	private static final double[] SHOOTER_PWR_TABLE = {1695, 1725, 1775, 1825, 1865, 1895}; 
+	//private static final double[] SHOOTER_PWR_TABLE = {1695, 1725, 1775, 1825, 1865, 1895}; //B4 MSC 
+	private static final double[] SHOOTER_PWR_TABLE = {1695+ SHOOTER_ADJ, 1725+ SHOOTER_ADJ, 1775+ SHOOTER_ADJ, 1825+ SHOOTER_ADJ, 1865+ SHOOTER_ADJ, 1895+ SHOOTER_ADJ}; 
 	private Outputs out;
 	private Inputs in;
 

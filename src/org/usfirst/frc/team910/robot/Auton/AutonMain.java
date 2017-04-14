@@ -27,24 +27,59 @@ public class AutonMain {
 	private static double CLIMBER_RUN_TIME = 0.35;
 	
 	//drive to hopper
-	private static final double r = 21;//red start turn distance
-	private static final double b = 23;//blue start turn distance
+//b4msc was	private static final double r = 21;//was 21//red start turn distance
+//b4msc was	private static final double b = 21; //was21//b4 msc: 23;//blue start turn distance
+	private static final double r = 36; //45;//was 21//red start turn distance
+	private static final double b = 36;//Add 3? //was21//b4 msc: 23;//blue start turn distance
   //private static final double[] turnPowerL_2Hopper = 	   { 1, 1, 1, -0.5,  -0.2,    1,    1,  0.5 }; //Inside
-	private static final double[] turnPowerL_2Hopper = 	   { 1, 1, 1, -0.53, -0.2,    1,    1,  0.5 }; //Inside
-  //private static final double[] turnPowerR_2Hopper = 	   { 1, 1, 1,    1,    1,    1,    1, -0.65 }; //Outside
-	private static final double[] turnPowerR_2Hopper = 	   { 1, 1, 1,    1,    1,    1,    1, -0.45 }; //Outside
+//b4msc was	private static final double[] turnPowerL_2Hopper = 	   { 1, 1, 1, -1, -.4,    1,    1,  0.5 }; //Inside
+   
+//BLUE   
+	private static final double[] turnPowerL_2Hopper = 	   { 1, 1, 1, -1, 0.2,    .3,    .5,  0.1 }; //Inside   //BLUE 
+    private static final double[] turnPowerR_2Hopper = 	   { 1, 1, 1,  1,   1,    1,    1, -0.15 }; //Outside  BLUE
+         
+  //private static final double[] turnPowerR_2Hopper = 	   { 1, 1, 1,  1,    1,    1,    1, -0.65 }; //Outside 
+	//private static final double[] turnPowerR_2Hopper = 	   { 1, 1, 1,  1,   1,    1,    1, -0.45 }; //Outside  B4 MSC
+
+  /*       //RED
+       private static final double[] turnPowerL_2Hopper = 	   { 1, 1, 1, -1, .2,    .3,    .6,  0.1 }; //Inside   //RED
+       private static final double[] turnPowerR_2Hopper = 	   { 1, 1, 1,  1,   1,    1,    1, -0.15 }; //Outside  RED
+
+    */     
+	private static final double[] xDistAxis_2Hopper_Red =  { 0, 0, r, r+23, r+44, r+58, r+71,  r+95 }; //B4 MSC was 95 on last one, end dist is ~121
+	private static final double[] xDistAxis_2Hopper_Blue = { 0, 0, b, b+23, b+44, b+58, b+71,  b+95 }; //B4 MSC was 95 on last one, switch to this when blue
+
+/*	B4 MSC:	
 	private static final double[] xDistAxis_2Hopper_Red =  { 0, 0, r, r+23, r+44, r+58, r+71,  r+95 }; //end dist is ~121
 	private static final double[] xDistAxis_2Hopper_Blue = { 0, 0, b, b+23, b+44, b+58, b+71,  b+95 }; //switch to this when blue
-		
+*/
+	
+	
 	//Next line NOT USED
 	private static final double[] turnAngle_2Hopper =  	   { 0, 0, 0,    0,   45,   80,   90,    90 };
 	
 	//drive from hopper to boiler
-	private static final double[] turnPowerL_From_Hopper = { -1, -1,   -1, 0.75,   1,  0.55, -1 }; //Outside of backup then Inside of Forward
-	private static final double[] turnPowerR_From_Hopper = { -1, -1, 0.1,    1,   1,  0.55, -1 }; //Inside of backup  then Outside of Forward
+/*	B4 MSC:
+  	private static final double[] turnPowerL_From_Hopper = { -1, -1,   -1, 0.75,   1,  0.55, -1 }; //Outside of backup then Inside of Forward
+	private static final double[] turnPowerR_From_Hopper = { -1, -1,  0.1,    1,   1,  0.55, -1 }; //Inside of backup  then Outside of Forward
 	private static final double[] turnAngle_From_Hopper =  { 90, 90,   90,  160, 160,  160, 160 };
-	//private static final double[] xDistAxis_From_Hopper =  {  0,  0,   20,   30,  40,   55,  64 };//end dist is ~63
+	private static final double[] xDistAxis_From_Hopper =  {  0,  0,   20,   30,  40,   55,  64 };//TAKE 3 OFF LAST 2 VALUES? end dist is ~63
+*/
 
+
+//BLUE	
+	private static final double[] turnPowerL_From_Hopper = { -1, -1,   -1, 0.75,   1,  0.55, -1 }; //Outside of backup then Inside of Forward
+	private static final double[] turnPowerR_From_Hopper = { -1, -1,   0,     1,   1,  0.55, -1 }; //Inside of backup  then Outside of Forward
+	private static final double[] turnAngle_From_Hopper =  { 90, 90,   90,  160, 160,  160, 160 };
+	
+	
+/*// RED	
+	private static final double[] turnPowerL_From_Hopper = { -1, -1,   -1, 0.75,   1,  0.55, -1 }; //Outside of backup then Inside of Forward
+	private static final double[] turnPowerR_From_Hopper = { -1, -1,  0.4,    1,   1,  0.55, -1 }; //Inside of backup  then Outside of Forward
+	private static final double[] turnAngle_From_Hopper =  { 90, 90,   90,  160, 160,  160, 160 };
+	//private static final double[] turnAngle_From_Hopper =  { 90, 90,   90,  160, 160,  160, 160 };
+	//private static final double[] xDistAxis_From_Hopper =  {  0,  0,   20,   30,  40,   55,  64 };//end dist is ~63
+*/
 	private static final double[] xDistAxis_From_Hopper =  {  0,  0,   20,   30,  40,   55,  64 };//TAKE 3 OFF LAST 2 VALUES? end dist is ~63
 		
 	//drive to gear peg left 
