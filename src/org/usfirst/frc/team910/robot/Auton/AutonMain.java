@@ -29,9 +29,9 @@ public class AutonMain {
 	//drive to hopper
 //b4msc was	private static final double r = 21;//was 21//red start turn distance
 //b4msc was	private static final double b = 21; //was21//b4 msc: 23;//blue start turn distance
-	private static final double r = 29; //was 36 in match32  //45;//was 21//red start turn distance
+	private static final double r = 31; //was 36 in match32  //45;//was 21//red start turn distance
 	private static final double b = 29; //was 36 in match32  //Add 3? //was21//b4 msc: 23;//blue start turn distance
-  private static final double[] turnPowerL_2Hopper = 	   { 1, 1, 1, -0.5,  -0.2,    1,    1,  0.5 }; //Inside
+  private static final double[] turnPowerL_2Hopper = 	   { 1, 1, 1, -0.5,  -0.2,    1,    0.5,  0.2 }; //Inside
 //b4msc was	private static final double[] turnPowerL_2Hopper = 	   { 1, 1, 1, -1, -.4,    1,    1,  0.5 }; //Inside
    
 //BLUE   
@@ -266,8 +266,7 @@ public class AutonMain {
 		centerGearAuto = new ArrayList<AutonStep>();
 		centerGearAuto.add(new AutonResetAngle());
 		
-		//drive and relase climber/gear
-		centerGearAuto.add(new AutonDriveTime(-gearDrivePwr, 1.6, 0, false));
+		
 		/*list.add( new AutonFastArc(false,true,gearDrivePwr,turnPowerL_gearC,turnPowerR_gearC,turnAngle_gearC,xDistAxis_gearC,new DriveComplete(){
 			public boolean isDone(double l, double r, double x, double y, boolean blueAlliance){
 				return Math.abs(l) > End_Point_To_Center_Gear;
@@ -287,13 +286,15 @@ public class AutonMain {
 		//deliver gear (no longer needed with passive deployer)
 		//centerGearAuto.add(new AutonGearDeploy());
 		
+		//drive forward
+		centerGearAuto.add(new AutonDriveTime(-gearDrivePwr, 1.6, 0, false));
 		//reverse
 		centerGearAuto.add(new AutonDriveTime(gearDrivePwr, 0.75, 0, false));
 		
 		//drive towards boiler (not needed when we are using the table with the turn at the end -- 4/7)
 		ArrayList<AutonStep> list = new ArrayList<AutonStep>();
 		list.add(new AutonUnlatchClimber(CLIMBER_RUN_TIME));
-		list.add(new AutonAllianceDrive(new AutonDriveTime(gearDrivePwr, 2.2, -75, false), new AutonDriveTime(gearDrivePwr, 2.2, 75, false)));
+		list.add(new AutonAllianceDrive(new AutonDriveTime(gearDrivePwr, 2.4, -95, false), new AutonDriveTime(gearDrivePwr, 2.4, 95, false)));
 		ParallelStep ps = new ParallelStep(list);
 		centerGearAuto.add(ps);
 		
