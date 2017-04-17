@@ -29,9 +29,9 @@ public class Inputs {
 	public boolean autoStraight = false;
 	public boolean autoDeliverer = false;
 	public boolean driveJogRight2 = false;
-	public boolean driveJogLeft = false; //added 4/17
+	public boolean driveJogLeft4 = false; //added 4/17
 	public boolean driveJogLeft2 = false;
-	public boolean driveJogRight = false;
+	public boolean driveJogRight4 = false;
 	public boolean driveJogRunning = false; //added 4/17, not used on Joystick
 
 	// operator functions
@@ -65,10 +65,10 @@ public class Inputs {
 			
 		//double xboxLY = deadband(DEADBAND_XBOX, driverGamepad.getRawAxis(1));
 		//double xboxRX = deadband(DEADBAND_XBOX, driverGamepad.getRawAxis(4));
-		driveJogLeft = leftStick.getRawButton(3);
-		driveJogRight = leftStick.getRawButton(4);
+		driveJogLeft4 = leftStick.getRawButton(3);
+		driveJogRight4 = leftStick.getRawButton(4);
 		driveJogLeft2 = leftStick.getRawButton(5);
-		driveJogRight2 =leftStick.getRawButton(6);
+		driveJogRight2 = leftStick.getRawButton(6);
 		leftJoyStickY = deadband(DEADBAND, -leftStick.getY()); //joystick with deadband taken into account
 		rightJoyStickY = deadband(DEADBAND, -rightStick.getY());
 		leftJoyStickX = deadband(DEADBAND, leftStick.getX());
