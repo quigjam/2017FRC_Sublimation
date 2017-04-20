@@ -67,7 +67,7 @@ public class DriveJog {
 					forwardOutside = TWO_INCH_FORWARD_OUTSIDE;
 				}
 				jogState = JogState.REVERSE_FIRST_CURVE;
-				goingRight = in.driveJogRight4;
+				goingRight = in.driveJogRight4 || in.driveJogRight2;
 				startleftencoder = drive.leftDriveEncoder;
 				startrightencoder = drive.rightDriveEncoder;
 				prevDrivePwr = MIN_PWR;
