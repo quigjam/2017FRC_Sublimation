@@ -10,18 +10,18 @@ public class DriveJog {
 
 	private double forwardInside;
 	private double forwardOutside;
-	private static final double REVERSE_INSIDE = 0;
+	private static final double REVERSE_INSIDE = 0; 
 	private static final double REVERSE_OUTSIDE = 7;
 	private static final double TWO_INCH_FORWARD_INSIDE = 3; // drive straight
 	private static final double TWO_INCH_FORWARD_OUTSIDE = 3;
 	private static final double FOUR_INCH_FORWARD_INSIDE = 0;
-	private static final double FOUR_INCH_FORWARD_OUTSIDE = 7; // S curve the same as reverse
-	private static final double DRIVE_PWR_FILT = 0.1;
-	private static final double MAX_PWR = 0.7;
-	private static final double MIN_PWR = 0.3;
-	private static final double P_CONST = 0.2;
-	private static final double STOP_TIME = 0.3;
-	private static final double MAX_STAGE_TIME = 0.5;
+	private static final double FOUR_INCH_FORWARD_OUTSIDE = 7; // S curve the same as reverse but in other direction
+	private static final double DRIVE_PWR_FILT = 0.1; //how fast we ramp from current power to max power, 0.1 is min to max in 0.5 seconds
+	private static final double MAX_PWR = 0.7; //power is capped at this
+	private static final double MIN_PWR = 0.3; //power filter is reset to this inbetween stages
+	private static final double P_CONST = 0.2; //PID constant 0.2 power per inch of error
+	private static final double STOP_TIME = 0.3; //extra time to PID to the final distance at the end to ensure we stop
+	private static final double MAX_STAGE_TIME = 0.5; //4 stages at this amount of time, if any of them exceed this we stop
 
 	private Inputs in;
 	private Outputs out;

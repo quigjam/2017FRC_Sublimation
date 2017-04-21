@@ -111,6 +111,10 @@ public class Outputs {
 		agitatorMotor = new CANTalon(ElectroPaul.AGITATOR_MOTOR);
 		agitatorMotor.enableBrakeMode(false);
 		agitatorMotor.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
+		agitatorMotor.setInverted(true);
+		agitatorMotor.reverseOutput(true);
+		agitatorMotor.reverseSensor(false);
+		agitatorMotor.setPID(0, 0.0001, 0, 0.038, 0, 0, 0);
 		//agitatorMotor.setVoltageRampRate(12);
 		
 		climbMotor1 = new CANTalon(ElectroPaul.CLIMB_MOTOR_1);
@@ -227,6 +231,11 @@ public class Outputs {
 
 	public void setAgitatorSpeed(double speed) { //Lets agitator be set by speed
 		agitatorMotor.changeControlMode(TalonControlMode.Speed);
+		if (speed <= 0){
+			agitatorMotor.configPeakOutputVoltage(0, -12);
+		} else {
+			agitatorMotor.configPeakOutputVoltage(12, 0);
+		}
 		agitatorMotor.set(speed);
 	}
 

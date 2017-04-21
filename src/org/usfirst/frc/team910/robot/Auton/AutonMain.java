@@ -139,14 +139,14 @@ public class AutonMain {
 		MotionProfileInputs mi = new MotionProfileInputs();
 		
 		mi.leftSegments = new double[2]; mi.rightSegments = new double[2];
-		mi.leftSegments[0] = 60; mi.rightSegments[0] = 20;
-		mi.leftSegments[1] = 10; mi.rightSegments[1] = 10.1;
+		mi.leftSegments[0] = 30; mi.rightSegments[0] = 30;
+		mi.leftSegments[1] = 30; mi.rightSegments[1] = 30;
 		//mi.leftSegments[2] = 12; mi.rightSegments[2] = 12;
-		mi.leftBrakeDist = mi.leftSegments[0] + mi.leftSegments[1] /*+ mi.rightSegments[2]*/ - 28; //start brake 4in into last segment
+		mi.leftBrakeDist = mi.leftSegments[0] + mi.leftSegments[1] /*+ mi.rightSegments[2]*/ - 14; //start brake 4in into last segment
 		mi.rightBrakeDist = mi.rightSegments[0] + mi.rightSegments[1] /*+ mi.rightSegments[2]*/ - 0; //start brake 4in into last segment
-		mi.endL = 75;
-		mi.endR = 35;
-		mi.endTime = 1.5;
+		mi.endL = mi.leftSegments[0] + mi.leftSegments[1] + 5;
+		mi.endR = mi.rightSegments[0] + mi.rightSegments[1] + 5;
+		mi.endTime = 2.0;
 		mi.endAccel = 999;
 		mi.powerLimit = 0.9;
 		
@@ -155,8 +155,8 @@ public class AutonMain {
 		justDrive = new ArrayList<AutonStep>();
 		justDrive.add(new AutonResetAngle());
 		//justDrive.add(new AutonUnlatchClimber(CLIMBER_RUN_TIME)); //remove later
-		justDrive.add(new AutonDriveTime(0.5, 1.5, 0, false)); //make positive power again
-		//justDrive.add(new AutonMotionProfiler(mi));
+		//justDrive.add(new AutonDriveTime(0.5, 1.5, 0, false)); //make positive power again
+		justDrive.add(new AutonMotionProfiler(mi));
 		
 		//justDrive.add(new AutonWait(1.5)); //remove later
 		//justDrive.add(new AutonAllianceDrive(new AutonDriveTime(0.3,1.75,-30,false), new AutonDriveTime(0.3,1.75,30,false)));//remove later

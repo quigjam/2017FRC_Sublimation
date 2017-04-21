@@ -65,7 +65,7 @@ public class Shooter {
 				out.setAgitatorPower(0);
 				
 			} else{	//firing
-				out.setTransportSpeed(3500);
+				out.setTransportSpeed(6000); //was 3500
 				
 				//track the agitator time
 				double time = Timer.getFPGATimestamp();
@@ -92,9 +92,9 @@ public class Shooter {
 				
 				//either pause the agi or dont
 				if(pauseAgi){
-					out.setAgitatorPower(1);
+					out.setAgitatorPower(-1);
 				} else {
-					out.setAgitatorPower(1);
+					out.setAgitatorPower(-1);
 				}
 				
 				//record the last time for the next loop
@@ -105,9 +105,11 @@ public class Shooter {
 			if(fire) {//if fire pressed and not prime, just spin the agitator
 				
 				if(reverse){ //if reverse is pressed, spin it backwards
-					out.setAgitatorPower(-1);
+					//out.setAgitatorPower(1);
+					out.setAgitatorSpeed(-800);
 				} else {
-					out.setAgitatorPower(1);					
+					//out.setAgitatorPower(-1);					
+					out.setAgitatorSpeed(800);
 				}
 
 			} else {
