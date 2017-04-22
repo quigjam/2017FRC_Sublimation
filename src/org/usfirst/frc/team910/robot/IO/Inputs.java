@@ -30,6 +30,7 @@ public class Inputs {
 	public boolean autoDeliverer = false;
 	public boolean driveJogRight2 = false;
 	public boolean driveJogLeft = false; //added 4/17
+	public boolean driveJogLeft2 = false;
 	public boolean driveJogRight = false;
 	public boolean driveJogRunning = false; //added 4/17, not used on Joystick
 
