@@ -57,6 +57,8 @@ public class Shooter {
 			
 			shooterSetSpeed = Util.interpolate(SHOOTER_PWR_AXIS, SHOOTER_PWR_TABLE, dist);
 			out.setShooterSpeed(shooterSetSpeed + jogoffset); // ready the shooter to fire (with our constant shooter speed + how much we have jogged)
+			
+			SmartDashboard.putNumber("JogValue", shooterSetSpeed + jogoffset); // put out the jog-adjusted value to the dashboard
 			//out.setAgitatorPower(1); // start spinning the agitator to get the fuel moving
 			// out.setShooterPower (0.5);
 			
@@ -163,6 +165,6 @@ public class Shooter {
 		prevjogup = in.jogShooterUp; // make sure we don't add more than once for button push
 		prevjogdown = in.jogShooterDown; // or subtract
 
-		SmartDashboard.putNumber("JogValue", SHOOTER_SPEED + jogoffset); // put out the jog-adjusted value to the dashboardgit
+		//SmartDashboard.putNumber("JogValue", SHOOTER_SPEED + jogoffset); // put out the jog-adjusted value to the dashboard
 	}
 }

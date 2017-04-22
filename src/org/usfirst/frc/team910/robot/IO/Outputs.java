@@ -16,7 +16,7 @@ public class Outputs {
 	private static final double MIN_REST_TIME = 5;// in seconds
 	private static final double DRIVE_INCH_PER_REV = 4*Math.PI;
 	
-	private static final double SHOOTER_SPEED_LIMIT = 200; //when to ramp to full power
+	//private static final double SHOOTER_SPEED_LIMIT = 500; //when to ramp to full power
 
 	// private CANTalon leftMotor1;
 	// private CANTalon leftMotor2;
@@ -195,10 +195,14 @@ public class Outputs {
 			shooterMotor.set(speed);
 			
 			//bang bang
-			if(shooterMotor.getSpeed() > SHOOTER_SPEED_LIMIT){
+			if(shooterMotor.getSpeed() > 800){
 				shooterMotor.configPeakOutputVoltage(0, -12);
+			} else if(shooterMotor.getSpeed() > 600) {
+				shooterMotor.configPeakOutputVoltage(0, -10); 
+			} else if(shooterMotor.getSpeed() > 400) {
+				shooterMotor.configPeakOutputVoltage(0, -8); 
 			} else {
-				shooterMotor.configPeakOutputVoltage(0, -6); //half power
+				shooterMotor.configPeakOutputVoltage(0, -6); 
 			}
 			
 		}

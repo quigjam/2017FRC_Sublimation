@@ -33,7 +33,9 @@ public class Inputs {
 	public boolean driveJogLeft2 = false;
 	public boolean driveJogRight4 = false;
 	public boolean driveJogRunning = false; //added 4/17, not used on Joystick
-
+	public boolean driveJogLeft8  = false; //added 4/20
+	public boolean driveJogRight8 = false; //added 4/20
+	
 	// operator functions
 	public boolean primeButton = false;
 	public boolean fireButton = false;
@@ -69,6 +71,16 @@ public class Inputs {
 		driveJogRight4 = leftStick.getRawButton(4);
 		driveJogLeft2 = leftStick.getRawButton(5);
 		driveJogRight2 = leftStick.getRawButton(6);
+		
+		int tmpPOV = leftStick.getPOV(); 						//Get value of left joystick POV (hat) button
+		driveJogRight8 = false;									//Default left8 to false (note: actual POV button value is -1 when not pressed.
+		if (tmpPOV > 0 && tmpPOV < 180) driveJogRight8 = true;	//It'll be 45, 90 or 135 if anywhere to the RIGHT 
+		driveJogLeft8 = false;									//Default right8 to false (actual POV button value is -1 when not pressed.
+		if (tmpPOV > 180 && tmpPOV < 360) driveJogLeft8 = true;	//It'll be 225, 270 or 315 if anywhere to the LEFT
+		
+		//SmartDashboard.putBoolean("driveJogLeft8",  driveJogLeft8);
+		//SmartDashboard.putBoolean("driveJogRight8", driveJogRight8);
+		
 		leftJoyStickY = deadband(DEADBAND, -leftStick.getY()); //joystick with deadband taken into account
 		rightJoyStickY = deadband(DEADBAND, -rightStick.getY());
 		leftJoyStickX = deadband(DEADBAND, leftStick.getX());
