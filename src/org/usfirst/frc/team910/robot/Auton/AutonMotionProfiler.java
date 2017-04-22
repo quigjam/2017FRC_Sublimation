@@ -290,7 +290,7 @@ public class AutonMotionProfiler extends AutonStep {
 		} else if(Math.abs(totalL) > Math.abs(leftSum) && Math.abs(totalR) > Math.abs(rightSum)){
 			SmartDashboard.putString("MotionProfileEnd" + driveNum, "pathComplete");
 			return true;
-		} else if((forwardsL && targetVelL < 0 || !forwardsL && targetVelR > 0) || 
+		} else if((forwardsL && targetVelL < 0 || !forwardsL && targetVelL > 0) && 
 				  (forwardsR && targetVelR < 0 || !forwardsR && targetVelR > 0)) {
   		    SmartDashboard.putString("MotionProfileEnd" + driveNum, "speedZero");
 			return true;	 

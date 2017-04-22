@@ -48,7 +48,7 @@ public class DriveTrain {
 
 		
 
-		if (in.autoClimb || in.autoGear || in.autoShoot || in.autoHopper || auton) {
+		if (in.autoClimb || in.autoGear || in.autoShoot || in.autoHopper || auton || in.driveJogRunning) {
 			
 		} else if (in.dynamicBrake) {	
 			setBrakes(false);

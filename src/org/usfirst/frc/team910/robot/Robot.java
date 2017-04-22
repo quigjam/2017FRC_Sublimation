@@ -5,6 +5,7 @@ import org.usfirst.frc.team910.robot.Functions.AutoClimb;
 import org.usfirst.frc.team910.robot.Functions.AutoDelivererer;
 import org.usfirst.frc.team910.robot.Functions.AutoGear;
 import org.usfirst.frc.team910.robot.Functions.AutoShoot;
+import org.usfirst.frc.team910.robot.Functions.DriveJog;
 import org.usfirst.frc.team910.robot.IO.ElectroPaul;
 import org.usfirst.frc.team910.robot.IO.Inputs;
 import org.usfirst.frc.team910.robot.IO.Outputs;
@@ -36,6 +37,7 @@ public class Robot extends IterativeRobot {
 	AutoGear autoGear;
 	AutoShoot autoShoot;
 	AutoDelivererer autoDelivererer;
+	DriveJog driveJog;
 	
 	AutonMain autonmain;
 	Solenoid light;
@@ -62,6 +64,7 @@ public class Robot extends IterativeRobot {
 		autoGear = new AutoGear(in, sense, drive, gear);
 		autoShoot = new AutoShoot(in, shoot, sense, drive);
 		autoDelivererer = new AutoDelivererer(in, gear, sense, drive);
+		driveJog = new DriveJog(in, out, drive);
 
 		autonmain = new AutonMain();
 		light = new Solenoid(0);
@@ -113,6 +116,7 @@ public class Robot extends IterativeRobot {
 	
 		autoShoot.run();
 		autoDelivererer.run();
+		driveJog.run();
 		
 		shoot.run();
 		gear.run();
