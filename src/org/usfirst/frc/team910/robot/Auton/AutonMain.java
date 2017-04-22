@@ -56,7 +56,7 @@ public class AutonMain {
 	
 	
 	//Next line NOT USED
-	private static final double[] turnAngle_2Hopper =  	   { 0, 0, 0,    0,   45,   80,   90,    90 };
+	private static final double[] turnAngle_2Hopper =  	   { -1, -1, -1,    -1,   -1,   -1,   -1,    -1 };
 	
 	//drive from hopper to boiler
 /*	B4 MSC:
@@ -70,7 +70,7 @@ public class AutonMain {
 //BLUE	
 	private static final double[] turnPowerL_From_Hopper = { -1, -1,   -1, 0.75,   1,  0.55, -1 }; //Outside of backup then Inside of Forward
 	private static final double[] turnPowerR_From_Hopper = { -1, -1,   0,     1,   1,  0.55, -1 }; //Inside of backup  then Outside of Forward
-	private static final double[] turnAngle_From_Hopper =  { 90, 90,   90,  160, 160,  160, 160 };
+	private static final double[] turnAngle_From_Hopper =  { -1, -1,   -1,  -1, -1,  -1, -1 };
 	
 	
 /*// RED	
@@ -82,24 +82,35 @@ public class AutonMain {
 */
 	private static final double[] xDistAxis_From_Hopper =  {  0,  0,   20,   30,  40,   52,  61 };//TAKE 3 OFF LAST 2 VALUES? end dist is ~63
 		
-	//drive to gear peg left 
+	//drive to gear peg right, red side 
+	private static final double grR = 75;
+	private static final double[] turnPowerL_gearR_red = { -1, -1,  -1,     -1,   -0.5,   -0.5,  -0.5,      1,        1,    -0.2,    -0.4,    -0.5 };
+	private static final double[] turnPowerR_gearR_red = { -1, -1,  -1,      1,      0,      0,     1,      1,        1,       1,    -0.4,    -0.5 };
+	private static final double[] turnAngle_gearR_red =  {  0,  0,   0,     -1,     -1,     -1,    -1,     -1,       -1,      -1,      -1,      -1 };
+	private static final double[] xDistAxis_gearR_red  = {  0,  0, grR, grR+12, grR+24, grR+28, grR+32, grR+54, grR+97 , grR+108, grR+110, grR+119 };
+	private static final double End_Point_To_Side_GearR_Red = grR + 112.5;
+	
+	//drive to gear peg right, blue side 
+	private static final double grB = 80;
+	private static final double[] turnPowerL_gearR_blue = { -1, -1,  -1,     0,    0.5,      1,       1,    -0.5 };
+	private static final double[] turnPowerR_gearR_blue = { -1, -1,  -1,    -1,      1,      1,       1,    -0.5 };
+	private static final double[] turnAngle_gearR_blue =  {  0,  0,   1,     1,      1,      1,       1,       1 };
+	private static final double[] xDistAxis_gearR_blue  = {  0,  0, grB, grB+5, grB+10, grB+20, grB+100, grB+105 };
+	private static final double End_Point_To_Side_GearR_Blue = grB + 110;
+	
+	
+	//drive to gear peg left
 	private static final double[] turnPowerL_gearL = { -1, -1, -1,    -1,   -1,  -1,   1 };
 	private static final double[] turnPowerR_gearL = { -1, -1, -1, -0.15,   -1,  -1,   1 };
 	private static final double[] turnAngle_gearL =  {  0,  0,  0,   -45,  -60, -60, -60 };
 	private static final double[] xDistAxis_gearL =  {  0,  0, 90,   115,  140, 150, 160 };
-	
-	//drive to gear peg left
-	private static final double[] turnPowerL_gearR = { -1, -1, -1,    -1,   -1,  -1,   1 };
-	private static final double[] turnPowerR_gearR = { -1, -1, -1, -0.15,   -1,  -1,   1 };
-	private static final double[] turnAngle_gearR =  {  0,  0,  0,   -45,  -60, -60, -60 };
-	private static final double[] xDistAxis_gearR =  {  0,  0, 90,   115,  140, 150, 160 };
 	
 	//drive to center gear
 	private static final double[] turnPowerL_gearC = { -1, -1, -1,  1,    1 }; //use these if you want to drive straight
 	private static final double[] turnPowerR_gearC = { -1, -1, -1,  1,    1 };
 	//private static final double[] turnPowerL_gearC = { -1, -1, -1,  1,   1,  0.5 }; //use these to turn on the way out
 	//private static final double[] turnPowerR_gearC = { -1, -1, -1,  1, 0.1,  0.5 };
-	private static final double[] turnAngle_gearC =  {  0,  0,  0,  0,   0,    0 };
+	private static final double[] turnAngle_gearC =  {  -1,  -1,  -1,  -1,   -1,    -1 };
 	private static final double[] xDistAxis_gearC =  {  0,  0, 56, 76,  90,  165 };
 	
 	
@@ -108,8 +119,8 @@ public class AutonMain {
 	private static final double End_Point_From_Hopper = -18; // LOWER IF POSS! WAS -22; //was26 //how far on the x axis to drive to the boiler
 	private static final double End_Point_To_Center_Gear = 80; //use if only driving straight
 	//private static final double End_Point_To_Center_Gear = 160; //use for the turning part
+	//private static final double End_Point_To_Side_Gear_R = 154;
 	private static final double End_Point_To_Side_Gear_L = 154;
-	private static final double End_Point_To_Side_Gear_R = 154;
 	
 	
 	
@@ -236,31 +247,55 @@ public class AutonMain {
 		
 		
 		//GEAR AUTOS -----------------------------------------------------------------------------------------------//
-		double gearDrivePwr = 0.45; //was .75 with other drive cycle
+		double fastGearDrivePwr = 0.7;
 
-		/*
+		
 		leftGearAuto = new ArrayList<AutonStep>();
 		leftGearAuto.add(new AutonResetAngle());
-		leftGearAuto.add(new AutonDriveStraight(5*12 , gearDrivePwr, 0));
-		leftGearAuto.add(new AutonDriveTime(gearDrivePwr, 2, -60, false));
-		leftGearAuto.add(new AutonGearDeploy());
-		leftGearAuto.add(new AutonDriveTime(-gearDrivePwr, 2, -60, false));
-		leftGearAuto.add(new AutonAllianceDrive(new AutonDriveTime(gearDrivePwr, 2, 150, true), new AutonDriveCircle(Math.PI*6*12*4/6, 1, 30, 6*12, 180, true)));
+		
+		//leftGearAuto.add(new AutonDriveStraight(5*12 , gearDrivePwr, 0));
+		//leftGearAuto.add(new AutonDriveTime(gearDrivePwr, 2, -60, false));
+		//leftGearAuto.add(new AutonGearDeploy());
+		//leftGearAuto.add(new AutonDriveTime(-gearDrivePwr, 2, -60, false));
+		//leftGearAuto.add(new AutonAllianceDrive(new AutonDriveTime(gearDrivePwr, 2, 150, true), new AutonDriveCircle(Math.PI*6*12*4/6, 1, 30, 6*12, 180, true)));
+		
 		leftGearAuto.add(new AutonAutoShoot(6));
 		leftGearAuto.add(new AutonEndStep());
 		
+		
 		rightGearAuto = new ArrayList<AutonStep>();
 		rightGearAuto.add(new AutonResetAngle());
-		rightGearAuto.add(new AutonDriveStraight(5*12 , gearDrivePwr, 0));
-		rightGearAuto.add(new AutonDriveTime(gearDrivePwr, 2, 60, false));
-		rightGearAuto.add(new AutonGearDeploy());
-		rightGearAuto.add(new AutonDriveTime(-gearDrivePwr, 2, 60, false));
-		rightGearAuto.add(new AutonAllianceDrive(new AutonDriveCircle(Math.PI*6*12*4/6, 1, -30, 6*12, 180, false), new AutonDriveTime(gearDrivePwr, 2, -150, true)));
-		rightGearAuto.add(new AutonAutoShoot(6));
+		
+		ArrayList<AutonStep> list = new ArrayList<AutonStep>();
+		//list.add(new AutonUnlatchClimber(CLIMBER_RUN_TIME));//was.75
+		AutonFastArc afaRedGearR = new AutonFastArc(false, false, fastGearDrivePwr, turnPowerR_gearR_red, turnPowerL_gearR_red, turnAngle_gearR_red, xDistAxis_gearR_red, new DriveComplete(){
+			public boolean isDone(double l, double r, double x, double y, boolean blueAlliance){
+				return l > End_Point_To_Side_GearR_Red
+						|| l > xDistAxis_gearR_red[xDistAxis_gearR_red.length-1];
+			}
+		});
+		AutonFastArc afaBlueGearR = new AutonFastArc(false, false, fastGearDrivePwr, turnPowerR_gearR_blue, turnPowerL_gearR_blue, turnAngle_gearR_blue, xDistAxis_gearR_blue, new DriveComplete(){
+			public boolean isDone(double l, double r, double x, double y, boolean blueAlliance){
+				return l > End_Point_To_Side_GearR_Blue
+						|| l > xDistAxis_gearR_blue[xDistAxis_gearR_blue.length-1];
+			}
+		}); 
+		list.add(new AutonAllianceDrive(afaBlueGearR, afaRedGearR));
+		ParallelStep ps = new ParallelStep(list);
+		rightGearAuto.add(ps);
+		
+		//rightGearAuto.add(new AutonDriveStraight(5*12 , gearDrivePwr, 0));
+		//rightGearAuto.add(new AutonDriveTime(gearDrivePwr, 2, 60, false));
+		//rightGearAuto.add(new AutonGearDeploy());
+		//rightGearAuto.add(new AutonDriveTime(-gearDrivePwr, 2, 60, false));
+		//rightGearAuto.add(new AutonAllianceDrive(new AutonDriveCircle(Math.PI*6*12*4/6, 1, -30, 6*12, 180, false), new AutonDriveTime(gearDrivePwr, 2, -150, true)));
+		
+		//rightGearAuto.add(new AutonAutoShoot(6));
 		rightGearAuto.add(new AutonEndStep());
-		*/
 		
 		
+		
+		double gearDrivePwr = 0.45; //was .75 with other drive cycle
 		//Center Gear Auto
 		//start
 		centerGearAuto = new ArrayList<AutonStep>();
@@ -292,10 +327,10 @@ public class AutonMain {
 		centerGearAuto.add(new AutonDriveTime(gearDrivePwr, 0.75, 0, false));
 		
 		//drive towards boiler (not needed when we are using the table with the turn at the end -- 4/7)
-		ArrayList<AutonStep> list = new ArrayList<AutonStep>();
+		list = new ArrayList<AutonStep>();
 		list.add(new AutonUnlatchClimber(CLIMBER_RUN_TIME));
 		list.add(new AutonAllianceDrive(new AutonDriveTime(gearDrivePwr, 2.4, -95, false), new AutonDriveTime(gearDrivePwr, 2.4, 95, false)));
-		ParallelStep ps = new ParallelStep(list);
+		ps = new ParallelStep(list);
 		centerGearAuto.add(ps);
 		
 		//shoot
@@ -318,21 +353,21 @@ public class AutonMain {
 		//step 2: briefly run the climber and drive to the hopper
 		list = new ArrayList<AutonStep>();
 		list.add(new AutonUnlatchClimber(CLIMBER_RUN_TIME));//was.75
-		AutonFastArc afaBlue = new AutonFastArc(false, true, drivePwr, turnPowerL_2Hopper, turnPowerR_2Hopper, turnAngle_2Hopper, xDistAxis_2Hopper_Blue, new DriveComplete(){
+		AutonFastArc afaBlueHopper = new AutonFastArc(false, true, drivePwr, turnPowerL_2Hopper, turnPowerR_2Hopper, turnAngle_2Hopper, xDistAxis_2Hopper_Blue, new DriveComplete(){
 			public boolean isDone(double l, double r, double x, double y, boolean blueAlliance){
 				return Math.abs(y) > End_Point_To_Hopper
 						|| r > xDistAxis_2Hopper_Red[xDistAxis_2Hopper_Red.length-1] && blueAlliance
 						|| l > xDistAxis_2Hopper_Blue[xDistAxis_2Hopper_Blue.length-1] && !blueAlliance;
 			}
 		});
-		AutonFastArc afaRed = new AutonFastArc(false, true, drivePwr, turnPowerL_2Hopper, turnPowerR_2Hopper, turnAngle_2Hopper, xDistAxis_2Hopper_Red, new DriveComplete(){
+		AutonFastArc afaRedHopper = new AutonFastArc(false, true, drivePwr, turnPowerL_2Hopper, turnPowerR_2Hopper, turnAngle_2Hopper, xDistAxis_2Hopper_Red, new DriveComplete(){
 			public boolean isDone(double l, double r, double x, double y, boolean blueAlliance){
 				return Math.abs(y) > End_Point_To_Hopper
 						|| r > xDistAxis_2Hopper_Red[xDistAxis_2Hopper_Red.length-1] && blueAlliance
 						|| l > xDistAxis_2Hopper_Blue[xDistAxis_2Hopper_Blue.length-1] && !blueAlliance;
 			}
 		}); 
-		list.add(new AutonAllianceDrive(afaBlue, afaRed));
+		list.add(new AutonAllianceDrive(afaBlueHopper, afaRedHopper));
 		ps = new ParallelStep(list);
 		hopperShootAuto.add(ps);
 		
@@ -455,8 +490,8 @@ public class AutonMain {
 			//steps = justDrive;
 			break;
 		case RIGHT_GEAR_AUTO:
-			//steps = rightGearAuto;
-			steps = justDrive;
+			steps = rightGearAuto;
+			//steps = justDrive;
 			break;
 		case PIVIT_SHOT_AUTO:
 			steps = pivitShot;

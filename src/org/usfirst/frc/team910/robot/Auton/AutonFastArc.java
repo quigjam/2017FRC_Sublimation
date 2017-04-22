@@ -16,7 +16,7 @@ public class AutonFastArc extends AutonStep {
 	private double y;
 	private double prevRight;
 	private double prevLeft;
-	private static final double POWER_PER_DEGREE = 0.0;
+	private double POWER_PER_DEGREE = 0.0;
 	private double[] turnPowerL;
 	private double[] turnPowerR;
 	private double[] turnAngle;
@@ -93,7 +93,7 @@ public class AutonFastArc extends AutonStep {
 		double lookup;
 		int flipCount = 0;
 		if(blueAlliance && flipSides) flipCount++;
-		//if(flipAxis) flipCount++;
+		if(flipAxis) flipCount++;
 		
 		if(flipCount == 1) {
 			lookup = r;
@@ -106,6 +106,13 @@ public class AutonFastArc extends AutonStep {
 		double outsidePower = Util.interpolate(xDistAxis, turnPowerR, lookup);
 		double targetAngle = Util.interpolate(xDistAxis, turnAngle, lookup);
 		
+		//if there is a positive angle, drive to it, otherwise ignore feedback
+		if(targetAngle > 0){
+			POWER_PER_DEGREE = 0.2;
+		} else {
+			POWER_PER_DEGREE = 0.0;
+		}
+		
 		//flip angle when we flip sides
 		if(!blueAlliance && flipSides){
 			targetAngle = -targetAngle;
@@ -113,6 +120,7 @@ public class AutonFastArc extends AutonStep {
 		
 		//feedback
 		double anglePower = Math.max(Math.min(sense.robotAngle.subtract(targetAngle) * -POWER_PER_DEGREE, 0.5), -0.5);
+		
 		//flip angle when we flip sides
 		if(blueAlliance && flipSides) anglePower = -anglePower;
 		SmartDashboard.putNumber("anglePower", anglePower);
