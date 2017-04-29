@@ -88,7 +88,7 @@ public class Camera implements PixyEvent {
 		t.start();
 		
 		
-		highTargetLoc = new TargetLocaterHigh(cameraData[3], boiler, rope, sense, 0);
+		highTargetLoc = new TargetLocaterHigh(cameraData[3], boiler, rope, sense, -2); //last param is angle, negative turns right WAS 0 b4 CMP
 		t = new Thread(null, highTargetLoc, "TargetLocaterHigh");
 		t.start();
 		

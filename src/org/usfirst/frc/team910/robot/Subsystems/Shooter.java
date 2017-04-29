@@ -15,7 +15,7 @@ public class Shooter {
 	
 	private static final double AGI_FILT = 0.2;
 	
-	private static final double SHOOTER_ADJ = 70;	//Added at MSC because all shooting was SHORT!
+	private static final double SHOOTER_ADJ = 100;//B4 CMP 70;	//Added at MSC because all shooting was SHORT!
 	
 	//private static final double[] SHOOTER_PWR_AXIS = {12, 18, 36, 48, 60};
 	private static final double[] SHOOTER_PWR_AXIS = {24, 30, 36, 42, 48, 54};
@@ -39,7 +39,7 @@ public class Shooter {
 
 		} else { // if we do anything else
 
-			shooterPrime(in.primeButton, in.fireButton, 37, in.reverseButton); // call prime with the prime button
+			shooterPrime(in.primeButton, in.fireButton, 37, in.reverseButton, false); // call prime with the prime button
 
 			//shooterFire(in.fireButton); // and shooter with the fire button
 
@@ -52,7 +52,7 @@ public class Shooter {
 	private double agiTime = 0;
 	private boolean pauseAgi = false;
 	
-	public void shooterPrime(boolean primeButton, boolean fire, double dist, boolean reverse) { // Moves the big roller
+	public void shooterPrime(boolean primeButton, boolean fire, double dist, boolean reverse, boolean slowAgi) { // Moves the big roller
 		if (primeButton) { // if we hit the prime button
 			
 			shooterSetSpeed = Util.interpolate(SHOOTER_PWR_AXIS, SHOOTER_PWR_TABLE, dist);
@@ -94,9 +94,11 @@ public class Shooter {
 				
 				//either pause the agi or dont
 				if(pauseAgi){
-					out.setAgitatorPower(-1);
+					if(slowAgi) out.setAgitatorSpeed(400);
+					else out.setAgitatorPower(-1);
 				} else {
-					out.setAgitatorPower(-1);
+					if(slowAgi) out.setAgitatorSpeed(400);
+					else out.setAgitatorPower(-1);
 				}
 				
 				//record the last time for the next loop

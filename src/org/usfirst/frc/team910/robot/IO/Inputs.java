@@ -85,7 +85,7 @@ public class Inputs {
 		rightJoyStickY = deadband(DEADBAND, -rightStick.getY());
 		leftJoyStickX = deadband(DEADBAND, leftStick.getX());
 		rightJoyStickX = deadband(DEADBAND, rightStick.getX());
-		dynamicBrake = false; //leftStick.getTrigger();
+		dynamicBrake = rightStick.getRawButton(11); //leftStick.getTrigger();
 		driveStraight = rightStick.getTrigger();
 		//autoGear = rightStick.getRawButton(4);
 		autoShoot = rightStick.getRawButton(5) || rightStick.getRawButton(6);

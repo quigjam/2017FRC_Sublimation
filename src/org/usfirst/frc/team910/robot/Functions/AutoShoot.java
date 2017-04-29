@@ -60,7 +60,7 @@ public class AutoShoot {
 	
 	private double filteredDist = 0;
 	
-	public void run() {
+	public void run(boolean slowAgi) {
 		
 		//P_CONST = prefs.getDouble("P_CONST", P_CONST);
 		//V_CONST = prefs.getDouble("V_CONST", V_CONST);
@@ -74,7 +74,7 @@ public class AutoShoot {
 			currentTarget = sense.camera.boiler.getCurrentTarget(); // set our current target to the boiler
 			switch (shootState) {
 			case CAM_CHECK:
-				shoot.shooterPrime(false,false,0,false);
+				shoot.shooterPrime(false,false,0,false, false);
 				timeSpentClose = 0;
 				prevDist = (drive.leftDriveEncoder + drive.rightDriveEncoder) / 2;
 				drive.setBrakes(false);
@@ -118,7 +118,7 @@ public class AutoShoot {
 				
 				drive.driveStraightNavX(false, power, 0); // drive toward it
 				
-				shoot.shooterPrime(true,false,SHOOT_DISTANCE, false);
+				shoot.shooterPrime(true,false,SHOOT_DISTANCE, false, slowAgi);
 				
 				//when close to target
 				if (Math.abs(currentTarget.distance - SHOOT_DISTANCE) < ALLOWABLE_DISTANCE_ERROR) { 
@@ -135,7 +135,7 @@ public class AutoShoot {
 				drive.setBrakes(true);
 				drive.rotate(currentTarget.totalAngle); // face the target
 				filteredDist += (currentTarget.distance - filteredDist) * CAM_DIST_FILT;
-				shoot.shooterPrime(true,false,filteredDist, false);
+				shoot.shooterPrime(true,false,filteredDist, false, false);
 				if (Math.abs(currentTarget.cameraAngle) < ALLOWABLE_ANGLE_ERROR) { // when we are lined up
 					shootState = ShootState.PRIME; // go to the next step
 					drive.tankDrive(0, 0, 1);
@@ -144,7 +144,7 @@ public class AutoShoot {
 
 			case PRIME:
 				filteredDist += (currentTarget.distance - filteredDist) * CAM_DIST_FILT;
-				shoot.shooterPrime(true,false,filteredDist, false); // prime
+				shoot.shooterPrime(true,false,filteredDist, false, false); // prime
 				if (shoot.upToSpeed() || in.fireButton) { // when we get up to speed
 					shootState = ShootState.FIRE; // go to next state
 
@@ -153,11 +153,11 @@ public class AutoShoot {
 				
 			case FIRE:
 				filteredDist += (currentTarget.distance - filteredDist) * CAM_DIST_FILT;
-				shoot.shooterPrime(true,true,filteredDist,false);
+				shoot.shooterPrime(true,true,filteredDist,false, slowAgi);
 				break;
 			
 			case REVERSE:
-				shoot.shooterPrime(true,false,REVERSE_DIST,false);
+				shoot.shooterPrime(true,false,REVERSE_DIST,false, slowAgi);
 				drive.driveStraightNavX(false, -0.3, 0);
 				if((drive.leftDriveEncoder + drive.rightDriveEncoder) / 2 > stopDist){
 					drive.tankDrive(0, 0, 1);

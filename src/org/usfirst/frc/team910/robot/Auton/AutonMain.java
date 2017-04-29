@@ -29,8 +29,8 @@ public class AutonMain {
 	//drive to hopper
 //b4msc was	private static final double r = 21;//was 21//red start turn distance
 //b4msc was	private static final double b = 21; //was21//b4 msc: 23;//blue start turn distance
-	private static final double r = 31; //was 36 in match32  //45;//was 21//red start turn distance
-	private static final double b = 29; //was 36 in match32  //Add 3? //was21//b4 msc: 23;//blue start turn distance
+	private static final double r = 32;//was 33 //was 36 in match32  //45;//was 21//red start turn distance
+	private static final double b = 24; //was 36 in match32  //Add 3? //was21//b4 msc: 23;//blue start turn distance
   private static final double[] turnPowerL_2Hopper = 	   { 1, 1, 1, -0.5,  -0.2,    1,    0.5,  0.2 }; //Inside
 //b4msc was	private static final double[] turnPowerL_2Hopper = 	   { 1, 1, 1, -1, -.4,    1,    1,  0.5 }; //Inside
    
@@ -47,7 +47,8 @@ public class AutonMain {
 
     */     
 	private static final double[] xDistAxis_2Hopper_Red =  { 0, 0, r, r+23, r+44, r+58, r+71,  r+93 }; //B4 MSC was 95 on last one, end dist is ~121
-	private static final double[] xDistAxis_2Hopper_Blue = { 0, 0, b, b+23, b+44, b+58, b+71,  b+93 }; //B4 MSC was 95 on last one, switch to this when blue
+	private static final double[] xDistAxis_2Hopper_Blue = { 0, 0, b, b+23, b+44, b+58, b+73,  b+99 }; //B4 MSC was 95 on last one, switch to this when blue
+	//b4 cmp: private static final double[] xDistAxis_2Hopper_Blue = { 0, 0, b, b+23, b+44, b+58, b+71,  b+93 }; //B4 MSC was 95 on last one, switch to this when blue
 
 /*	B4 MSC:	
 	private static final double[] xDistAxis_2Hopper_Red =  { 0, 0, r, r+23, r+44, r+58, r+71,  r+95 }; //end dist is ~121
@@ -83,13 +84,22 @@ public class AutonMain {
 	private static final double[] xDistAxis_From_Hopper =  {  0,  0,   20,   30,  40,   52,  61 };//TAKE 3 OFF LAST 2 VALUES? end dist is ~63
 		
 	//drive to gear peg right, red side 
+	private static final double grR = 79;
+	private static final double[] turnPowerL_gearR_red = { -1, -1,  -1,     -1,   -0.6,   -0.6,  -0.56,      1,        1,    -0.2,    -0.4,    -0.5 };
+	private static final double[] turnPowerR_gearR_red = { -1, -1,  -1,      1,      0,      0,     1,      1,        1,       1,    -0.4,    -0.5 };
+	private static final double[] turnAngle_gearR_red =  {  0,  0,   0,     -1,     -1,     -1,    -1,     -1,       -1,      -1,      -1,      -1 };
+	private static final double[] xDistAxis_gearR_red  = {  0,  0, grR, grR+15, grR+26, grR+34, grR+36, grR+54, grR+97 , grR+108, grR+110, grR+119 };
+	private static final double End_Point_To_Side_GearR_Red = grR + 112.5;
+	
+/* B4 CMP	
+	//drive to gear peg right, red side 
 	private static final double grR = 75;
 	private static final double[] turnPowerL_gearR_red = { -1, -1,  -1,     -1,   -0.5,   -0.5,  -0.5,      1,        1,    -0.2,    -0.4,    -0.5 };
 	private static final double[] turnPowerR_gearR_red = { -1, -1,  -1,      1,      0,      0,     1,      1,        1,       1,    -0.4,    -0.5 };
 	private static final double[] turnAngle_gearR_red =  {  0,  0,   0,     -1,     -1,     -1,    -1,     -1,       -1,      -1,      -1,      -1 };
 	private static final double[] xDistAxis_gearR_red  = {  0,  0, grR, grR+12, grR+24, grR+28, grR+32, grR+54, grR+97 , grR+108, grR+110, grR+119 };
 	private static final double End_Point_To_Side_GearR_Red = grR + 112.5;
-	
+*/	
 	//drive to gear peg left, blue side 
 	private static final double grB = 83;																							//last 2 not used
 	private static final double[] turnPowerL_gearL_blue = { -1, -1,  -1,     -1,   -0.5,      1,      1,     0.7,    -0.4,    -0.5,    -0.4,    -0.5 };
@@ -190,7 +200,7 @@ public class AutonMain {
 		pivitShot.add(new AutonWait(1.5)); //remove later
 		pivitShot.add(new AutonAllianceDrive(new AutonDriveTime(0.3,1.75,-30,false), new AutonDriveTime(0.3,1.75,30,false)));//remove later
 		pivitShot.add(new AutonWait(1));//remove later
-		pivitShot.add(new AutonAutoShoot(10)); //remove later
+		pivitShot.add(new AutonAutoShoot(10,false)); //remove later
 		/*justDrive.add(new AutonFastArc(false, true, 0.9, turnPowerL_2Hopper, turnPowerR_2Hopper, turnAngle_2Hopper, xDistAxis_2Hopper_Blue, new DriveComplete(){
 			public boolean isDone(double l, double r, double x, double y, boolean blueAlliance){
 				return Math.abs(y) > End_Point_To_Side_Gear_R
@@ -297,7 +307,7 @@ public class AutonMain {
 		ps = new ParallelStep(list);
 		leftGearAuto.add(ps);
 		
-		leftGearAuto.add(new AutonAutoShoot(8));
+		leftGearAuto.add(new AutonAutoShoot(8,false));
 		leftGearAuto.add(new AutonEndStep());
 		
 		
@@ -349,7 +359,7 @@ public class AutonMain {
 		rightGearAuto.add(ps);
 		
 		//step 4 shoot and win
-		rightGearAuto.add(new AutonAutoShoot(8));
+		rightGearAuto.add(new AutonAutoShoot(8,false));
 		rightGearAuto.add(new AutonEndStep());
 		
 		
@@ -390,13 +400,14 @@ public class AutonMain {
 		//drive towards boiler (not needed when we are using the table with the turn at the end -- 4/7)
 		list = new ArrayList<AutonStep>();
 		list.add(new AutonUnlatchClimber(CLIMBER_RUN_TIME));
-		list.add(new AutonAllianceDrive(new AutonDriveTime(gearDrivePwr, 2.0, -60, false), new AutonDriveTime(gearDrivePwr, 2.4, 95, false)));
+		//																	  -60                                           2.4
+		list.add(new AutonAllianceDrive(new AutonDriveTime(gearDrivePwr, 2.0, -57, false), new AutonDriveTime(gearDrivePwr, 2.3, 95, false)));
 		list.add(new AutonPrime());
 		ps = new ParallelStep(list);
 		centerGearAuto.add(ps);
 		
 		//shoot
-		centerGearAuto.add(new AutonAutoShoot(10));
+		centerGearAuto.add(new AutonAutoShoot(10, true));
 		centerGearAuto.add(new AutonEndStep());
 		
 		
@@ -455,7 +466,7 @@ public class AutonMain {
 		hopperShootAuto.add(ps);
 		
 		//step 5: run the auto shoot function for whatever time is left
-		hopperShootAuto.add(new AutonAutoShoot(10));
+		hopperShootAuto.add(new AutonAutoShoot(10,false));
 		
 		//step 6: call the end step to make sure everything stops
 		hopperShootAuto.add(new AutonEndStep());

@@ -6,10 +6,12 @@ public class AutonAutoShoot extends AutonStep {
 
 	private double time;
 	private double endTime;
+	private boolean slowAgi;
 	
-	AutonAutoShoot(double shootTime){
+	AutonAutoShoot(double shootTime, boolean slowAgi){
 		time = shootTime;
 		endTime = 0;
+		this.slowAgi = slowAgi;
 	}
 	
 	public void setup(boolean blueAlliance){
@@ -18,7 +20,7 @@ public class AutonAutoShoot extends AutonStep {
 	
 	public void run(){
 		in.autoShoot = true;
-		autoShoot.run();
+		autoShoot.run(slowAgi);
 		
 		if(autoShoot.isCamAlign()){
 			drive.tankDrive(0, 0, 1);

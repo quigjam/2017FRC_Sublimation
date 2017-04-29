@@ -114,7 +114,7 @@ public class Robot extends IterativeRobot {
 		out.readEncoders();
 		drive.run(false);
 	
-		autoShoot.run();
+		autoShoot.run(false);
 		autoDelivererer.run();
 		driveJog.run();
 		
