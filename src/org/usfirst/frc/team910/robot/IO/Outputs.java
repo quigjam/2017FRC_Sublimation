@@ -149,18 +149,18 @@ public class Outputs {
 	public void setLeftDrive(double power) {
 		// leftMotor1.set(-power);
 		// leftMotor2.set(-power);
-		leftDriveCan1.set(power);
-		leftDriveCan2.set(power);
-		leftDriveCan3.set(power);
+		leftDriveCan1.set(power*limitValue);
+		leftDriveCan2.set(power*limitValue);
+		leftDriveCan3.set(power*limitValue);
 		//leftDrive.set(power);
 	}
 
 	public void setRightDrive(double power) {
 		// rightMotor1.set(power);
 		// rightMotor2.set(power);
-		rightDriveCan1.set(power);
-		rightDriveCan2.set(power);
-		rightDriveCan3.set(power);
+		rightDriveCan1.set(power*limitValue);
+		rightDriveCan2.set(power*limitValue);
+		rightDriveCan3.set(power*limitValue);
 		//rightDrive.set(power);
 	}
 	
@@ -177,7 +177,7 @@ public class Outputs {
 
 	public void setShooterPower(double power) {
 		shooterMotor.changeControlMode(TalonControlMode.PercentVbus); //Lets shooter be set by power
-		if (currentMonitor(ElectroPaul.SHOOTER_MOTOR)) { //Prevent fire hazard by monitoring current
+		if (currentMonitor(ElectroPaul.SHOOTER_MOTOR) || limitActive) { //Prevent fire hazard by monitoring current
 			shooterMotor.set(0);
 		} else {
 			shooterMotor.set(power);
@@ -186,7 +186,7 @@ public class Outputs {
 
 	public void setShooterSpeed(double speed) { //Lets shooter be powered by speed
 
-		if (currentMonitor(ElectroPaul.SHOOTER_MOTOR)) { //Fire hazard prevention	
+		if (currentMonitor(ElectroPaul.SHOOTER_MOTOR) || limitActive) { //Fire hazard prevention	
 			shooterMotor.changeControlMode(TalonControlMode.PercentVbus);
 			shooterMotor.set(0);
 		} else {
@@ -230,17 +230,22 @@ public class Outputs {
 
 	public void setAgitatorPower(double power) { //Lets agitator be set by power
 		agitatorMotor.changeControlMode(TalonControlMode.PercentVbus);
-		agitatorMotor.set(power);
+		agitatorMotor.set(power*limitValue);
 	}
 
 	public void setAgitatorSpeed(double speed) { //Lets agitator be set by speed
-		agitatorMotor.changeControlMode(TalonControlMode.Speed);
-		if (speed <= 0){
-			agitatorMotor.configPeakOutputVoltage(0, -12);
+		
+		if(limitActive){
+			setAgitatorPower(0);
 		} else {
-			agitatorMotor.configPeakOutputVoltage(12, 0);
+			agitatorMotor.changeControlMode(TalonControlMode.Speed);
+			if (speed <= 0){
+				agitatorMotor.configPeakOutputVoltage(0, -12);
+			} else {
+				agitatorMotor.configPeakOutputVoltage(12, 0);
+			}
+			agitatorMotor.set(speed);	
 		}
-		agitatorMotor.set(speed);
 	}
 
 	public void setClimbPower(double power) { ////Lets climb be set by power
@@ -306,6 +311,120 @@ public class Outputs {
 		}
 		return (restEndTime[motor] > Timer.getFPGATimestamp());
 	}
+	
+	
+	//commented out to continue later, maybe, kindof
+	/*
+	double[] prevCurr = new double[50];
+	int prevCurrIdx = 0;
+	double avgCurr1s = 0;
+	double MAX_1s_CURR = 5*120;
+	
+	double[] prev1sCurrAvg = new double[5];
+	int prev1sCurrIdx = 0;
+	double avgCurr5s = 0;
+	double MAX_5s_CURR = 3*120;
+	
+	double[] prev5sCurrAvg = new double[2];
+	int prev5sCurrIdx = 0;
+	double avgCurr10s = 0;
+	double MAX_10s_CURR = 2*120;
+	
+	double[] prev10sCurrAvg = new double[5];
+	int prev10sCurrIdx = 0;
+	double avgCurr50s = 0;
+	double MAX_50s_CURR = 1.5*120;
+	
+	double[] prev50sCurrAvg = new double[2];
+	int prev50sCurrIdx = 0;
+	double avgCurr100s = 0;
+	double MAX_100s_CURR = 1.25*120;
+	
+	
+	public void protectBreaker(){
+		double totalCurr = pdp.getTotalCurrent() * (1/50);
+		
+		//handle instant current avg array
+		avgCurr1s += totalCurr;
+		avgCurr1s -= prevCurr[prev1sCurrIdx];
+		prevCurr[prev1sCurrIdx] = totalCurr;
+		prev1sCurrIdx++;
+		if(prev1sCurrIdx >= prevCurr.length) {
+			prev1sCurrIdx = 0;
+			
+			//handle 1s current avg array
+			avgCurr5s += avgCurr1s;
+			avgCurr5s -= prev1sCurrAvg[prev5sCurrIdx];
+			prev1sCurrAvg[prev5sCurrIdx] = avgCurr1s;
+			prev5sCurrIdx++;
+			if(prev5sCurrIdx >= prev1sCurrAvg.length){
+				prev5sCurrIdx = 0;
+				
+				//handle 5s current avg array
+			}
+		} else {
+			double temp5sAvg = 0;
+			for(int i=1; i < prev1sCurrAvg.length; i++){
+				temp5sAvg = prev1sCurrAvg[i];
+			}
+			temp5sAvg += ((prevCurr.length - prev1sCurrIdx) / prevCurr.length) * prev1sCurrAvg[prev5sCurrIdx];
+			temp5sAvg += (prev1sCurrIdx / prevCurr.length) * avgCurr1s;
+		}
+		
+		
+	}
+	*/
+	
+	double avgCurr1s = 0;
+	double avgCurr5s = 0;
+	double avgCurr10s = 0;
+	double avgCurr50s = 0;
+	double avgCurr100s = 0;
+	
+	double FILT_1s = 0.04; //roughly a time constant of 2
+	double FILT_5s = FILT_1s / 5;
+	double FILT_10s = FILT_5s / 2;
+	double FILT_50s = FILT_10s / 5;
+	double FILT_100s = FILT_50s / 2;
+	
+	double CURR_LIM_1s = 5*120;
+	double CURR_LIM_5s = 3*120;
+	double CURR_LIM_10s = 2*120;
+	double CURR_LIM_50s = 1.5*120;
+	double CURR_LIM_100s = 1.25*120;
+	
+	boolean limitActive;
+	double limitValue;
+	
+	public void protectBreaker(){
+		
+		double totalCurr = pdp.getTotalCurrent();		
+		
+		avgCurr1s += (totalCurr - avgCurr1s) * FILT_1s;
+		avgCurr5s += (totalCurr - avgCurr5s) * FILT_5s;
+		avgCurr10s += (totalCurr - avgCurr10s) * FILT_10s;
+		avgCurr50s += (totalCurr - avgCurr50s) * FILT_50s;
+		avgCurr100s += (totalCurr - avgCurr100s) * FILT_100s;
+		
+		SmartDashboard.putNumber("avgCurr1s",avgCurr1s);
+		SmartDashboard.putNumber("avgCurr5s",avgCurr5s);
+		SmartDashboard.putNumber("avgCurr10s",avgCurr10s);
+		SmartDashboard.putNumber("avgCurr50s",avgCurr50s);
+		SmartDashboard.putNumber("avgCurr100s",avgCurr100s);
+		
+		if(avgCurr1s > CURR_LIM_1s ||
+		   avgCurr5s > CURR_LIM_5s ||
+		   avgCurr10s > CURR_LIM_10s ||
+		   avgCurr50s > CURR_LIM_50s ||
+		   avgCurr100s > CURR_LIM_100s){
+			limitValue = 0.5;
+			limitActive = true;
+		} else {
+			limitValue = 1;
+			limitActive = false;
+		}
+	}
+	
 
 	double maxTransporterSpeed = 0;
 	

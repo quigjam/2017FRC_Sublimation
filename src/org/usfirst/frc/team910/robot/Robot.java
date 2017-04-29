@@ -89,6 +89,8 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousPeriodic() {
+		out.protectBreaker();
+		
 		sense.read();
 		out.readEncoders();
 		drive.run(true);
@@ -108,6 +110,8 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
+		out.protectBreaker();
+		
 		autonmain.currentStep = 0;
 		in.read();
 		sense.read();
