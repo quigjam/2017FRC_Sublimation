@@ -287,7 +287,7 @@ public class GearSystem {
 					currentTime = 0;
 					currentTripped = false;
 				} else {
-					currentTripped = false;
+					//currentTripped = false;
 					gearRoller(ROLLER_POWER * 0.15);
 				}
 				
