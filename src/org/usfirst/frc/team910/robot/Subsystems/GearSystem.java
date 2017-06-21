@@ -19,19 +19,26 @@ public class GearSystem {
 	private Outputs out;
 	private Sensors sense;
 
-	private static final double GROUND_POSITION = 200;
+	private static final double GROUND_POSITION = 170;
 
 													  //Larger number (abs) is lower 
-	private static final double SCORE_POSITION_L =552;// B4 CMP  581;//581; //END OF SHEPARD 581; //prac bot:469; // 581 //596 //578 //TODO change the pot values back to the comp bot pot values
+	private static final double SCORE_POSITION_L = 460; //was 504;//552;// B4 CMP  581;//581; //END OF SHEPARD 581; //prac bot:469; // 581 //596 //578 //TODO change the pot values back to the comp bot pot values
 														// //460; //pot values
-													//Lower number (abs) is lower 
-	private static final double SCORE_POSITION_R =-384; // B4 CMP-364;//-364; // END OF SHEPARD -364;//prac bot:-398; // 364 //-342 //-368
-															// //-850;
-
-	private static final double AUTON_POSITION_L = SCORE_POSITION_L - 77; // was
+													//Lower number (abs) is lower
+	/*
+	private static final double SCORE_POSITION_R = 650; //-384;//-384; // B4 CMP-364;//-364; // END OF SHEPARD -364;//prac bot:-398; // 364 //-342 //-368
+	// //-850;
+	*/
+	
+	// OLD when pot gave NEGATIVE values. We unplugged and replugged it in and now it gives POSTIVE values!  Here is the OLD calibration data...
+	private static final double SCORE_POSITION_R = -384;//-384; // B4 CMP-364;//-364; // END OF SHEPARD -364;//prac bot:-398; // 364 //-342 //-368
+	// //-850;
+    
+	
+	private static final double AUTON_POSITION_L = SCORE_POSITION_L - 97; //was - 77; // was
 																			// 525
 																			// actual
-	private static final double AUTON_POSITION_R = SCORE_POSITION_R - 71; // was
+	private static final double AUTON_POSITION_R = SCORE_POSITION_R - 91; // was -71; // was
 																			// -422
 																			// actual
 
@@ -43,7 +50,7 @@ public class GearSystem {
 	private static final double GEAR_PANEL_POWER_DN = 0.5;
 	private static final double GEAR_PANEL_POWER_UP = 0.5;
 	private static final double GEAR_PANEL_HOLD_DN = 0.2;
-	private static final double GEAR_PANEL_HOLD_UP = 0.15;
+	private static final double GEAR_PANEL_HOLD_UP = 0.25;
 
 	private static final double PANEL_CURRENT_PEAK = 8.5;
 	private static final double PANEL_CURRENT_TIME = 0.5;

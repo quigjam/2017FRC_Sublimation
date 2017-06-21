@@ -387,16 +387,21 @@ public class Outputs {
 	double FILT_50s = FILT_10s / 5;
 	double FILT_100s = FILT_50s / 2;
 	
-	double CURR_LIM_1s = 5*120;
+	/*double CURR_LIM_1s = 5*120;
 	double CURR_LIM_5s = 3*120;
 	double CURR_LIM_10s = 2*120;
 	double CURR_LIM_50s = 1.5*120;
-	double CURR_LIM_100s = 1.25*120;
+	double CURR_LIM_100s = 1.25*120;*/
+	double CURR_LIM_1s = 10*120;
+	double CURR_LIM_5s = 10*120;
+	double CURR_LIM_10s = 10*120;
+	double CURR_LIM_50s = 10*120;
+	double CURR_LIM_100s = 10*120;
 	
 	boolean limitActive;
 	double limitValue;
 	
-	public void protectBreaker(){
+	public void protectBreaker(boolean override){
 		
 		double totalCurr = pdp.getTotalCurrent();		
 		
@@ -412,17 +417,21 @@ public class Outputs {
 		SmartDashboard.putNumber("avgCurr50s",avgCurr50s);
 		SmartDashboard.putNumber("avgCurr100s",avgCurr100s);
 		
-		if(avgCurr1s > CURR_LIM_1s ||
+		if((avgCurr1s > CURR_LIM_1s ||
 		   avgCurr5s > CURR_LIM_5s ||
 		   avgCurr10s > CURR_LIM_10s ||
 		   avgCurr50s > CURR_LIM_50s ||
-		   avgCurr100s > CURR_LIM_100s){
+		   avgCurr100s > CURR_LIM_100s) &&
+		   !override){
 			limitValue = 0.5;
 			limitActive = true;
 		} else {
 			limitValue = 1;
 			limitActive = false;
 		}
+		
+		SmartDashboard.putBoolean("limitActive", limitActive);
+		SmartDashboard.putNumber("LimitValue", limitValue);
 	}
 	
 
